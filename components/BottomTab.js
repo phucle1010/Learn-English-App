@@ -13,7 +13,7 @@ const BottomTab = () => {
 
     return (
         <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="Login"
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: styles.container,
@@ -23,33 +23,64 @@ const BottomTab = () => {
                 },
             }}
         >
-            {screens.map((screen, index) => (
-                <Tab.Screen
-                    key={index}
-                    name={screen.name}
-                    component={screen.component}
-                    options={{
-                        // tabBarStyle: {
-                        //     display: screen.isHideNavigationTab === true ? 'none' : 'flex',
-                        // },
-                        tabBarIcon: () => (
-                            <MaterialCommunityIcons
-                                name={screen.tabIconName}
-                                size={screen.tabIconSize}
-                                color={index === selectedTabIndex ? screen.activeColor : screen.tabIconColor}
-                            />
-                        ),
-                        tabBarItemStyle: {
-                            display: screen.isHideTab === true ? 'none' : 'flex',
-                        },
-                    }}
-                    listeners={{
-                        focus: () => {
-                            setSelectedTabIndex(index);
-                        },
-                    }}
-                />
-            ))}
+            {screens.map((screen, index) => {
+                let TabComp = null;
+                if (screen.isHideNavigationTab) {
+                    TabComp = (
+                        <Tab.Screen
+                            key={index}
+                            name={screen.name}
+                            component={screen.component}
+                            options={{
+                                tabBarStyle: {
+                                    display: 'none',
+                                },
+                                tabBarIcon: () => (
+                                    <MaterialCommunityIcons
+                                        name={screen.tabIconName}
+                                        size={screen.tabIconSize}
+                                        color={index === selectedTabIndex ? screen.activeColor : screen.tabIconColor}
+                                    />
+                                ),
+                                tabBarItemStyle: {
+                                    display: screen.isHideTab === true ? 'none' : 'flex',
+                                },
+                            }}
+                            listeners={{
+                                focus: () => {
+                                    setSelectedTabIndex(index);
+                                },
+                            }}
+                        />
+                    );
+                } else {
+                    TabComp = (
+                        <Tab.Screen
+                            key={index}
+                            name={screen.name}
+                            component={screen.component}
+                            options={{
+                                tabBarIcon: () => (
+                                    <MaterialCommunityIcons
+                                        name={screen.tabIconName}
+                                        size={screen.tabIconSize}
+                                        color={index === selectedTabIndex ? screen.activeColor : screen.tabIconColor}
+                                    />
+                                ),
+                                tabBarItemStyle: {
+                                    display: screen.isHideTab === true ? 'none' : 'flex',
+                                },
+                            }}
+                            listeners={{
+                                focus: () => {
+                                    setSelectedTabIndex(index);
+                                },
+                            }}
+                        />
+                    );
+                }
+                return TabComp;
+            })}
         </Tab.Navigator>
     );
 };
@@ -58,13 +89,8 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         paddingBottom: 10,
-        // bottom: 10,
-        // left: 10,
-        // right: 10,
         height: 80,
         backgroundColor: '#fff',
-        // borderRadius: 15,
-        // color: '#faa0a0',
     },
 });
 

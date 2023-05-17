@@ -19,7 +19,7 @@ const Login = ({ navigation }) => {
                     <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.btnlogin}>
+                    <TouchableOpacity style={styles.btnlogin} onPress={() => navigation.navigate('Home')}>
                         <Text style={styles.txtbtn}>Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>

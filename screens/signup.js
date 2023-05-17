@@ -1,9 +1,62 @@
-import React from 'react';
-import { Text, StyleSheet, View, Image, TextInput, Button, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
+import { Text, StyleSheet, View, Image, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
+import db, { auth } from '../firebase';
 
 const Signup = ({ navigation }) => {
+    const initUser = {
+        email: '',
+        full_name: '',
+        password: '',
+    };
+    const [userInfo, setUserInfo] = useState(initUser);
+    const [successfulCreate, setSuccessfulCreate] = useState(false);
+
+    useEffect(() => {
+        if (successfulCreate) {
+            navigation.navigate('Login');
+        }
+    }, [successfulCreate]);
+
+    const addUserCollection = (userData) => {
+        addDoc(collection(db, 'USER'), userData)
+            .then(() => {
+                Alert.alert('Đăng ký thành công');
+                setUserInfo(initUser);
+                setSuccessfulCreate(true);
+            })
+            .catch((err) => Alert.alert('Lỗi', err));
+    };
+
+    const handleSignUp = async () => {
+        const existedEmptyValue = Object.keys(userInfo).some((field) => userInfo[field] === '');
+        if (existedEmptyValue) {
+            Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin đăng ký');
+        } else {
+            try {
+                await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password).then((res) => {
+                    const user = res.user;
+                    const userData = {
+                        dateOfBirth: '',
+                        email: userInfo.email,
+                        field: '',
+                        fullName: userInfo.full_name,
+                        id: user.uid,
+                        level_id: '',
+                        password: '',
+                        username: '',
+                    };
+                    addUserCollection(userData);
+                });
+            } catch (err) {
+                Alert.alert('Lỗi', err);
+            }
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View>
@@ -11,19 +64,57 @@ const Signup = ({ navigation }) => {
             </View>
             <Text style={styles.text}>Đăng ký</Text>
             <View>
-                <TextInput style={styles.txtInput} placeholder="Email" />
-                <TextInput style={styles.txtInput} placeholder="Họ và tên" />
+                <TextInput
+                    style={styles.txtInput}
+                    defaultValue={userInfo.email}
+                    placeholder="Email"
+                    onChangeText={(email) =>
+                        setUserInfo((prevUser) => {
+                            return {
+                                ...prevUser,
+                                email,
+                            };
+                        })
+                    }
+                />
+                <TextInput
+                    style={styles.txtInput}
+                    defaultValue={userInfo.full_name}
+                    placeholder="Họ và tên"
+                    spellCheck={false}
+                    onChangeText={(full_name) =>
+                        setUserInfo((prevUser) => {
+                            return {
+                                ...prevUser,
+                                full_name,
+                            };
+                        })
+                    }
+                />
             </View>
             <View style={styles.passcontainer}>
-                <TextInput style={styles.password} placeholder="Mật khẩu" />
+                <TextInput
+                    style={styles.password}
+                    defaultValue={userInfo.password}
+                    placeholder="Mật khẩu"
+                    secureTextEntry={true}
+                    onChangeText={(password) =>
+                        setUserInfo((prevUser) => {
+                            return {
+                                ...prevUser,
+                                password,
+                            };
+                        })
+                    }
+                />
                 <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
             </View>
-            <View style={styles.passcontainer}>
+            {/* <View style={styles.passcontainer}>
                 <TextInput style={styles.password} placeholder="Xác nhận mật khẩu" />
                 <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
-            </View>
+            </View> */}
             <View>
-                <TouchableOpacity style={styles.btnsignup}>
+                <TouchableOpacity style={styles.btnsignup} onPress={handleSignUp}>
                     <Text style={styles.txtbtnSignup}>Đăng ký</Text>
                 </TouchableOpacity>
             </View>
