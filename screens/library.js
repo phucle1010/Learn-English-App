@@ -2,57 +2,67 @@ import React from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TouchableHighlightComponent } from 'react-native';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Header from '../components/Header';
 
 const Library = () => {
     return (
-        <ScrollView style={styles.main}>
-            <View style={styles.container}>
-                {/* <View style={styles.headcontainer}>
+        <SafeAreaView style={styles.main}>
+            <Header />
+            <ScrollView style={styles.scrollContainer}>
+                <View style={styles.container}>
+                    {/* <View style={styles.headcontainer}>
                     <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
                     <Text style={styles.txthead}>Thư viện</Text>
                 </View> */}
-                <View style={styles.containerWordGroup}>
-                    <Text style={styles.txtwordGroup}>Từ vựng đã lưu</Text>
-                </View>
-                <View style={styles.wrapwords}>
-                    <Text style={styles.txtWord}>Hello</Text>
-                    <TouchableOpacity style={styles.wrapbtn}>
-                        <Text style={styles.txtbtn}>Xóa từ vựng</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.containerWordGroup}>
-                    <Text style={styles.txtwordGroup}>Tin tức đã lưu</Text>
-                </View>
-                <View style={styles.wrapItem}>
-                    <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.txtname}>Tên tin tức</Text>
+                    <View style={styles.containerWordGroup}>
+                        <Text style={styles.txtwordGroup}>Từ vựng đã lưu</Text>
+                    </View>
+                    <View style={styles.wrapwords}>
+                        <Text style={styles.txtWord}>Hello</Text>
                         <TouchableOpacity style={styles.wrapbtn}>
-                            <Text style={styles.txtbtn}>Xóa tin tức</Text>
+                            <Text style={styles.txtbtn}>Xóa từ vựng</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
-                <View style={styles.containerWordGroup}>
-                    <Text style={styles.txtwordGroup}>Video đã lưu</Text>
-                </View>
-                <View style={styles.wrapItem}>
-                    <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.txtname}>Tên video</Text>
-                        <TouchableOpacity style={styles.wrapbtn}>
-                            <Text style={styles.txtbtn}>Xóa video</Text>
-                        </TouchableOpacity>
+                    <View style={styles.containerWordGroup}>
+                        <Text style={styles.txtwordGroup}>Tin tức đã lưu</Text>
+                    </View>
+                    <View style={styles.wrapItem}>
+                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
+                        <View style={styles.detailContainer}>
+                            <Text style={styles.txtname}>Tên tin tức</Text>
+                            <TouchableOpacity style={styles.wrapbtn}>
+                                <Text style={styles.txtbtn}>Xóa tin tức</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.containerWordGroup}>
+                        <Text style={styles.txtwordGroup}>Video đã lưu</Text>
+                    </View>
+                    <View style={styles.wrapItem}>
+                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
+                        <View style={styles.detailContainer}>
+                            <Text style={styles.txtname}>Tên video</Text>
+                            <TouchableOpacity style={styles.wrapbtn}>
+                                <Text style={styles.txtbtn}>Xóa video</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     main: {
         backgroundColor: '#f6f6f6',
-        marginBottom: 100,
+        height: '100%',
+        paddingBottom: 80,
+    },
+    scrollContainer: {
+        marginTop: 1,
     },
     container: {
         flex: 1,

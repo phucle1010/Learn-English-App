@@ -1,3 +1,4 @@
+import React from 'react';
 import Account from '../screens/account';
 import DetailNews from '../screens/detailNews';
 import DetailReadBook from '../screens/detailReadBook';

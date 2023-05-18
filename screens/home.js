@@ -3,14 +3,17 @@ import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity,
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 
+import Header from '../components/Header';
+
 const Home = () => {
     return (
         <SafeAreaView style={styles.main}>
-            <ScrollView>
+            <Header />
+            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     <View style={styles.secsion1}>
                         <View style={styles.headcontainer}>
-                            <Text style={styles.txthead1}>Xin chào 'Tên'</Text>
+                            <Text style={styles.txthead1}>Xin chào Phúc,</Text>
                             <Image
                                 style={styles.imgAccount}
                                 source={{
@@ -86,7 +89,7 @@ const Home = () => {
                         <Text style={styles.txtContent}>Thống kê sử dụng</Text>
                     </View>
 
-                    <View style={{ marginBottom: 100 }}>
+                    <View>
                         <Image
                             style={styles.chart}
                             source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
@@ -101,6 +104,11 @@ const Home = () => {
 const styles = StyleSheet.create({
     main: {
         backgroundColor: '#f6f6f6',
+        height: '100%',
+        paddingBottom: 80,
+    },
+    scrollContainer: {
+        marginTop: 1,
     },
     container: {
         flexDirection: 'column',
@@ -114,11 +122,13 @@ const styles = StyleSheet.create({
         backgroundColor: color.btn_color3,
         borderRadius: 10,
         alignItems: 'center',
+        justifyContent: 'flex-start',
     },
     headcontainer: {
-        flexDirection: 'row',
         marginTop: 20,
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
     txthead1: {
         fontFamily: fontstyle.fontfamily_2,
@@ -140,12 +150,14 @@ const styles = StyleSheet.create({
         // paddingtop:25
     },
     txtContent: {
+        alignSelf: 'flex-start',
+        width: 346,
         fontSize: 20,
         fontFamily: fontstyle.fontfamily_2,
         color: color.txt1,
         fontWeight: '300',
         marginTop: 20,
-        // marginLeft: 10,
+        marginHorizontal: 20,
         marginBottom: 10,
     },
 
@@ -203,17 +215,16 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10,
+        marginHorizontal: 18,
+        marginTop: 10,
         borderRadius: 100,
         elevation: 2,
     },
     secsion3: {
-        // justifyContent: 'center',
         width: 356,
         height: 200,
         backgroundColor: color.btn_color3,
         borderRadius: 10,
-        //elevation: 4,
     },
     listItem: {
         flexDirection: 'row',

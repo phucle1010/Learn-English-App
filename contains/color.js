@@ -1,6 +1,6 @@
 export default {
     btn_color1: '#5C4AC9',
-    btn_color2: '#FFDCDC',
+    btn_color2: '#FFE2E2',
     btn_color3: '#FFFFFF',
     btn_color4: '#FB6F43',
     btn_color5: '#F6F6F6',

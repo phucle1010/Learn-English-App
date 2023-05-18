@@ -2,87 +2,93 @@ import React from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Header from '../components/Header';
 
 const Account = () => {
     return (
-        <ScrollView style={styles.main}>
-            <View style={styles.container}>
-                {/* <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Tài khoản</Text>
-                </View> */}
-                <View style={styles.InfoContainer}>
-                    <Text style={styles.txtContent}>Thông tin tài khoản</Text>
-                    <View style={styles.wrapAccount}>
-                        <Image
-                            style={styles.imgAccount}
-                            source={{
-                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
-                            }}
-                        />
-                        <View style={styles.detailAccount}>
-                            <Text style={styles.txtAccount}> Nguyễn Văn A</Text>
-                            <Text style={styles.txtEmail}>nvana@gmail.com</Text>
+        <SafeAreaView style={styles.main}>
+            <Header />
+            <ScrollView style={styles.scrollContainer}>
+                <View style={styles.container}>
+                    <View style={styles.InfoContainer}>
+                        <Text style={styles.txtContent}>Thông tin tài khoản</Text>
+                        <View style={styles.wrapAccount}>
+                            <Image
+                                style={styles.imgAccount}
+                                source={{
+                                    uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
+                                }}
+                            />
+                            <View style={styles.detailAccount}>
+                                <Text style={styles.txtAccount}> Nguyễn Văn A</Text>
+                                <Text style={styles.txtEmail}>nvana@gmail.com</Text>
+                            </View>
+                            <TouchableOpacity>
+                                <Image style={styles.iconEdit} source={require('../sources/icons/edit.png')} />
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity>
-                            <Image style={styles.iconEdit} source={require('../sources/icons/edit.png')} />
+                        <TouchableOpacity style={styles.wrapbtn}>
+                            <Text style={styles.txtbtn}>Đăng xuất</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.wrapbtn}>
-                        <Text style={styles.txtbtn}>Đăng xuất</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.levelNowContainer}>
-                    <Text style={styles.txtContent}>Trình độ hiện tại</Text>
-                    <View style={styles.wraplevel}>
-                        <Text style={styles.txtlevel}>Trình độ</Text>
-                        <View style={styles.wrapAdd}>
-                            <Text style={styles.txtAdd}> Thêm </Text>
-                            <Image style={styles.arrowRight} source={require('../sources/icons/arrowright.png')} />
+                    <View style={styles.levelNowContainer}>
+                        <Text style={styles.txtContent}>Trình độ hiện tại</Text>
+                        <View style={styles.wraplevel}>
+                            <Text style={styles.txtlevel}>Trình độ</Text>
+                            <View style={styles.wrapAdd}>
+                                <Text style={styles.txtAdd}> Thêm </Text>
+                                <Image style={styles.arrowRight} source={require('../sources/icons/arrowright.png')} />
+                            </View>
                         </View>
                     </View>
+                    <View style={styles.wrapResetpass}>
+                        <Text style={styles.txtContent}>Cài đặt mật khẩu</Text>
+                        <TouchableOpacity style={styles.wrapbtn1}>
+                            <Text style={styles.txtbtn1}>Đặt lại</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.wrapContact}>
+                        <Text style={styles.txtContent}>Liên hệ</Text>
+                        <Text style={styles.txtContact}>Fanpage: Link mạng xã hội fanpage của ứng dụng</Text>
+                    </View>
+                    <View style={styles.wrapUserManual}>
+                        <Text style={styles.txtContent}>Hướng dẫn sử dụng</Text>
+                    </View>
+                    <View style={styles.wrapUserManual}>
+                        <Text style={styles.txtContent}>Điều khoản sử dụng</Text>
+                    </View>
+                    <View style={styles.wrapFeedback}>
+                        <Text style={styles.txtContent}>Phản hồi góp ý</Text>
+                        <TextInput style={styles.wrapDetailFeedback} placeholder="Bạn hãy điền nội dung góp ý ở đây" />
+                        <Text style={styles.txtFeedback}>
+                            Đóng góp của bạn sẽ giúp ứng dụng trở nên hoàn thiện hơn với trải nghiệm từ chính bạn{' '}
+                        </Text>
+                        <TouchableOpacity style={styles.wrapbtn1}>
+                            <Text style={styles.txtbtn1}>Gửi góp ý</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.wrapShare}>
+                        <Text style={styles.txtContent}>Chia sẻ ứng dụng</Text>
+                        <TouchableOpacity style={styles.wrapbtn1}>
+                            <Text style={styles.txtbtn1}>Chia sẻ</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={styles.wrapResetpass}>
-                    <Text style={styles.txtContent}>Cài đặt mật khẩu</Text>
-                    <TouchableOpacity style={styles.wrapbtn1}>
-                        <Text style={styles.txtbtn1}>Đặt lại</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.wrapContact}>
-                    <Text style={styles.txtContent}>Liên hệ</Text>
-                    <Text style={styles.txtContact}>Fanpage: Link mạng xã hội fanpage của ứng dụng</Text>
-                </View>
-                <View style={styles.wrapUserManual}>
-                    <Text style={styles.txtContent}>Hướng dẫn sử dụng</Text>
-                </View>
-                <View style={styles.wrapUserManual}>
-                    <Text style={styles.txtContent}>Điều khoản sử dụng</Text>
-                </View>
-                <View style={styles.wrapFeedback}>
-                    <Text style={styles.txtContent}>Phản hồi góp ý</Text>
-                    <TextInput style={styles.wrapDetailFeedback} placeholder="Bạn hãy điền nội dung góp ý ở đây" />
-                    <Text style={styles.txtFeedback}>
-                        Đóng góp của bạn sẽ giúp ứng dụng trở nên hoàn thiện hơn với trải nghiệm từ chính bạn{' '}
-                    </Text>
-                    <TouchableOpacity style={styles.wrapbtn1}>
-                        <Text style={styles.txtbtn1}>Gửi góp ý</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.wrapShare}>
-                    <Text style={styles.txtContent}>Chia sẻ ứng dụng</Text>
-                    <TouchableOpacity style={styles.wrapbtn1}>
-                        <Text style={styles.txtbtn1}>Chia sẻ</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     main: {
         backgroundColor: '#f6f6f6',
-        marginBottom: 100,
+        height: '100%',
+        paddingBottom: 80,
+    },
+    scrollContainer: {
+        marginTop: 1,
     },
     container: {
         flex: 1,

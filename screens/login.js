@@ -1,16 +1,24 @@
 import React from 'react';
-import { Text, StyleSheet, View, TextInput, Image, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import {
+    Text,
+    StyleSheet,
+    View,
+    TextInput,
+    Image,
+    TouchableOpacity,
+    TouchableNativeFeedback,
+    SafeAreaView,
+} from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 
 const Login = ({ navigation }) => {
     return (
-        <View style={styles.container}>
-            <View style={styles.headerBackground}></View>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.headerBackground}>
+                <Text style={styles.txthead}>Be Good At English</Text>
+            </View>
             <View style={styles.mainSection}>
-                <View>
-                    <Text style={styles.txthead}>ỨNG DỤNG HỌC TIẾNG ANH 'X'</Text>
-                </View>
                 <View>
                     <TextInput style={styles.email} placeholder="Email" />
                 </View>
@@ -43,7 +51,7 @@ const Login = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -51,27 +59,50 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         backgroundColor: '#fff',
         height: '100%',
     },
+    headerBackground: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: 250,
+        backgroundColor: '#FF8080',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        paddingTop: 50,
+        paddingHorizontal: 70,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
+    },
     mainSection: {
+        position: 'absolute',
+        top: 160,
+        left: 20,
+        right: 20,
+        backgroundColor: '#fff',
+        paddingVertical: 58,
+        paddingHorizontal: 20,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 20,
+        elevation: 4,
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_1,
         fontWeight: 600,
         fontSize: 30,
-        color: color.txt1,
+        color: color.txtbtn_color1,
         textAlign: 'center',
-        marginHorizontal: 68,
-        // marginTop: 140,
-        marginBottom: 50,
+        fontWeight: 'bold',
+        letterSpacing: 1,
     },
     email: {
-        width: 350,
+        width: 310,
         height: 46,
         borderRadius: 10,
         marginHorizontal: 19,
@@ -82,7 +113,7 @@ const styles = StyleSheet.create({
     },
     passcontainer: {
         flexDirection: 'row',
-        width: 350,
+        width: 310,
         height: 46,
         borderRadius: 10,
         marginHorizontal: 20,
@@ -102,7 +133,7 @@ const styles = StyleSheet.create({
     },
     btnlogin: {
         backgroundColor: color.btn_color1,
-        width: 350,
+        width: 310,
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',
@@ -111,7 +142,7 @@ const styles = StyleSheet.create({
     },
     btnloginGg: {
         backgroundColor: color.btn_color2,
-        width: 350,
+        width: 310,
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',

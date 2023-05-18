@@ -13,7 +13,7 @@ const BottomTab = () => {
 
     return (
         <Tab.Navigator
-            initialRouteName="Login"
+            initialRouteName="Home"
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: styles.container,
@@ -25,12 +25,13 @@ const BottomTab = () => {
         >
             {screens.map((screen, index) => {
                 let TabComp = null;
+                let MainScreen = screen.component;
                 if (screen.isHideNavigationTab) {
                     TabComp = (
                         <Tab.Screen
                             key={index}
                             name={screen.name}
-                            component={screen.component}
+                            component={MainScreen}
                             options={{
                                 tabBarStyle: {
                                     display: 'none',
@@ -58,7 +59,7 @@ const BottomTab = () => {
                         <Tab.Screen
                             key={index}
                             name={screen.name}
-                            component={screen.component}
+                            component={MainScreen}
                             options={{
                                 tabBarIcon: () => (
                                     <MaterialCommunityIcons
@@ -91,6 +92,8 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         height: 80,
         backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#efefef',
     },
 });
 

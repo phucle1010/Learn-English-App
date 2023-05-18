@@ -192,9 +192,9 @@ const styles = StyleSheet.create({
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 24,
         borderRadius: 10,
-        elevation: 5,
+        elevation: 4,
     },
     txtbtnSignup: {
         fontSize: 18,
