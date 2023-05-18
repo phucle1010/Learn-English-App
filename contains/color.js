@@ -17,6 +17,7 @@ export default {
     txt6: '#5C4AC9',
     txt7: '#B2B2B2',
     txt8: '#575757',
+    txtExtra: '#C4C4C4',
     bodercolor1: '#797979',
     bodercolor2: '#B2B2B2',
     bodercolor3: '#BEBEBE',

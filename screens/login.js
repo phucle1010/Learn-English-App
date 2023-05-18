@@ -1,20 +1,31 @@
 import React from 'react';
-import { Text, StyleSheet, View, TextInput, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import {
+    Text,
+    StyleSheet,
+    View,
+    TextInput,
+    Image,
+    TouchableOpacity,
+    SafeAreaView,
+    ImageBackground,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 
 const Login = ({ navigation }) => {
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.main}>
             <View style={styles.headerBackground}>
-                <Text style={styles.txthead}>Be Good At English</Text>
+                <Text style={styles.appName}>EFU</Text>
+                <Text style={styles.appType}>Ứng dụng học Tiếng Anh</Text>
             </View>
-            <View style={styles.mainSection}>
+            <View style={styles.container}>
                 <View>
                     <TextInput style={styles.email} placeholder="Email" />
                 </View>
                 <View style={styles.passcontainer}>
-                    <TextInput style={styles.password} placeholder="Mật khẩu" />
+                    <TextInput style={styles.password} placeholder="Mật khẩu" secureTextEntry={true} />
                     <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
                 </View>
                 <View>
@@ -22,17 +33,7 @@ const Login = ({ navigation }) => {
                         <Text style={styles.txtbtn}>Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>
-                <View>
-                    <TouchableOpacity>
-                        <Text style={styles.txt1}>Quên mật khẩu</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.signUpContainer}>
-                    <Text style={styles.txt2}>Chưa có tài khoản?</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                        <Text style={styles.txt1}> Đăng ký tại đây</Text>
-                    </TouchableOpacity>
-                </View>
+
                 <View>
                     <Text style={styles.txtline}> ──────── Hoặc ────────</Text>
                 </View>
@@ -41,16 +42,24 @@ const Login = ({ navigation }) => {
                         <Text style={styles.txtbtngg}>Đăng nhập bằng Google</Text>
                     </TouchableOpacity>
                 </View>
+                <TouchableOpacity style={styles.resetPassContainer}>
+                    <Text style={styles.txtResetPass}>Quên mật khẩu</Text>
+                </TouchableOpacity>
+                <View style={styles.signUpContainer}>
+                    <Text style={styles.txt2}>Chưa có tài khoản?</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                        <Text style={styles.txt1}> Đăng ký tại đây</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    main: {
         flexDirection: 'column',
         alignItems: 'center',
-        // justifyContent: 'center',
         backgroundColor: '#fff',
         height: '100%',
     },
@@ -61,15 +70,29 @@ const styles = StyleSheet.create({
         right: 0,
         width: '100%',
         height: 250,
-        backgroundColor: '#FF8080',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        paddingTop: 50,
-        paddingHorizontal: 70,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        backgroundColor: '#FF77A0',
+        paddingTop: 40,
+        paddingHorizontal: 50,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
     },
-    mainSection: {
+    appName: {
+        fontFamily: fontstyle.fontfamily_1,
+        fontWeight: 600,
+        fontSize: 40,
+        color: color.txtbtn_color1,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        letterSpacing: 10,
+    },
+    appType: {
+        textAlign: 'center',
+        fontSize: 20,
+        color: '#fff',
+        letterSpacing: 2,
+        fontWeight: 400,
+    },
+    container: {
         position: 'absolute',
         top: 160,
         left: 20,
@@ -83,39 +106,31 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         elevation: 4,
     },
-    txthead: {
-        fontFamily: fontstyle.fontfamily_1,
-        fontWeight: 600,
-        fontSize: 30,
-        color: color.txtbtn_color1,
-        textAlign: 'center',
-        fontWeight: 'bold',
-        letterSpacing: 1,
-    },
     email: {
         width: 310,
         height: 46,
-        borderRadius: 10,
         marginHorizontal: 19,
         marginBottom: 20,
-        padding: 10,
+        padding: 6,
         borderWidth: 1,
-        borderColor: color.bodercolor1,
+        borderColor: 'transparent',
+        borderBottomColor: color.bodercolor3,
     },
     passcontainer: {
         flexDirection: 'row',
         width: 310,
         height: 46,
-        borderRadius: 10,
         marginHorizontal: 20,
         marginBottom: 10,
         borderWidth: 1,
-        borderColor: color.bodercolor1,
+        borderColor: 'transparent',
+        borderBottomColor: color.bodercolor3,
         alignItems: 'center',
     },
     password: {
         flex: 1,
-        paddingHorizontal: 10,
+        paddingLeft: 6,
+        paddingRight: 50,
     },
     icon: {
         width: 24,
@@ -128,7 +143,7 @@ const styles = StyleSheet.create({
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 10,
         borderRadius: 10,
     },
     btnloginGg: {
@@ -137,7 +152,6 @@ const styles = StyleSheet.create({
         height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 30,
         borderRadius: 10,
     },
     txtbtn: {
@@ -152,14 +166,23 @@ const styles = StyleSheet.create({
         fontFamily: fontstyle.fontfamily_2,
         color: color.txtbtn_gg,
     },
-    txt1: {
-        marginTop: 15,
+    resetPassContainer: {
+        marginVertical: 10,
+        marginTop: 30,
+    },
+    txtResetPass: {
         fontFamily: color.txt2,
         fontSize: 16,
         color: color.txt3,
+        fontWeight: 700,
+    },
+    txt1: {
+        fontFamily: color.txt2,
+        fontSize: 16,
+        color: color.txt3,
+        fontWeight: 700,
     },
     txt2: {
-        marginTop: 15,
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 16,
         color: color.txt4,
@@ -168,8 +191,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     txtline: {
-        marginTop: 15,
-        color: color.bodercolor1,
+        marginVertical: 15,
+        color: color.txtExtra,
     },
 });
 

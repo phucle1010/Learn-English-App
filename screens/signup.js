@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
-import { Text, StyleSheet, View, Image, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import {
+    Text,
+    StyleSheet,
+    ImageBackground,
+    View,
+    Image,
+    TextInput,
+    Button,
+    TouchableOpacity,
+    Alert,
+} from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import db, { auth } from '../firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Signup = ({ navigation }) => {
     const initUser = {
@@ -58,119 +69,158 @@ const Signup = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View>
-                <Image style={styles.image} source={require('../sources/images/sign-language-conversation.png')} />
-            </View>
-            <Text style={styles.text}>Đăng ký</Text>
-            <View>
-                <TextInput
-                    style={styles.txtInput}
-                    defaultValue={userInfo.email}
-                    placeholder="Email"
-                    onChangeText={(email) =>
-                        setUserInfo((prevUser) => {
-                            return {
-                                ...prevUser,
-                                email,
-                            };
-                        })
-                    }
-                />
-                <TextInput
-                    style={styles.txtInput}
-                    defaultValue={userInfo.full_name}
-                    placeholder="Họ và tên"
-                    spellCheck={false}
-                    onChangeText={(full_name) =>
-                        setUserInfo((prevUser) => {
-                            return {
-                                ...prevUser,
-                                full_name,
-                            };
-                        })
-                    }
-                />
-            </View>
-            <View style={styles.passcontainer}>
-                <TextInput
-                    style={styles.password}
-                    defaultValue={userInfo.password}
-                    placeholder="Mật khẩu"
-                    secureTextEntry={true}
-                    onChangeText={(password) =>
-                        setUserInfo((prevUser) => {
-                            return {
-                                ...prevUser,
-                                password,
-                            };
-                        })
-                    }
-                />
-                <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
-            </View>
-            {/* <View style={styles.passcontainer}>
-                <TextInput style={styles.password} placeholder="Xác nhận mật khẩu" />
-                <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
-            </View> */}
-            <View>
-                <TouchableOpacity style={styles.btnsignup} onPress={handleSignUp}>
-                    <Text style={styles.txtbtnSignup}>Đăng ký</Text>
+        <SafeAreaView style={styles.main}>
+            <ImageBackground
+                style={styles.headerBackground}
+                source={require('../sources/images/signup-background.png')}
+            >
+                <Text style={styles.appName}>EFU</Text>
+            </ImageBackground>
+            <View style={styles.container}>
+                <Text style={styles.headingSignup}>TẠO TÀI KHOẢN MỚI</Text>
+                <Text style={styles.subHeading}>Đăng ký để tiếp tục</Text>
+                <View>
+                    <TextInput
+                        style={styles.txtInput}
+                        defaultValue={userInfo.email}
+                        placeholder="Email"
+                        onChangeText={(email) =>
+                            setUserInfo((prevUser) => {
+                                return {
+                                    ...prevUser,
+                                    email,
+                                };
+                            })
+                        }
+                    />
+                    <TextInput
+                        style={styles.txtInput}
+                        defaultValue={userInfo.full_name}
+                        placeholder="Họ và tên"
+                        spellCheck={false}
+                        onChangeText={(full_name) =>
+                            setUserInfo((prevUser) => {
+                                return {
+                                    ...prevUser,
+                                    full_name,
+                                };
+                            })
+                        }
+                    />
+                </View>
+                <View style={styles.passcontainer}>
+                    <TextInput
+                        style={styles.password}
+                        defaultValue={userInfo.password}
+                        placeholder="Mật khẩu"
+                        secureTextEntry={true}
+                        onChangeText={(password) =>
+                            setUserInfo((prevUser) => {
+                                return {
+                                    ...prevUser,
+                                    password,
+                                };
+                            })
+                        }
+                    />
+                    <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
+                </View>
+                <View>
+                    <TouchableOpacity style={styles.btnsignup} onPress={handleSignUp}>
+                        <Text style={styles.txtbtnSignup}>Đăng ký</Text>
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.returnSigninContainer} onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.txtReturnSignin}>Quay về đăng nhập tại đây</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.elevation}>
-                <TouchableOpacity style={styles.btnreturn} onPress={() => navigation.navigate('Login')}>
-                    <Text style={styles.txtbtnReturn}>Trở về đăng nhập</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#ffff',
+    main: {
+        height: '100%',
+        backgroundColor: '#fff',
     },
-    text: {
+    headerBackground: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        paddingTop: 100,
+    },
+    appName: {
+        fontFamily: fontstyle.fontfamily_1,
+        fontWeight: 600,
+        fontSize: 40,
+        color: color.txtbtn_color1,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        letterSpacing: 10,
+    },
+    container: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#fff',
+        paddingBottom: 58,
+        paddingTop: 110,
+        paddingHorizontal: 20,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+    },
+    headingSignup: {
+        position: 'absolute',
+        top: 25,
+        left: 40,
         fontFamily: fontstyle.fontfamily_1,
         fontWeight: 'bold',
-        fontSize: 30,
-        color: 'black',
-        textAlign: 'left',
-        marginTop: 20,
-        marginBottom: 30,
+        fontSize: 24,
+        color: '#5c5c5c',
     },
-    image: {
-        marginTop: 30,
-        width: 289,
-        height: 170,
+    subHeading: {
+        position: 'absolute',
+        top: 65,
+        left: 40,
+        fontFamily: fontstyle.fontfamily_1,
+        fontWeight: 400,
+        fontStyle: 'italic',
+        color: '#797979',
     },
     txtInput: {
-        width: 350,
+        width: 310,
         height: 46,
-        borderRadius: 10,
-        marginHorizontal: 19,
+        marginHorizontal: 20,
         marginBottom: 20,
-        padding: 10,
+        padding: 6,
         borderWidth: 1,
-        borderColor: color.bodercolor1,
+        borderColor: 'transparent',
+        borderBottomColor: color.bodercolor3,
     },
     passcontainer: {
         flexDirection: 'row',
-        width: 350,
+        width: 310,
         height: 46,
-        borderRadius: 10,
         marginHorizontal: 20,
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: color.bodercolor1,
+        borderColor: 'transparent',
+        borderBottomColor: color.bodercolor3,
         alignItems: 'center',
     },
     password: {
         flex: 1,
-        paddingHorizontal: 10,
+        paddingLeft: 6,
+        paddingRight: 50,
     },
     icon: {
         width: 24,
@@ -179,34 +229,27 @@ const styles = StyleSheet.create({
     },
     btnsignup: {
         backgroundColor: color.btn_color1,
-        width: 346,
+        width: 310,
         height: 46,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 30,
         borderRadius: 10,
-    },
-    btnreturn: {
-        backgroundColor: color.btn_color3,
-        width: 350,
-        height: 42,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 24,
-        borderRadius: 10,
-        elevation: 4,
     },
     txtbtnSignup: {
         fontSize: 18,
         fontWeight: 300,
-        fontFamily: fontstyle.fontfamily_2,
+        fontFamily: fontstyle.fontfamily_1,
         color: color.txtbtn_color1,
     },
-    txtbtnReturn: {
-        fontSize: 18,
-        fontWeight: 300,
-        fontFamily: fontstyle.fontfamily_2,
-        color: color.txtbtn_color2,
+    returnSigninContainer: {
+        marginTop: 20,
+    },
+    txtReturnSignin: {
+        fontFamily: color.txt2,
+        fontSize: 16,
+        color: color.txt3,
+        fontWeight: 700,
     },
 });
 
