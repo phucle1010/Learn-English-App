@@ -1,12 +1,28 @@
 import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TextInput } from 'react-native';
+import {
+    Text,
+    StyleSheet,
+    View,
+    ScrollView,
+    Image,
+    TouchableOpacity,
+    TextInput,
+    SafeAreaView,
+    Alert,
+} from 'react-native';
+import { signOut } from 'firebase/auth';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Header from '../components/Header';
 
 const Account = () => {
+    const handleSignOut = async () => {
+        await signOut()
+            .then(() => Alert.alert('Thông báo', 'Đăng xuất thành công'))
+            .catch((err) => Alert.alert('Lỗi', err));
+    };
+
     return (
         <SafeAreaView style={styles.main}>
             <Header />
@@ -29,7 +45,7 @@ const Account = () => {
                                 <Image style={styles.iconEdit} source={require('../sources/icons/edit.png')} />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.wrapbtn}>
+                        <TouchableOpacity style={styles.wrapbtn} onPress={handleSignOut}>
                             <Text style={styles.txtbtn}>Đăng xuất</Text>
                         </TouchableOpacity>
                     </View>
