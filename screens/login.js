@@ -42,7 +42,7 @@ const Login = ({ navigation }) => {
                         <Text style={styles.txtbtngg}>Đăng nhập bằng Google</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.resetPassContainer}>
+                <TouchableOpacity style={styles.resetPassContainer} onPress={() => navigation.navigate('VerifyPhoneNumber')}>
                     <Text style={styles.txtResetPass}>Quên mật khẩu</Text>
                 </TouchableOpacity>
                 <View style={styles.signUpContainer}>

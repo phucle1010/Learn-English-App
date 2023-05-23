@@ -259,6 +259,26 @@ const screens = [
         isHideTab: true,
         isHideNavigationTab: true,
     },
+    {
+        name: 'SettingNewPassword',
+        component: SettingNewPassword,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
+    {
+        name: 'VerifyPhoneNumber',
+        component: VerifyPhoneNumber,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
 ];
 
 export default screens;

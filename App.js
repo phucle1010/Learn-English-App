@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import BottomTab from './components/BottomTab';
 import store from './store';
+import SettingNewPassword from './screens/settingNewPassword';
 
 const App = () => {
     return (
