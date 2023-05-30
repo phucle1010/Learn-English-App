@@ -1,262 +1,231 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+    Dimensions,
+    Text,
+    StyleSheet,
+    View,
+    ScrollView,
+    Image,
+    TextInput,
+    TouchableOpacity,
+    Button,
+    FlatList,
+} from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 
-const News = () => {
+const Article = ({ article, navigation }) => {
+    const formatDate = (date) => {
+        const convertedDate = new Date(Date.parse(date));
+        return `${convertedDate.getDate()}-${convertedDate.getMonth() + 1}-${convertedDate.getUTCFullYear()}`;
+    };
+
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Tin tức</Text>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Công nghệ</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Thể thao</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Du lịch</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Kinh Doanh</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Giải trí</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Giáo dục</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}> Xã hội</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.toppiccontainer}>
-                    <Text style={styles.txttoppic}>Khoa học</Text>
-                    <TouchableOpacity style>
-                        <Text style={styles.txtseenmore}>Xem thêm</Text>
-                    </TouchableOpacity>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.wrapItems}>
-                        <Image style={styles.img} source={require('../sources/images/toppic.png')} />
-                        <Text style={styles.txtimg}>Tiêu đề chính</Text>
-                        <TouchableOpacity style={styles.btnView}>
-                            <Text style={styles.txtbtnView}>Xem ngay</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+        <View style={styles.articleContainer}>
+            <Text style={styles.title}>{article.title}</Text>
+            <View style={styles.extraInfo}>
+                {/* {article.creator.length > 0 &&
+                    article.creator.map((author, index) => (
+                        <Text key={index} style={styles.author}>
+                            {author}
+                        </Text>
+                    ))} */}
+                <Text style={styles.publishDate}>{formatDate(article.pubDate)}</Text>
             </View>
-        </ScrollView>
+            <Image
+                style={styles.img}
+                source={{
+                    uri:
+                        article.image_url ||
+                        'https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg',
+                }}
+            />
+            <Text style={styles.description}>{article.description}</Text>
+            <TouchableOpacity
+                style={styles.btnView}
+                onPress={() =>
+                    navigation.navigate('ReadNews', {
+                        article,
+                    })
+                }
+            >
+                <Text style={styles.textView}>Đọc ngay</Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+const News = ({ navigation }) => {
+    const readmoreButtonWidth = 130;
+    const currentScreenWidth = Dimensions.get('window').width;
+    const initNumberOfShowedArticles = 20;
+    const [numberOfArticles, setNumberOfArticles] = useState(initNumberOfShowedArticles);
+    const [allArticles, setAllArticles] = useState([]);
+    const [currentArticles, setCurrentArticles] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+
+    const getAllArticles = async () => {
+        await fetch('https://newsdata.io/api/1/news?apikey=pub_237396fdcca083c8aa3d48ccd8eb2f4737127&country=us', {
+            method: 'GET',
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setAllArticles(data.results);
+                setLoaded(true);
+            })
+            .catch((err) => console.log(err));
+    };
+
+    useEffect(() => {
+        getAllArticles();
+    }, []);
+
+    // const getCurrentArticles = () => {
+    //     const temporaryArticles = [];
+    //     for (let i = 0; i < numberOfArticles; i++) {
+    //         temporaryArticles.push(allArticles[i]);
+    //     }
+    //     setCurrentArticles(temporaryArticles);
+    //     setLoaded(true);
+    // };
+
+    // useEffect(() => {
+    //     if (allArticles.length > 0 && numberOfArticles >= initNumberOfShowedArticles) {
+    //         getCurrentArticles();
+    //     }
+    // }, [allArticles]);
+
+    return (
+        <React.Fragment>
+            {loaded ? (
+                <View style={styles.container}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Home')}
+                        style={{
+                            width: 30,
+                            height: 30,
+                            position: 'absolute',
+                            top: 25,
+                            left: 30,
+                            zIndex: 100,
+                        }}
+                    >
+                        <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                    </TouchableOpacity>
+                    <View style={styles.headcontainer}>
+                        <Text style={styles.txthead}>Tin tức</Text>
+                    </View>
+                    <ScrollView>
+                        {allArticles.length > 0 &&
+                            allArticles.map((item, index) => (
+                                <Article article={item} key={index} navigation={navigation} />
+                            ))}
+                        <TouchableOpacity
+                            style={{
+                                marginTop: 20,
+                                marginBottom: 20,
+                                marginHorizontal: (currentScreenWidth - readmoreButtonWidth) / 2,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 130,
+                                paddingHorizontal: 20,
+                                paddingVertical: 8,
+                                borderRadius: 5,
+                                backgroundColor: '#5C4AC9',
+                            }}
+                            onPress={() => setNumberOfArticles((prev) => prev + 5)}
+                        >
+                            <Text style={{ color: '#fff', fontSize: 18 }}>Xem thêm</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+            ) : (
+                <View
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
+                </View>
+            )}
+        </React.Fragment>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
+        backgroundColor: '#ffff',
+        paddingBottom: 80,
     },
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
+        elevation: 10,
     },
     imgreturn: {
-        width: 30,
-        height: 30,
-        marginLeft: 38,
+        width: '100%',
+        height: '100%',
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
+        color: color.txt5,
     },
-    toppiccontainer: {
+    articleContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        width: 346,
-        height: 294,
-        paddingHorizontal: 20,
+        width: '100%',
+        paddingHorizontal: 30,
         backgroundColor: color.btn_color3,
         justifyContent: 'space-between',
-        borderRadius: 10,
-        marginTop: 20,
+        marginTop: 10,
         elevation: 1,
     },
-    txttoppic: {
-        fontSize: 20,
+    title: {
+        fontSize: 22,
         fontFamily: fontstyle.fontfamily_2,
         color: color.txt4,
         fontWeight: 'bold',
         paddingTop: 10,
-        paddingLeft: 20,
+        textAlign: 'justify',
     },
-    txtseenmore: {
-        fontSize: 16,
-        fontFamily: fontstyle.fontfamily_2,
-        color: color.btn_color4,
-        paddingTop: 12,
-        marginHorizontal: 20,
+    extraInfo: {
+        width: '100%',
+        flexDirection: 'row',
+        marginBottom: 20,
     },
-    wrapItems: {
-        width: 138,
-        height: 213,
-        backgroundColor: color.btn_color3,
-        marginTop: 10,
-        alignItems: 'center',
-        borderRadius: 15,
-        elevation: 2,
+    author: {
+        fontSize: 15,
+        maxWidth: 250,
+        marginRight: 50,
     },
-    btnView: {
-        backgroundColor: color.btn_color1,
-        width: 114,
-        height: 31,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 9,
-        borderRadius: 30,
+    publishDate: {
+        fontStyle: 'italic',
+        fontSize: 15,
     },
     img: {
-        width: 110,
-        height: 110,
+        width: '100%',
+        height: 180,
         padding: 20,
-        marginTop: 15,
+        borderRadius: 10,
     },
-    txtimg: {
-        fontSize: 15,
-        fontWeight: 400,
-        fontFamily: fontstyle.fontfamily_1,
-        color: color.txt4,
+    descContainer: {
+        width: 220,
+        marginRight: 10,
+    },
+    description: {
         marginTop: 10,
-        marginBottom: 8,
+        width: '100%',
+        fontSize: 17,
     },
     btnreturn: {
         backgroundColor: color.btn_color3,
@@ -268,11 +237,17 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         elevation: 5,
     },
-    txtbtnView: {
-        fontSize: 14,
-        fontWeight: 300,
-        fontFamily: fontstyle.fontfamily_2,
-        color: color.txtbtn_color1,
+    btnView: {
+        marginTop: 20,
+        marginBottom: 20,
+        backgroundColor: '#FB6F43',
+        paddingHorizontal: 20,
+        paddingVertical: 8,
+        borderRadius: 5,
+    },
+    textView: {
+        color: '#fff',
+        fontSize: 15,
     },
 });
 

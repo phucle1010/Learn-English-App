@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, Image, TextInput, TouchableOpacity } from 'reac
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 
-const VerifyPhoneNumber = () => {
+const VerifyEmail = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View>
@@ -16,7 +16,7 @@ const VerifyPhoneNumber = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.elevation}>
-                <TouchableOpacity style={styles.btnreturn}>
+                <TouchableOpacity style={styles.btnreturn} onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.txtbtnReturn}>Trở về đăng nhập</Text>
                 </TouchableOpacity>
             </View>
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default VerifyPhoneNumber;
+export default VerifyEmail;

@@ -4,19 +4,27 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 
-const DetailReadBook = () => {
+const DetailReadBook = ({ navigation, route }) => {
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Đọc sách</Text>
-                </View>
-                <View style={styles.bookcontainer}>
-                    <Text>Nội dung sách chèn file fdf</Text>
-                </View>
+        <View style={styles.container}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('Books')}
+                style={{
+                    width: 30,
+                    height: 30,
+                    position: 'absolute',
+                    top: 25,
+                    left: 30,
+                    zIndex: 100,
+                }}
+            >
+                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+            </TouchableOpacity>
+            <View style={styles.headcontainer}>
+                <Text style={styles.txthead}>Đọc sách</Text>
             </View>
-        </ScrollView>
+            <View>Nội dung sách</View>
+        </View>
     );
 };
 
@@ -28,34 +36,35 @@ const styles = StyleSheet.create({
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
+        elevation: 10,
     },
     imgreturn: {
-        width: 30,
-        height: 30,
-        marginLeft: 38,
+        width: '100%',
+        height: '100%',
+        // marginLeft: 38,
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
         color: color.txt5,
     },
 
-    bookcontainer: {
-        width: 346,
-        height: 603,
-        // paddingHorizontal: 20,
-        backgroundColor: color.btn_color3,
-        //justifyContent: 'space-between',
-        borderRadius: 10,
-        marginTop: 18,
-        marginBottom: 10,
-        elevation: 2,
-        alignItems: 'center',
-    },
+    // bookcontainer: {
+    //     width: 360,
+    //     height: 603,
+    //     // paddingHorizontal: 20,
+    //     backgroundColor: color.btn_color3,
+    //     //justifyContent: 'space-between',
+    //     borderRadius: 10,
+    //     marginTop: 18,
+    //     marginBottom: 10,
+    //     elevation: 2,
+    //     alignItems: 'center',
+    // },
 });
 
 export default DetailReadBook;

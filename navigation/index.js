@@ -20,7 +20,7 @@ import SearchWord from '../screens/searchWord';
 import Signup from '../screens/signup';
 import Test from '../screens/test';
 import TestResult from '../screens/testResult';
-import VerifyPhoneNumber from '../screens/verifyPhoneNumber';
+import VerifyEmail from '../screens/verifyEmail';
 import VerifyOTP from '../screens/verifyOTP';
 import SettingNewPassword from '../screens/settingNewPassword';
 import Videos from '../screens/videos';
@@ -77,7 +77,7 @@ const screens = [
         tabIconColor: '#faa0a0',
         activeColor: '#ee4b2b',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'ReadNews',
@@ -87,7 +87,7 @@ const screens = [
         tabIconColor: '#faa0a0',
         activeColor: '#ee4b2b',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailNews',
@@ -252,6 +252,16 @@ const screens = [
     {
         name: 'Welcome',
         component: Welcome,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
+    {
+        name: 'VerifyEmail',
+        component: VerifyEmail,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',

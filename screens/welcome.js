@@ -8,7 +8,7 @@ const Welcome = () => {
         <View style={styles.container}>
             <View>
                 <Image style={styles.image} source={require('../sources/images/background.png')} />
-                <Text style={styles.text}>Chào mừng bạn đến với ứng dụng học tiếng anh'x'</Text>
+                <Text style={styles.text}>Chào mừng bạn đến với Ứng dụng học tiếng anh EFU</Text>
             </View>
             <View>
                 <TouchableOpacity style={styles.btn}>
@@ -23,14 +23,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        backgroundColor: '#fff',
     },
     text: {
         fontFamily: fontstyle.fontfamily_1,
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 24,
         color: '#7B78FF',
         textAlign: 'center',
-        marginHorizontal: 50,
+        marginHorizontal: 30,
         marginTop: 30,
     },
     image: {

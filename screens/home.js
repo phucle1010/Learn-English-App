@@ -5,7 +5,7 @@ import fontstyle from '../contains/fontStyle';
 
 import Header from '../components/Header';
 
-const Home = () => {
+const Home = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.main}>
             <Header />
@@ -46,7 +46,7 @@ const Home = () => {
                     <Text style={styles.txtContent}>Khám phá</Text>
                     <View style={styles.secsion3}>
                         <View style={styles.listItem}>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
                                 <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
                                 <Text style={styles.txtimgItem}>Tin tức</Text>
                             </TouchableOpacity>
