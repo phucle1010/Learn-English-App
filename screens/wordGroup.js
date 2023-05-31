@@ -1,106 +1,112 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
+import WordGroupItem from '../components/WordGroupItem';
+import Lottie from 'lottie-react-native';
+import { doc, getDoc, db, getDocs, collection } from '../firebase/index';
+const WordGroup = (props) => {
+    const { navigation } = props
+    const [dataTopic, setDataTopic] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+        try {
+            const handleGetTopic = async () => {
+                const querySnapshot = await getDocs(collection(db, "TOPIC"));
+                const newData = []
+                querySnapshot.forEach((doc) => {
+                    const docData = doc.data();
+                    const dataWithId = { ...docData, id: doc.id };
+                    newData.push(dataWithId);
+                });
+                setDataTopic(newData)
+            }
+            handleGetTopic();
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 2000)
+        }
+    }, [])
 
-const WordGroup = () => {
+    const handlePressTopic = (item) => {
+        navigation.navigate('DetailWordGroup', { item })
+    }
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Bộ từ vựng</Text>
-                </View>
-                <View
-                    style={{
-                        width: 330,
-                        alignItems: 'flex-start',
-                    }}
-                >
-                    <Text style={styles.txtwordGroup}>Bộ từ vựng</Text>
-                </View>
-
-                <View style={styles.wordGroupContainer}>
-                    <TouchableOpacity style={styles.wrapWordGroup}>
-                        <Image style={styles.img} source={require('../sources/images/school.png')} />
-                        <Text style={styles.txtimg}>Trung học phổ thông</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.wrapWordGroup}>
-                        <Image style={styles.img} source={require('../sources/images/Toeic.png')} />
-                        <Text style={styles.txtimg}>TOEIC</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.wrapWordGroup}>
-                        <Image style={styles.img} source={require('../sources/images/IETLS.png')} />
-                        <Text style={styles.txtimg}>IELTS</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.wrapWordGroup}>
-                        <Image style={styles.img} source={require('../sources/images/child.png')} />
-                        <Text style={styles.txtimg}>Trẻ em</Text>
-                    </TouchableOpacity>
+        <View style={styles.container}>
+            <View style={styles.headcontainer}>
+                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                <Text style={styles.txthead}>Bộ từ vựng</Text>
+                <View></View>
+            </View>
+            <View style={styles.content}>
+                <Text style={styles.txtwordGroup}>Bộ từ vựng</Text>
+                <View>
+                    {isLoading
+                        ? <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                            <Lottie
+                                source={{ uri: 'https://assets5.lottiefiles.com/packages/lf20_p8bfn5to.json' }}
+                                autoPlay
+                                loop
+                            />
+                        </View>
+                        : <FlatList
+                            data={dataTopic}
+                            renderItem={({ item }) => <WordGroupItem
+                                onPress={() => handlePressTopic(item)}
+                                uri={item.uri}
+                                name={item.name} />}
+                            numColumns={2}
+                            keyExtractor={item => item.id}
+                        />}
                 </View>
             </View>
-        </ScrollView>
+
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        backgroundColor: '#EEEEEE',
     },
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
-        width: 390,
+        justifyContent: 'space-between',
+        paddingHorizontal: 38
     },
     imgreturn: {
         width: 30,
         height: 30,
-        marginLeft: 38,
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
+        color: '#BEBEBE'
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 11,
+        marginBottom: 145
     },
     txtwordGroup: {
         fontSize: 20,
         fontFamily: fontStyle.fontfamily_2,
         fontWeight: 'bold',
         color: color.txt4,
-        marginTop: 30,
+        marginVertical: 20,
+        paddingLeft: 11
     },
-    wordGroupContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-    },
-    wrapWordGroup: {
-        width: 150,
-        height: 150,
-        backgroundColor: color.btn_color3,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 2,
-        marginHorizontal: 20,
-        marginTop: 20,
-    },
-    img: {
-        width: 67,
-        height: 67,
-        paddingTop: 10,
-    },
-    txtimg: {
-        fontSize: 16,
-        fontFamily: fontStyle.fontfamily_2,
-        paddingTop: 10,
-        paddingHorizontal: 10,
-        textAlign: 'center',
-    },
+
 });
 
 export default WordGroup;

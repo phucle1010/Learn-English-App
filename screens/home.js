@@ -5,7 +5,8 @@ import fontstyle from '../contains/fontStyle';
 
 import Header from '../components/Header';
 
-const Home = () => {
+const Home = (props) => {
+    const { navigation } = props
     return (
         <SafeAreaView style={styles.main}>
             <Header />
@@ -61,7 +62,7 @@ const Home = () => {
                                 <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
                                 <Text style={styles.txtimgItem}>Đọc sách</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity onPress={() => navigation.navigate("WordGroup")} style={styles.wrapItems}>
                                 <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
                                 <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
                             </TouchableOpacity>
