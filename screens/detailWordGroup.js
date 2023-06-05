@@ -55,6 +55,7 @@ const DetailWordGroup = (props) => {
         })
     }
     const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
+
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>

@@ -1,43 +1,178 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
-    Dimensions,
-    Alert,
     Text,
     StyleSheet,
     View,
     ScrollView,
     Image,
     TouchableOpacity,
-    TouchableHighlight,
+    TextInput,
+    Dimensions,
+    Alert
 } from 'react-native';
-import { jsdom } from 'jsdom-jscore-rn';
-import { Readability } from '@mozilla/readability';
-import { WebView } from 'react-native-webview';
+import { getDocs, collection } from 'firebase/firestore';
+import db from '../firebase';
+import Icon from 'react-native-vector-icons/Ionicons'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
-import fontStyle from '../contains/fontStyle';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import Sound from 'react-native-sound'
+
+const width = Dimensions.get('window').width;
+
+const WordModal = ({ searchedword }) => {
+    Sound.setCategory('Playback', true);
+
+    const playSound = () => {
+        const sound = searchedword.phonetics[0].audio;
+        const whoosh = new Sound(sound, Sound.MAIN_BUNDLE, (err) => {
+            if (err) {
+                Alert.error("Error when access voice", err.toString());
+            }
+            whoosh.setVolume(2);
+            whoosh.play()
+        })
+    }
+
+    return (
+        <View style={{
+            marginTop: 10,
+            paddingHorizontal: 20,
+        }}>
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}>
+                <Text style={{
+                    fontFamily: 'Poppins',
+                    fontStyle: 'normal',
+                    fontWeight: 'bold',
+                    fontSize: 28,
+                }}>
+                    {searchedword.word.replace(searchedword.word[0], searchedword.word[0].toUpperCase())}
+                </Text>
+                <TouchableOpacity style={{
+                    width: 135,
+                    height: 36,
+                    backgroundColor: '#FB6F43',
+                    borderRadius: 30,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <Text style={{
+                        color: '#fff',
+                        fontSize: 16,
+
+                    }}>Lưu từ vựng</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{
+                marginTop: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}>
+                <Text style={{
+                    fontFamily: 'Poppins',
+                    fontStyle: 'normal',
+                    fontWeight: 300,
+                    fontSize: 20
+                }}>{searchedword.phonetic}</Text>
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginRight: 20,
+                    }}>
+                        <Text style={{
+                            fontFamily: 'Poppins',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                            marginRight: 3,
+                        }}>UK</Text>
+                        <TouchableOpacity onPress={playSound}>
+                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}>
+                        <Text style={{
+                            fontFamily: 'Poppins',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                            marginRight: 3,
+                        }}>US</Text>
+                        <TouchableOpacity onPress={playSound}>
+                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+            <Text style={{
+                marginTop: 10,
+                fontFamily: 'Poppins',
+                fontStyle: 'normal',
+                fontWeight: 'bold',
+                fontSize: 20,
+            }}>Nghĩa của từ</Text>
+            <View style={{
+                marginTop: 10,
+            }}>
+                {
+                    searchedword.meaning.map((type, index) => (
+                        <View key={index}>
+                            <Text style={{
+                                marginRight: 10,
+                                paddingHorizontal: 10,
+                                paddingVertical: 3,
+                                alignSelf: 'flex-start',
+                                backgroundColor: '#ffff',
+                                color: '#bebebe',
+                                borderRadius: 20,
+                                borderWidth: 1,
+                                borderColor: '#bebebe',
+                                fontSize: 16
+                            }}>{type.partOfSpeech}</Text>
+                            <Text style={{
+                                marginTop: 8,
+                                marginBottom: 20,
+                                paddingLeft: 10,
+                                fontSize: 16
+                            }}>{type.definitions[0]}</Text>
+                        </View>
+                    ))
+                }
+            </View>
+
+        </View>
+    )
+
+}
 
 const ReadNews = ({ navigation, route }) => {
-    // const currentWidth = Dimensions.get('window').width;
     const { article } = route.params;
-    const [book, setBook] = useState({});
-    const [selectedText, setSelectedText] = useState('');
+    const [search, setSearch] = useState('');
+    const [searchedWordData, setSearchedWordData] = useState({});
+    const [showedWordModal, setShownWordModal] = useState(false);
 
-    const handleTextLongPress = () => {
-        const selectedText = textRef.current?.value;
-        console.log(selectedText);
+    const handleSearchWord = async () => {
+        const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().word === search.toLowerCase()) {
+                setSearchedWordData(doc.data())
+                setShownWordModal(true)
+            }
+        });
     };
 
-    const textRef = useRef(null);
-
-    // useEffect(() => {
-    //     fetch('https://www.googleapis.com/books/v1/volumes?q=quilting', {
-    //         method: 'GET',
-    //     })
-    //         .then((res) => res.json())
-    //         .then((data) => setBook(data.items[0]))
-    //         .catch((err) => console.log(err));
-    // }, []);
+    const snapPoints = useMemo(() => ['45%', '70%'], []);
 
     const formatDate = (date) => {
         const convertedDate = new Date(Date.parse(date));
@@ -45,82 +180,86 @@ const ReadNews = ({ navigation, route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity
-                onPress={() => navigation.navigate('News')}
-                style={{
-                    width: 30,
-                    height: 30,
-                    position: 'absolute',
-                    top: 25,
-                    left: 30,
-                    zIndex: 100,
-                }}
-            >
-                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-            </TouchableOpacity>
-            <View style={styles.headcontainer}>
-                <Text style={styles.txthead}>Đọc tin tức</Text>
-            </View>
-
-            <ScrollView>
-                <View style={styles.articleContainer}>
-                    {/* <Text style={styles.source}>{article.source.name}</Text> */}
-                    <Text style={styles.title}>{article.title}</Text>
-                    <View style={styles.extraInfo}>
-                        {article.creator.length > 0 &&
-                            article.creator.map((creator, index) => (
-                                <Text key={index} style={styles.author}>
-                                    {index === article.creator.length - 1 ? creator : `${creator}, `}
-                                </Text>
-                            ))}
-                    </View>
-                    <Text style={styles.publishDate}>{formatDate(article.pubDate)}</Text>
-                    <Image
-                        style={styles.img}
-                        source={{
-                            uri:
-                                article.image_url ||
-                                'https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg',
-                        }}
-                    />
-                    <Text style={styles.description}>{article.description}</Text>
-                    <Text
-                        style={styles.content}
-                        selectable={true}
-                        selectionColor={'#9FE2BF'}
-                        ref={textRef}
-                        onPointerEnter={handleTextLongPress}
-                    >
-                        {article.content}
-                    </Text>
+        <GestureHandlerRootView style={styles.container}>
+            <View >
+                <TouchableOpacity
+                    onPress={() => {
+                        setSearch('')
+                        setSearchedWordData({})
+                        setShownWordModal(false)
+                        navigation.navigate('News')
+                    }}
+                    style={{
+                        width: 30,
+                        height: 30,
+                        position: 'absolute',
+                        top: 25,
+                        left: 30,
+                        zIndex: 100,
+                    }}
+                >
+                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                </TouchableOpacity>
+                <View style={styles.headcontainer}>
+                    <Text style={styles.txthead}>Đọc tin tức</Text>
                 </View>
-            </ScrollView>
-            {/* <WebView
-                source={{ uri: article.url }}
-                style={{
-                    width: currentWidth,
-                    height: 603,
-                    backgroundColor: '#fff',
-                }}
-                javaScriptEnabled={true}
-                injectedJavaScript={`document.body.addEventListener('mousedown mouseup', 
-                    function(e){
-                    window.postMessage("Message from WebView","*");
-                })`}
-                // injectedJavaScript={INJECTED_JAVASCRIPT}
-                onMessage={onMessage}
-            /> */}
-            {/* <View
-                style={{
-                    width: currentWidth,
-                    height: 603,
-                    backgroundColor: '#fff',
-                }}
-            >
-                <Text>{content}</Text>
-            </View> */}
-        </View>
+                <View style={styles.searchcontainer}>
+                    <TextInput onChangeText={(input) => setSearch(input)} value={search} style={styles.search} placeholder="Tìm kiếm từ vựng" placeholderTextColor={'#AAAAAA'} />
+                    <TouchableOpacity onPress={handleSearchWord}>
+                        <Icon name='search-outline' size={26} style={{ paddingRight: 10 }} />
+                    </TouchableOpacity>
+                </View>
+
+                <ScrollView>
+                    <View style={styles.articleContainer}>
+                        <Text style={styles.title}>{article.title}</Text>
+                        <View style={styles.extraInfo}>
+                            {article.creator?.length > 0 &&
+                                article.creator.map((creator, index) => (
+                                    <Text key={index} style={styles.author}>
+                                        {index === article.creator.length - 1 ? creator : `${creator}, `}
+                                    </Text>
+                                ))}
+                        </View>
+                        <Text style={styles.publishDate}>{formatDate(article.pubDate)}</Text>
+                        <Image
+                            style={styles.img}
+                            source={{
+                                uri:
+                                    article.image_url ||
+                                    'https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg',
+                            }}
+                        />
+                        <Text style={styles.description}>{article.description}</Text>
+                        <Text
+                            style={styles.content}
+                            selectable={true}
+                            selectionColor={'#9FE2BF'}
+                        >
+                            {article.content}
+                        </Text>
+                    </View>
+                </ScrollView>
+                {
+                    showedWordModal && <BottomSheet
+                        snapPoints={snapPoints}
+                        enablePanDownToClose={true}
+                        onClose={() => {
+                            setShownWordModal(false)
+                            setSearchedWordData({})
+                        }}
+                        style={{
+                            elevation: 8
+                        }}
+                    >
+                        <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+                            <WordModal searchedword={searchedWordData} />
+                        </BottomSheetScrollView>
+                    </BottomSheet>
+                }
+
+            </View>
+        </GestureHandlerRootView>
     );
 };
 
@@ -128,6 +267,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        backgroundColor: '#fff'
     },
     headcontainer: {
         flexDirection: 'row',
@@ -136,7 +276,6 @@ const styles = StyleSheet.create({
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
-        elevation: 10,
     },
     imgreturn: {
         width: '100%',
@@ -146,6 +285,26 @@ const styles = StyleSheet.create({
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
         color: color.txt5,
+    },
+    searchcontainer: {
+        marginTop: 10,
+        marginBottom: 10,
+        marginHorizontal: 22,
+        height: 42,
+        flexDirection: 'row',
+        width: width - 44,
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: color.bodercolor3,
+        alignItems: 'center',
+        // backgroundColor: 'red'
+    },
+    search: {
+        flex: 1,
+        paddingHorizontal: 20,
+        fontSize: 16,
+        fontStyle: 'italic',
+        color: '#333',
     },
     articleContainer: {
         paddingBottom: 20,

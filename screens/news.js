@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
-import fontStyle from '../contains/fontStyle';
 
 const Article = ({ article, navigation }) => {
     const formatDate = (date) => {
@@ -59,10 +58,8 @@ const Article = ({ article, navigation }) => {
 const News = ({ navigation }) => {
     const readmoreButtonWidth = 130;
     const currentScreenWidth = Dimensions.get('window').width;
-    const initNumberOfShowedArticles = 20;
-    const [numberOfArticles, setNumberOfArticles] = useState(initNumberOfShowedArticles);
+    // const initNumberOfShowedArticles = 20;
     const [allArticles, setAllArticles] = useState([]);
-    const [currentArticles, setCurrentArticles] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     const getAllArticles = async () => {
@@ -80,21 +77,6 @@ const News = ({ navigation }) => {
     useEffect(() => {
         getAllArticles();
     }, []);
-
-    // const getCurrentArticles = () => {
-    //     const temporaryArticles = [];
-    //     for (let i = 0; i < numberOfArticles; i++) {
-    //         temporaryArticles.push(allArticles[i]);
-    //     }
-    //     setCurrentArticles(temporaryArticles);
-    //     setLoaded(true);
-    // };
-
-    // useEffect(() => {
-    //     if (allArticles.length > 0 && numberOfArticles >= initNumberOfShowedArticles) {
-    //         getCurrentArticles();
-    //     }
-    // }, [allArticles]);
 
     return (
         <React.Fragment>
@@ -134,7 +116,6 @@ const News = ({ navigation }) => {
                                 borderRadius: 5,
                                 backgroundColor: '#5C4AC9',
                             }}
-                            onPress={() => setNumberOfArticles((prev) => prev + 5)}
                         >
                             <Text style={{ color: '#fff', fontSize: 18 }}>Xem thêm</Text>
                         </TouchableOpacity>
