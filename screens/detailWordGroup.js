@@ -1,35 +1,97 @@
-import React from 'react';
-import { Text, TextInput, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, TextInput, StyleSheet, View, ScrollView, Image, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
-import fontStyle from '../contains/fontStyle';
+import DetailWordGroupItem from '../components/DetailWordGroupItem';
+import { getDocs, collection } from 'firebase/firestore';
+import db from '../firebase';
+import Sound from 'react-native-sound';
+import Lottie from 'lottie-react-native';
+import Icon from 'react-native-vector-icons/Ionicons'
 
-const DetailWordGroup = () => {
+const { width } = Dimensions.get('window')
+
+
+const DetailWordGroup = (props) => {
+    const { navigation, route } = props
+    const [dataVocabulary, setDataVocabulary] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [search, setSearch] = useState('')
+
+    useEffect(() => {
+        const handleGetVocabulary = async () => {
+            try {
+                setIsLoading(true)
+                const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
+                const newData = []
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().topic_id) {
+                        if (doc.data().topic_id.trim() === route.params.item.id.trim()) {
+                            const docData = doc.data();
+                            const dataWithId = { ...docData, id: doc.id };
+                            newData.push(dataWithId);
+                        }
+                    }
+                });
+                setDataVocabulary(newData)
+            }
+            catch (error) {
+                console.log(error)
+            }
+            finally {
+                setIsLoading(false)
+            }
+        }
+        handleGetVocabulary();
+    }, [route.params.item.id])
+
+    const PlayTrack = (word, type) => {
+        const track = new Sound(`https://api.dictionaryapi.dev/media/pronunciations/en/${word}-${type}.mp3`, null, (e) => {
+            if (e) {
+                console.log('error loading track:', e)
+            } else {
+                track.play()
+            }
+        })
+    }
+    const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
+        <View style={styles.container}>
+            <View style={styles.headcontainer}>
+                <TouchableOpacity onPress={() => navigation.navigate("WordGroup")}>
                     <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Bộ từ vựng</Text>
-                </View>
-                <View style={styles.searchcontainer}>
-                    <TextInput style={styles.search} placeholder="Tìm kiếm từ vựng" />
-                    <Image style={styles.icon} source={require('../sources/icons/search.png')} />
-                </View>
-                <View style={styles.wrapWord}>
-                    <Text style={styles.word}>Hello</Text>
-                    <View style={styles.wordcontainer}>
-                        <Text style={styles.txtspell}>/həˈloʊ/</Text>
-                        <View style={styles.soundcontainer}>
-                            <Text style={styles.txticon}>UK</Text>
-                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
-                            <Text style={styles.txticon}>US</Text>
-                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
-                        </View>
-                    </View>
-                </View>
+                </TouchableOpacity>
+                <Text style={styles.txthead}>Bộ từ vựng</Text>
+                <View></View>
             </View>
-        </ScrollView>
+            <View style={styles.searchcontainer}>
+                <TextInput onChangeText={(i) => setSearch(i)} value={search} style={styles.search} placeholder="Tìm kiếm từ vựng" placeholderTextColor={'#AAAAAA'} />
+                <TouchableOpacity>
+                    <Icon name='search-outline' size={28} style={{ paddingRight: 10 }} />
+                </TouchableOpacity>
+            </View>
+            {isLoading
+                ? <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                    <Lottie
+                        source={{ uri: 'https://assets5.lottiefiles.com/packages/lf20_p8bfn5to.json' }}
+                        autoPlay
+                        loop
+                    />
+                </View>
+                : <FlatList
+                    scrollEnabled={false}
+                    data={searchData}
+                    renderItem={({ item }) => <DetailWordGroupItem
+                        phonetic={item.phonetic}
+                        onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
+                        onPressUS={() => PlayTrack(item.word.trim(), 'us')}
+                        disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
+                        disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
+                        word={item.word} />}
+                    keyExtractor={item => item.id}
+                />}
+
+        </View>
     );
 };
 
@@ -37,104 +99,49 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        backgroundColor: '#fff'
     },
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
-        width: 390,
+        width: width,
+        justifyContent: 'space-between',
+        paddingHorizontal: 38
     },
     imgreturn: {
         width: 30,
         height: 30,
-        marginLeft: 38,
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
         color: color.txt5,
     },
     searchcontainer: {
-        marginTop: 20,
+        marginTop: 10,
+        marginBottom: 10,
         flexDirection: 'row',
-        width: 306,
-        height: 40,
+        width: width - 44,
         borderRadius: 30,
-        marginHorizontal: 20,
-        marginBottom: 17,
         borderWidth: 1,
         borderColor: color.bodercolor3,
         alignItems: 'center',
     },
     search: {
         flex: 1,
-        paddingHorizontal: 10,
-        fontSize: 14,
+        paddingHorizontal: 20,
+        fontSize: 16,
         fontStyle: 'italic',
+        color: '#333',
     },
     icon: {
         width: 22,
         height: 22,
         marginRight: 15,
     },
-    wrapWord: {
-        marginTop: 10,
-        marginBottom: 5,
-        width: 346,
-        height: 100,
-        borderRadius: 10,
-        backgroundColor: color.btn_color3,
-        shadowColor: '#fff',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 4,
-    },
-    wordcontainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: 346,
-        height: 110,
-        paddingHorizontal: 20,
-        backgroundColor: color.btn_color3,
-        justifyContent: 'space-between',
-        borderRadius: 10,
-        marginTop: 15,
-        elevation: 1,
-    },
-    word: {
-        fontSize: 28,
-        fontFamily: fontstyle.fontfamily_1,
-        color: color.txt1,
-        marginHorizontal: 10,
-        fontWeight: 'bold',
-        paddingTop: 10,
-    },
-    txtspell: {
-        fontSize: 16,
-        paddingTop: 10,
-        fontFamily: fontstyle.fontfamily_1,
-        color: color.txt4,
-    },
-    soundcontainer: {
-        flexDirection: 'row',
-    },
-    iconsound: {
-        width: 24,
-        height: 24,
-        marginTop: 10,
-        marginRight: 10,
-    },
-    txticon: {
-        fontSize: 16,
-        fontFamily: fontstyle.fontfamily_1,
-        color: color.txt1,
-        marginHorizontal: 10,
-        paddingTop: 10,
-        fontWeight: 500,
-    },
+
 });
 
 export default DetailWordGroup;

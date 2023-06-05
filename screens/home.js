@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import Header from '../components/Header';
 
@@ -21,7 +22,10 @@ const Home = ({ navigation }) => {
                                 }}
                             />
                         </View>
-                        <View>
+                        <View style={{
+                            width: '100%',
+                            paddingHorizontal: 10,
+                        }}>
                             <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
                         </View>
                     </View>
@@ -33,7 +37,11 @@ const Home = ({ navigation }) => {
                         <View>
                             <View style={styles.searchcontainer}>
                                 <TextInput style={styles.search} placeholder="Nhập từ vựng" />
-                                <Image style={styles.icon} source={require('../sources/icons/search.png')} />
+                                <TouchableOpacity>
+                                    <Icon name='search-outline' size={28} style={{
+                                        paddingRight: 10
+                                    }} />
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <View>
@@ -61,7 +69,7 @@ const Home = ({ navigation }) => {
                                 <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
                                 <Text style={styles.txtimgItem}>Đọc sách</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
                                 <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
                                 <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
                             </TouchableOpacity>
@@ -88,8 +96,9 @@ const Home = ({ navigation }) => {
                     <View>
                         <Text style={styles.txtContent}>Thống kê sử dụng</Text>
                     </View>
-
-                    <View>
+                    <View style={{
+                        width: 370,
+                    }}>
                         <Image
                             style={styles.chart}
                             source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
@@ -114,10 +123,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         alignItems: 'center',
+        justifyContent: 'center'
     },
     secsion1: {
         marginTop: 20,
-        width: 346,
+        width: 370,
         height: 132,
         backgroundColor: color.btn_color3,
         borderRadius: 10,
@@ -126,9 +136,10 @@ const styles = StyleSheet.create({
     },
     headcontainer: {
         marginTop: 20,
+        width: '100%',
+        paddingHorizontal: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
     },
     txthead1: {
         fontFamily: fontstyle.fontfamily_2,
@@ -140,14 +151,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#3B3B3B',
         fontWeight: 'bold',
-        //paddingLeft:10
     },
     imgAccount: {
         width: 53,
         height: 53,
         marginLeft: 100,
         marginBottom: 10,
-        // paddingtop:25
     },
     txtContent: {
         alignSelf: 'flex-start',
@@ -160,10 +169,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginBottom: 10,
     },
-
     secsion2: {
         marginTop: 10,
-        width: 346,
+        width: 370,
         height: 180,
         backgroundColor: color.btn_color3,
         borderRadius: 10,
@@ -184,7 +192,7 @@ const styles = StyleSheet.create({
     searchcontainer: {
         flexDirection: 'row',
         width: 306,
-        height: 37,
+        height: 44,
         borderRadius: 30,
         marginHorizontal: 20,
         marginBottom: 17,
@@ -194,9 +202,10 @@ const styles = StyleSheet.create({
     },
     search: {
         flex: 1,
-        paddingHorizontal: 10,
-        fontSize: 14,
+        paddingHorizontal: 20,
+        fontSize: 15,
         fontStyle: 'italic',
+        // backgroundColor: 'red'
     },
     icon: {
         width: 22,
@@ -221,7 +230,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     secsion3: {
-        width: 356,
+        width: 370,
         height: 200,
         backgroundColor: color.btn_color3,
         borderRadius: 10,
@@ -254,7 +263,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     chart: {
-        width: 346,
+        width: '100%',
         height: 232,
     },
 });

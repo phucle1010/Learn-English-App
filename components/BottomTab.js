@@ -19,7 +19,7 @@ const BottomTab = () => {
                 tabBarStyle: styles.container,
                 tabBarShowLabel: true,
                 tabBarLabelStyle: {
-                    color: '#faa0a0',
+                    color: '#6495ed',
                 },
             }}
         >

@@ -7,7 +7,7 @@ const Header = () => {
         <View style={styles.container}>
             <Text style={styles.appName}>EFU</Text>
             <View>
-                <Icon name="bell" size={30} />
+                <Icon name="bell" size={26} />
             </View>
         </View>
     );
