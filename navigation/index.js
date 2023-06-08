@@ -2,6 +2,7 @@ import React from 'react';
 import Account from '../screens/account';
 import DetailNews from '../screens/detailNews';
 import DetailReadBook from '../screens/detailReadBook';
+import DetailBook from '../screens/detailBook';
 import DetailVideo from '../screens/detailVideo';
 import DetailWordGroup from '../screens/detailWordGroup';
 import Exercise from '../screens/exercise';
@@ -132,6 +133,16 @@ const screens = [
     {
         name: 'DetailReadBook',
         component: DetailReadBook,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'DetailBook',
+        component: DetailBook,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',

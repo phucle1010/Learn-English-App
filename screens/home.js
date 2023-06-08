@@ -65,7 +65,7 @@ const Home = ({ navigation }) => {
                                 />
                                 <Text style={styles.txtimgItem}>Video</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
                                 <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
                                 <Text style={styles.txtimgItem}>Đọc sách</Text>
                             </TouchableOpacity>
