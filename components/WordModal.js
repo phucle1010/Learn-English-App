@@ -9,7 +9,6 @@ import Sound from 'react-native-sound'
 
 
 const WordModal = ({ searchedword }) => {
-    console.log(searchedword)
     Sound.setCategory('Playback', true);
 
     const playSound = (index) => {

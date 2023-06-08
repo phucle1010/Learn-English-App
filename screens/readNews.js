@@ -17,7 +17,7 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import Sound from 'react-native-sound'
+import { useIsFocused } from '@react-navigation/native'
 
 import WordModal from '../components/WordModal';
 

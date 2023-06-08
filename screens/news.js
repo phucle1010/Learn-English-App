@@ -6,13 +6,12 @@ import {
     View,
     ScrollView,
     Image,
-    TextInput,
     TouchableOpacity,
-    Button,
-    FlatList,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
+
 
 const Article = ({ article, navigation }) => {
     const formatDate = (date) => {
@@ -56,6 +55,7 @@ const Article = ({ article, navigation }) => {
 };
 
 const News = ({ navigation }) => {
+    const isFocusedScreen = useIsFocused();
     const readmoreButtonWidth = 130;
     const currentScreenWidth = Dimensions.get('window').width;
     // const initNumberOfShowedArticles = 20;
@@ -75,8 +75,8 @@ const News = ({ navigation }) => {
     };
 
     useEffect(() => {
-        getAllArticles();
-    }, []);
+        isFocusedScreen && getAllArticles();
+    }, [isFocusedScreen]);
 
     return (
         <React.Fragment>
