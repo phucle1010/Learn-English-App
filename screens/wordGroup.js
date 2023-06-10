@@ -6,11 +6,14 @@ import fontStyle from '../contains/fontStyle';
 import WordGroupItem from '../components/WordGroupItem';
 import Lottie from 'lottie-react-native';
 import db, { doc, getDoc, getDocs, collection } from '../firebase/index';
+import { useIsFocused } from '@react-navigation/native';
 
 const WordGroup = (props) => {
+    const isFocusedScreen = useIsFocused();
     const { navigation } = props
     const [dataTopic, setDataTopic] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+
     useEffect(() => {
         try {
             const handleGetTopic = async () => {
@@ -33,15 +36,18 @@ const WordGroup = (props) => {
                 setIsLoading(false)
             }, 2000)
         }
-    }, [])
+    }, [isFocusedScreen])
 
     const handlePressTopic = (item) => {
         navigation.navigate('DetailWordGroup', { item })
     }
+
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>
-                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                </TouchableOpacity>
                 <Text style={styles.txthead}>Bộ từ vựng</Text>
                 <View></View>
             </View>

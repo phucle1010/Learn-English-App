@@ -19,7 +19,8 @@ const DetailBook = (props) => {
             <Pdf
                 trustAllCerts={false}
                 source={source}
-                enablePaging={true}
+                // enablePaging={true}
+
                 onLoadComplete={(numberOfPages, filePath) => {
                     console.log(`Number of pages: ${numberOfPages}`);
                 }}

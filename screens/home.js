@@ -1,112 +1,136 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useIsFocused } from '@react-navigation/native';
 
 import Header from '../components/Header';
 
 const Home = ({ navigation }) => {
+    const isFocusedScreen = useIsFocused();
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        setLoaded(true);
+    }, [isFocusedScreen]);
+
     return (
-        <SafeAreaView style={styles.main}>
-            <Header />
-            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                <View style={styles.container}>
-                    <View style={styles.secsion1}>
-                        <View style={styles.headcontainer}>
-                            <Text style={styles.txthead1}>Xin chào Phúc,</Text>
-                            <Image
-                                style={styles.imgAccount}
-                                source={{
-                                    uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
-                                }}
-                            />
-                        </View>
-                        <View style={{
-                            width: '100%',
-                            paddingHorizontal: 10,
-                        }}>
-                            <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
-                        </View>
-                    </View>
-                    <Text style={styles.txtContent}>Từ điển</Text>
-                    <View style={styles.secsion2}>
-                        <View>
-                            <Text style={styles.txtvocabulary}>Từ vựng</Text>
-                        </View>
-                        <View>
-                            <View style={styles.searchcontainer}>
-                                <TextInput style={styles.search} placeholder="Nhập từ vựng" />
-                                <TouchableOpacity>
-                                    <Icon name='search-outline' size={28} style={{
-                                        paddingRight: 10
-                                    }} />
-                                </TouchableOpacity>
+        <React.Fragment>
+            {
+                loaded ? (
+                    <SafeAreaView style={styles.main}>
+                        <Header />
+                        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                            <View style={styles.container}>
+                                <View style={styles.secsion1}>
+                                    <View style={styles.headcontainer}>
+                                        <Text style={styles.txthead1}>Xin chào Phúc,</Text>
+                                        <Image
+                                            style={styles.imgAccount}
+                                            source={{
+                                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{
+                                        width: '100%',
+                                        paddingHorizontal: 10,
+                                    }}>
+                                        <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.txtContent}>Từ điển</Text>
+                                <View style={styles.secsion2}>
+                                    <View>
+                                        <Text style={styles.txtvocabulary}>Từ vựng</Text>
+                                    </View>
+                                    <View>
+                                        <View style={styles.searchcontainer}>
+                                            <TextInput style={styles.search} placeholder="Nhập từ vựng" />
+                                            <TouchableOpacity>
+                                                <Icon name='search-outline' size={28} style={{
+                                                    paddingRight: 10
+                                                }} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.txtVocabularySearched}>Từ vựng tìm kiếm gần đây</Text>
+                                        <View style={styles.wrapwords}>
+                                            <Text style={styles.txtwords}>Hello</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <Text style={styles.txtContent}>Khám phá</Text>
+                                <View style={styles.secsion3}>
+                                    <View style={styles.listItem}>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
+                                            <Text style={styles.txtimgItem}>Tin tức</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems}>
+                                            <Image
+                                                style={styles.imgItem}
+                                                source={require('../sources/images/video-marketing.png')}
+                                            />
+                                            <Text style={styles.txtimgItem}>Video</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
+                                            <Text style={styles.txtimgItem}>Đọc sách</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
+                                            <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.listItem}>
+                                        <TouchableOpacity style={styles.wrapItems}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
+                                            <Text style={styles.txtimgItem}>Ngữ pháp</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Exercise")}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
+                                            <Text style={styles.txtimgItem}>Bài tập</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
+                                            <Text style={styles.txtimgItem}>Game</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.wrapItems}>
+                                            <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
+                                            <Text style={styles.txtimgItem}>Kiểm tra</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View>
+                                    <Text style={styles.txtContent}>Thống kê sử dụng</Text>
+                                </View>
+                                <View style={{
+                                    width: 370,
+                                }}>
+                                    <Image
+                                        style={styles.chart}
+                                        source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                        <View>
-                            <Text style={styles.txtVocabularySearched}>Từ vựng tìm kiếm gần đây</Text>
-                            <View style={styles.wrapwords}>
-                                <Text style={styles.txtwords}>Hello</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <Text style={styles.txtContent}>Khám phá</Text>
-                    <View style={styles.secsion3}>
-                        <View style={styles.listItem}>
-                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
-                                <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
-                                <Text style={styles.txtimgItem}>Tin tức</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
-                                <Image
-                                    style={styles.imgItem}
-                                    source={require('../sources/images/video-marketing.png')}
-                                />
-                                <Text style={styles.txtimgItem}>Video</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
-                                <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
-                                <Text style={styles.txtimgItem}>Đọc sách</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
-                                <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
-                                <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.listItem}>
-                            <TouchableOpacity style={styles.wrapItems}>
-                                <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
-                                <Text style={styles.txtimgItem}>Ngữ pháp</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
-                                <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
-                                <Text style={styles.txtimgItem}>Bài tập</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
-                                <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
-                                <Text style={styles.txtimgItem}>Game</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
-                                <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
-                                <Text style={styles.txtimgItem}>Kiểm tra</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View>
-                        <Text style={styles.txtContent}>Thống kê sử dụng</Text>
-                    </View>
-                    <View style={{
-                        width: 370,
-                    }}>
-                        <Image
-                            style={styles.chart}
-                            source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
-                        />
-                    </View>
+                        </ScrollView>
+                    </SafeAreaView>
+                ) : <View
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            }
+        </React.Fragment>
+
     );
 };
 

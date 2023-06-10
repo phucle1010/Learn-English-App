@@ -6,6 +6,9 @@ import DetailBook from '../screens/detailBook';
 import DetailVideo from '../screens/detailVideo';
 import DetailWordGroup from '../screens/detailWordGroup';
 import Exercise from '../screens/exercise';
+import ListenExercise from '../screens/listenExercise';
+import DetailListenExercise from '../screens/detailListenExercise';
+import ListenExerciseTopic from '../screens/listenExerciseTopic';
 import Grammar from '../screens/grammar';
 import GrammarExercise from '../screens/grammarExercise';
 import GrammarTheory from '../screens/grammarTheory';
@@ -203,6 +206,36 @@ const screens = [
     {
         name: 'Exercise',
         component: Exercise,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'ListenExercise',
+        component: ListenExercise,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'ListenExerciseTopic',
+        component: ListenExerciseTopic,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'DetailListenExercise',
+        component: DetailListenExercise,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',
