@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import db, { getDocs, collection, getDoc } from '../firebase/index';
 import { useIsFocused } from '@react-navigation/native';
+
+import Loading from '../components/Loading'
 
 const ListenExerciseTopic = ({ navigation, route }) => {
     const level_id = route.params.level_id;
@@ -51,6 +53,7 @@ const ListenExerciseTopic = ({ navigation, route }) => {
             handleGetEnglishLevels();
         } else {
             setQuestions([])
+            setLoaded(false)
         }
     }, [level_id, isFocusedScreen]);
 
@@ -119,16 +122,7 @@ const ListenExerciseTopic = ({ navigation, route }) => {
                             }
                         </ScrollView>
                     </View>
-                ) : <View
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                </View>
+                ) : <Loading />
             }
         </React.Fragment>
     )

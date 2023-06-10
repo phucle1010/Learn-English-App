@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import db, { getDocs, collection } from '../firebase/index';
 import { useIsFocused } from '@react-navigation/native';
+
+import Loading from '../components/Loading'
 
 const ListenExercise = ({ navigation, route }) => {
     const isFocusedScreen = useIsFocused();
@@ -83,16 +85,7 @@ const ListenExercise = ({ navigation, route }) => {
                         </View>
                     </View>
                 ) : (
-                    <View
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                    </View>
+                    <Loading />
                 )
             }
         </React.Fragment>

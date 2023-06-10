@@ -6,44 +6,55 @@ import DetailWordGroupItem from '../components/DetailWordGroupItem';
 import { getDocs, collection } from 'firebase/firestore';
 import db from '../firebase';
 import Sound from 'react-native-sound';
-import Lottie from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useIsFocused } from '@react-navigation/native';
+
+import Loading from '../components/Loading';
 
 const { width } = Dimensions.get('window')
 
 
 const DetailWordGroup = (props) => {
+    const isFocusedScreen = useIsFocused();
     const { navigation, route } = props
     const [dataVocabulary, setDataVocabulary] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [search, setSearch] = useState('')
 
-    useEffect(() => {
-        const handleGetVocabulary = async () => {
-            try {
-                setIsLoading(true)
-                const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
-                const newData = []
-                querySnapshot.forEach((doc) => {
-                    if (doc.data().topic_id) {
-                        if (doc.data().topic_id.trim() === route.params.item.id.trim()) {
-                            const docData = doc.data();
-                            const dataWithId = { ...docData, id: doc.id };
-                            newData.push(dataWithId);
-                        }
+    const handleGetVocabulary = async () => {
+        try {
+            setIsLoading(true)
+            const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
+            const newData = []
+            querySnapshot.forEach((doc) => {
+                if (doc.data().topic_id) {
+                    if (doc.data().topic_id.trim() === route.params.item.id.trim()) {
+                        const docData = doc.data();
+                        const dataWithId = { ...docData, id: doc.id };
+                        newData.push(dataWithId);
                     }
-                });
-                setDataVocabulary(newData)
-            }
-            catch (error) {
-                console.log(error)
-            }
-            finally {
-                setIsLoading(false)
-            }
+                }
+            });
+            setDataVocabulary(newData)
         }
-        handleGetVocabulary();
-    }, [route.params.item.id])
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (isFocusedScreen) {
+            handleGetVocabulary();
+        } else {
+            setDataVocabulary([]);
+            setSearch('')
+            setIsLoading(true);
+        }
+
+    }, [route.params.item.id, isFocusedScreen])
 
     const PlayTrack = (word, type) => {
         const track = new Sound(`https://api.dictionaryapi.dev/media/pronunciations/en/${word}-${type}.mp3`, null, (e) => {
@@ -57,42 +68,40 @@ const DetailWordGroup = (props) => {
     const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headcontainer}>
-                <TouchableOpacity onPress={() => navigation.navigate("WordGroup")}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                </TouchableOpacity>
-                <Text style={styles.txthead}>Bộ từ vựng</Text>
-                <View></View>
-            </View>
-            <View style={styles.searchcontainer}>
-                <TextInput onChangeText={(i) => setSearch(i)} value={search} style={styles.search} placeholder="Tìm kiếm từ vựng" placeholderTextColor={'#AAAAAA'} />
-                <TouchableOpacity>
-                    <Icon name='search-outline' size={28} style={{ paddingRight: 10 }} />
-                </TouchableOpacity>
-            </View>
-            {isLoading
-                ? <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                    <Lottie
-                        source={{ uri: 'https://assets5.lottiefiles.com/packages/lf20_p8bfn5to.json' }}
-                        autoPlay
-                        loop
-                    />
-                </View>
-                : <FlatList
-                    scrollEnabled={false}
-                    data={searchData}
-                    renderItem={({ item }) => <DetailWordGroupItem
-                        phonetic={item.phonetic}
-                        onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
-                        onPressUS={() => PlayTrack(item.word.trim(), 'us')}
-                        disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
-                        disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
-                        word={item.word} />}
-                    keyExtractor={item => item.id}
-                />}
+        <React.Fragment>
+            {
+                isLoading ? <Loading /> : (
+                    <View style={styles.container}>
+                        <View style={styles.headcontainer}>
+                            <TouchableOpacity onPress={() => navigation.navigate("WordGroup")}>
+                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            </TouchableOpacity>
+                            <Text style={styles.txthead}>Bộ từ vựng</Text>
+                            <View></View>
+                        </View>
+                        <View style={styles.searchcontainer}>
+                            <TextInput onChangeText={(i) => setSearch(i)} value={search} style={styles.search} placeholder="Tìm kiếm từ vựng" placeholderTextColor={'#AAAAAA'} />
+                            <TouchableOpacity>
+                                <Icon name='search-outline' size={28} style={{ paddingRight: 10 }} />
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            scrollEnabled={false}
+                            data={searchData}
+                            renderItem={({ item }) => <DetailWordGroupItem
+                                phonetic={item.phonetic}
+                                onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
+                                onPressUS={() => PlayTrack(item.word.trim(), 'us')}
+                                disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
+                                disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
+                                word={item.word} />}
+                            keyExtractor={item => item.id}
+                        />
+                    </View>
+                )
+            }
+        </React.Fragment>
 
-        </View>
     );
 };
 

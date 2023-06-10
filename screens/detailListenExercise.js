@@ -10,6 +10,8 @@ import Sound from 'react-native-sound'
 import TrackPlayer, { useProgress, RepeatMode } from 'react-native-track-player';
 import Pdf from 'react-native-pdf';
 
+import Loading from '../components/Loading'
+
 const QuestionItem = ({ question, index, setAnswerList, answerList, clickedOKOnAlert, clickedReset }) => {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
 
@@ -210,6 +212,7 @@ const DetailListenExercise = ({ navigation, route }) => {
             setClickedOKOnAlert(false);
             setIsPlayed(false);
             setCompletedSetup(false);
+            setLoaded(false);
             TrackPlayer.reset();
         }
     }, [isFocusedScreen])
@@ -464,16 +467,7 @@ const DetailListenExercise = ({ navigation, route }) => {
                         </ScrollView>
                     </View>
                 ) : (
-                    <View
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                    </View>
+                    <Loading />
                 )
             }
         </React.Fragment>

@@ -8,8 +8,10 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
+import Loading from '../components/Loading'
 
 let listData = []
+
 
 const ReadBook = ({ navigation, route }) => {
     const isFoucesedScreen = useIsFocused();
@@ -18,7 +20,12 @@ const ReadBook = ({ navigation, route }) => {
     const [dataDis, setDataDis] = useState([])
 
     useEffect(() => {
-        isFoucesedScreen && getdata();
+        if (isFoucesedScreen) {
+            getdata();
+        } else {
+            setDataDis([])
+            setLoading(true)
+        }
     }, [isFoucesedScreen])
 
     const searched = (text) => {
@@ -46,6 +53,7 @@ const ReadBook = ({ navigation, route }) => {
             // xử lý lỗi ở đây
         }
     }
+
     return (
         <React.Fragment>
             {
@@ -92,16 +100,9 @@ const ReadBook = ({ navigation, route }) => {
                                 }
                             </ScrollView>
                         </View>
-                    </ScrollView>) : (<View
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                    </View>)
+                    </ScrollView>) : (
+                    <Loading />
+                )
             }
         </React.Fragment>
     );

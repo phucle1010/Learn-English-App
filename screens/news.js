@@ -12,6 +12,7 @@ import { useIsFocused } from '@react-navigation/native'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 
+import Loading from '../components/Loading'
 
 const Article = ({ article, navigation }) => {
     const formatDate = (date) => {
@@ -75,7 +76,12 @@ const News = ({ navigation }) => {
     };
 
     useEffect(() => {
-        isFocusedScreen && getAllArticles();
+        if (isFocusedScreen) {
+            getAllArticles();
+        } else {
+            setAllArticles(false);
+            setLoaded(false);
+        }
     }, [isFocusedScreen]);
 
     return (
@@ -122,16 +128,8 @@ const News = ({ navigation }) => {
                     </ScrollView>
                 </View>
             ) : (
-                <View
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                </View>
+
+                < Loading />
             )}
         </React.Fragment>
     );
