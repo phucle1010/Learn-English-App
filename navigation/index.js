@@ -27,7 +27,7 @@ import Videos from '../screens/videos';
 import Welcome from '../screens/welcome';
 import WordGroup from '../screens/wordGroup';
 import Words from '../screens/words';
-
+import GrammarDetail from '../screens/GrammarDetail';
 const screens = [
     {
         name: 'Home',
@@ -278,6 +278,16 @@ const screens = [
         activeColor: '#ee4b2b',
         isHideTab: true,
         isHideNavigationTab: true,
+    },
+    {
+        name: 'GrammarDetail',
+        component: GrammarDetail,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
     },
 ];
 

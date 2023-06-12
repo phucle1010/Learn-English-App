@@ -3,25 +3,12 @@ import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'rea
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
-
-const GrammarTheory = () => {
+import StyledText from 'react-native-styled-text';
+const GrammarTheory = (props) => {
+    const { content } = props
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Tên ngữ pháp</Text>
-                </View>
-                <View style={styles.taskbar}>
-                    <TouchableOpacity>
-                        <Text style={styles.theory}> Lý thuyết</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.txtdelimiter}>|</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.exercise}> Bài tập</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+        <ScrollView style={styles.container}>
+            <StyledText textStyles={textStyles} style={styles.content}>{content}</StyledText>
         </ScrollView>
     );
 };
@@ -29,52 +16,23 @@ const GrammarTheory = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        padding: 22,
+        marginBottom: 80
     },
-    headcontainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: color.btn_color3,
-        height: 80,
-        width: 390,
-    },
-    imgreturn: {
-        width: 30,
-        height: 30,
-        marginLeft: 38,
-    },
-    txthead: {
-        fontFamily: fontstyle.fontfamily_2,
+    content: {
+        color: '#333'
+    }
+});
+const textStyles = StyleSheet.create({
+    h1: {
         fontSize: 20,
-        marginLeft: 80,
-        color: color.txt5,
+        color: '#333',
+        fontWeight: 'bold'
     },
-    taskbar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: 257,
-        height: 29,
-        marginHorizontal: 55,
-        marginLeft: 9,
-    },
-    theory: {
+    h2: {
         fontSize: 20,
-        fontFamily: fontStyle.fontfamily_2,
-        fontWeight: 400,
-        color: color.txt6,
-    },
-    txtdelimiter: {
-        color: color.txt4,
-        fontSize: 20,
-        fontWeight: 400,
-        fontFamily: fontStyle.fontfamily_2,
-    },
-    exercise: {
-        fontSize: 20,
-        fontFamily: fontStyle.fontfamily_2,
-        fontWeight: 400,
-        color: color.txt4,
+        color: '#333',
+        fontWeight: 'normal'
     },
 });
-
 export default GrammarTheory;

@@ -1,57 +1,77 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
-
-const Grammar = () => {
+import Lottie from 'lottie-react-native';
+import { doc, getDoc, db, getDocs, collection } from '../firebase/index';
+const GrammarItem = (props) => {
+    const { name, onPress } = props
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Ngữ pháp</Text>
-                </View>
-                <View
-                    style={{
-                        width: 330,
-                        alignItems: 'flex-start',
-                    }}
-                >
-                    <Text style={styles.txtwordGroup}>Danh mục ngữ pháp</Text>
-                </View>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Danh từ</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Động từ</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Tính từ</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Câu đơn</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Câu phức</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Mệnh đề</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>So sánh</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Bị động</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>Câu điều kiện</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemGrammar}>
-                    <Text style={styles.txtItemGrammar}>12 thì cơ bản</Text>
-                </TouchableOpacity>
+        <TouchableOpacity onPress={onPress} style={styles.itemGrammar}>
+            <Text style={styles.txtItemGrammar}>{name}</Text>
+        </TouchableOpacity>
+    )
+}
+const Grammar = (props) => {
+    const { navigation } = props
+    const [dataGrammar, setDataGrammar] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(() => {
+        try {
+            const handleGetGrammar = async () => {
+                const querySnapshot = await getDocs(collection(db, "GRAMMAR"));
+                const newData = []
+                querySnapshot.forEach((doc) => {
+                    const docData = doc.data();
+                    const dataWithId = { ...docData, id: doc.id };
+                    newData.push(dataWithId);
+                });
+                setDataGrammar(newData)
+            }
+            handleGetGrammar();
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 2000)
+        }
+    }, [])
+    return (
+        <View style={styles.container}>
+            <View style={styles.headcontainer}>
+                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                <Text style={styles.txthead}>Ngữ pháp</Text>
             </View>
-        </ScrollView>
+            <View
+                style={{
+                    width: 330,
+                    alignItems: 'flex-start',
+                }}
+            >
+                <Text style={styles.txtwordGroup}>Danh mục ngữ pháp</Text>
+            </View>
+            {isLoading
+                ? <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                    <Lottie
+                        source={{ uri: 'https://assets5.lottiefiles.com/packages/lf20_p8bfn5to.json' }}
+                        autoPlay
+                        loop
+                    />
+                </View>
+                : <FlatList
+                    data={dataGrammar}
+                    renderItem={({ item }) => <GrammarItem onPress={() => navigation.navigate('GrammarDetail', {
+                        name: item.name,
+                        des: item.description,
+                        question: item.exercise
+                    })} name={item.name} />}
+                    keyExtractor={item => item.id}
+                />}
+        </View>
     );
 };
 
@@ -59,6 +79,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        marginBottom: 80
     },
     headcontainer: {
         flexDirection: 'row',
@@ -100,7 +121,7 @@ const styles = StyleSheet.create({
         fontFamily: fontStyle.fontfamily_1,
         fontWeight: 400,
         color: color.txt1,
-        marginLeft: 20,
+        paddingHorizontal: 20
     },
 });
 

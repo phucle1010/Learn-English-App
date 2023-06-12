@@ -68,7 +68,7 @@ const Home = (props) => {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.listItem}>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Grammar')} style={styles.wrapItems}>
                                 <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
                                 <Text style={styles.txtimgItem}>Ngữ pháp</Text>
                             </TouchableOpacity>
