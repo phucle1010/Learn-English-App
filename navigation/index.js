@@ -10,6 +10,7 @@ import ListenExercise from '../screens/listenExercise';
 import DetailListenExercise from '../screens/detailListenExercise';
 import ListenExerciseTopic from '../screens/listenExerciseTopic';
 import Grammar from '../screens/grammar';
+import GrammarDetail from '../screens/grammarDetail';
 import GrammarExercise from '../screens/grammarExercise';
 import GrammarTheory from '../screens/grammarTheory';
 import Home from '../screens/home';
@@ -176,6 +177,16 @@ const screens = [
     {
         name: 'Grammar',
         component: Grammar,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'GrammarDetail',
+        component: GrammarDetail,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',
