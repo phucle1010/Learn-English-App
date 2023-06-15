@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Text,
     StyleSheet,
@@ -8,12 +8,104 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ImageBackground,
+    Alert
+
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import color from '../contains/color';
+import db, { auth } from '../firebase';
+import { doc, getDoc, getDocs, collection } from '../firebase/index';
 import fontstyle from '../contains/fontStyle';
+import { useDispatch } from 'react-redux';
+import { addUserIntoApp } from '../reducers/userSlice';
+
 
 const Login = ({ navigation }) => {
+
+    const userRef = collection(db, 'USER');
+    const users = [];
+    const dispatch = useDispatch();
+    const initUser = {
+        email: '',
+        fullName: '',
+        dateOfBirth: '',
+        level_id: '',
+        password: '',
+    };
+    const [userInfo, setUserInfo] = useState(initUser);
+    const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    useEffect(() => {
+        if (successfulSignIn) {
+            navigation.navigate('Home');
+        }
+    }, [successfulSignIn]);
+
+
+
+    const getUserData = async (uid) => {
+        try {
+            const querySnapshot = await getDocs(userRef);
+            querySnapshot.forEach((doc) => {
+                users.push(doc.data());
+            });
+            users.forEach((element) => {
+                console.log(element);
+                if (element.id === uid) {
+                    userInfo.dateOfBirth = element.dateOfBirth;
+                    userInfo.fullName = element.fullName;
+                    userInfo.level_id = element.level_id;
+                }
+            });
+            console.log(userInfo.fullName);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    const handleSignIn = () => {
+        if (userInfo.email === '' || userInfo.password === '') {
+            Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin đăng ký');
+        } else {
+            signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log(user);
+                    const uid = user.uid;
+                    console.log(uid);
+
+                    Alert.alert('Alert Title', 'Đăng nhập thành công: ' + userInfo.email, [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                getUserData(uid);
+                                dispatch(addUserIntoApp(userInfo));
+                                setSuccessfulSignIn(true);
+                            },
+
+                        },
+                    ]);
+
+
+                })
+                .catch((error) => {
+                    Alert.alert('Alert Title', 'Đăng nhập thất bại', [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel',
+                        },
+                        { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    ]);
+                });
+        }
+    };
     return (
         <SafeAreaView style={styles.main}>
             <View style={styles.headerBackground}>
@@ -22,14 +114,27 @@ const Login = ({ navigation }) => {
             </View>
             <View style={styles.container}>
                 <View>
-                    <TextInput style={styles.email} placeholder="Email" />
+                    <TextInput style={styles.email} placeholder="Email" onChangeText={(email) =>
+                        setUserInfo((prevUser) => {
+                            return {
+                                ...prevUser,
+                                email,
+                            };
+                        })} />
                 </View>
                 <View style={styles.passcontainer}>
-                    <TextInput style={styles.password} placeholder="Mật khẩu" secureTextEntry={true} />
+                    <TextInput style={styles.password} placeholder="Mật khẩu" secureTextEntry={true}
+                        onChangeText={(password) =>
+                            setUserInfo((prevUser) => {
+                                return {
+                                    ...prevUser,
+                                    password,
+                                };
+                            })} />
                     <Image style={styles.icon} source={require('../sources/icons/eye.png')} />
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.btnlogin} onPress={() => navigation.navigate('Home')}>
+                    <TouchableOpacity style={styles.btnlogin} onPress={handleSignIn}>
                         <Text style={styles.txtbtn}>Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>
