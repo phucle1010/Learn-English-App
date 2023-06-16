@@ -19,6 +19,8 @@ import ReviewResult from '../screens/reviewResult';
 import SearchWord from '../screens/searchWord';
 import Signup from '../screens/signup';
 import Test from '../screens/test';
+import ListTestTN from '../screens/listTestTN';
+import TestDetail from '../screens/testDetail';
 import TestResult from '../screens/testResult';
 import VerifyPhoneNumber from '../screens/verifyPhoneNumber';
 import VerifyOTP from '../screens/verifyOTP';
@@ -222,6 +224,26 @@ const screens = [
     {
         name: 'Test',
         component: Test,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'ListTestTN',
+        component: ListTestTN,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'TestDetail',
+        component: TestDetail,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',

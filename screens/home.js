@@ -72,7 +72,7 @@ const Home = (props) => {
                                 <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
                                 <Text style={styles.txtimgItem}>Ngữ pháp</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.wrapItems}>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Test")}>
                                 <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
                                 <Text style={styles.txtimgItem}>Bài tập</Text>
                             </TouchableOpacity>

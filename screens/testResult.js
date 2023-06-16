@@ -1,51 +1,98 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { async } from '@firebase/util';
+import Reac, { useEffect, useState } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
-
-const TestResult = () => {
+import moment from 'moment';
+import { db, collection, query, where, getDocs, orderBy, doc, addDoc } from '../firebase/index'
+const { width, height } = Dimensions.get('window')
+const TestResult = (props) => {
+    const { navigation, route } = props
+    const { listQuestion, listAnswer, listChosse, idTest } = route.params
+    const [listInco, setListInco] = useState([])
+    const [numInSuc, setNumInSuc] = useState(0)
+    useEffect(() => {
+        getResult()
+    }, [])
+    const getResult = () => {
+        setListInco([])
+        let numInSucces = 0;
+        const listResultInco = []
+        listQuestion.forEach((question, i) => {
+            const itemAn = listAnswer.find((ans) => { return ans.id == question.id && ans.isTrue == true })
+            if (listChosse[i] != itemAn.idA) {
+                numInSucces += 1
+                const valueincorrect = listAnswer.find((ans) => { return ans.idA == listChosse[i] })
+                listResultInco.push({ incorrectId: listChosse[i], answer: itemAn.answer, index: i, incorrect: valueincorrect.answer, ...question })
+            }
+        });
+        setNumInSuc(numInSucces)
+        setListInco(listResultInco)
+        // setTimeout(() => {
+        //     AddResult()
+        // }, 2000)
+    }
+    const AddResult = async (testid, listResultInco) => {
+        const docRf = doc(db, "USER", '6xwrfuaVKMyekoJfS4le')
+        const colRf = collection(docRf, "TEST");
+        const querySnapshot = await addDoc(colRf, {
+            date_do: moment().format('YYYY-MM-DD'),
+            score: 10 - numInSuc,
+            test_id: idTest
+        });
+        listInco.forEach(async (itemIn) => {
+            console.log('push')
+            const docRf2 = doc(docRf, "TEST", querySnapshot.id)
+            const colRf2 = collection(docRf2, "INCORRECT_QUES");
+            const querySnapshot2 = await addDoc(colRf2, {
+                answer_id: itemIn.incorrectId,
+                question_id: itemIn.id
+            });
+        })
+        setTimeout(() => {
+            navigation.goBack()
+        }, 1000)
+    }
     return (
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Kiểm tra trình độ</Text>
+                    <Text style={styles.txtResult}>Kết quả kiểm tra</Text>
+                    <Text style={styles.txthead}>Chúc mừng bạn đã hoàn thành bài kiểm tra!</Text>
                 </View>
-                <Text style={styles.txtResult}>Kết quả kiểm tra</Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/check.png')} />
-                        <Text style={styles.txtItem}> 15/20</Text>
+                        <Text style={styles.txtItem}> {10 - numInSuc}/10</Text>
                     </View>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/wrong.png')} />
-                        <Text style={styles.txtItem}> 5/20</Text>
+                        <Text style={styles.txtItem}> {numInSuc}/10</Text>
                     </View>
                 </View>
-                <View style={styles.wrapEvaluate}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.txtEvaluateNow}>Trình độ hiện tại của bạn là </Text>
-                        <Text style={[styles.txtEvaluateNow, { fontWeight: 'bold' }]}> B1</Text>
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            marginHorizontal: 20,
-                            marginTop: 15,
-                        }}
-                    >
-                        <Text style={[styles.txtEvaluateNow, { fontWeight: 'bold' }]}>Lời khuyên: </Text>
-
-                        <Text style={styles.txtEvaluateNow}>
-                            Bạn nên cải thiện về từ vựng và ôn tập thường xuyên cấu trúc ngữ pháp
-                        </Text>
-                    </View>
-                </View>
-                <TouchableOpacity style={styles.btnRetest}>
-                    <Text style={styles.txtbtnRetest}>Xem lại bài làm</Text>
+                <TouchableOpacity style={{ alignSelf: 'center', backgroundColor: '#83D670', marginTop: 30, borderRadius: 10 }}
+                    onPress={() => { AddResult() }}>
+                    <Text style={[styles.txtbtnRetest, { paddingHorizontal: 50, paddingVertical: 10 }]}>Hoàn thành</Text>
                 </TouchableOpacity>
+                {listInco.length > 0 &&
+                    <View style={styles.btnRetest}>
+                        <Text style={styles.txtbtnRetest}>Các câu trả lời sai</Text>
+                    </View>}
+                {listInco.map((item, i) =>
+                    <View style={styles.itemInc} key={i}>
+                        <Text style={[styles.txtitemInc, { fontSize: 18 }]}>Câu {item.index + 1}: {item.question}</Text>
+                        <View style={{ flexDirection: 'row', backgroundColor: '#F55954', padding: 5, borderRadius: 10, justifyContent: 'space-between', marginVertical: 5, marginTop: 10 }}>
+                            <Text style={styles.txtitemInc}>Your chossed:</Text>
+                            <Text style={styles.txtitemInc}>{item.incorrect}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', backgroundColor: '#83D670', padding: 5, borderRadius: 10, justifyContent: 'space-between', marginVertical: 5 }}>
+                            <Text style={styles.txtitemInc}>Correct:</Text>
+                            <Text style={styles.txtitemInc}>{item.answer}</Text>
+                        </View>
+                    </View>
+                )}
+                {/* :<View></View>} */}
             </View>
         </ScrollView>
     );
@@ -55,13 +102,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        backgroundColor: 'white',
+        paddingBottom: 100
     },
     headcontainer: {
-        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.btn_color3,
-        height: 80,
-        width: 390,
+        height: 130,
+        width: width,
     },
     imgreturn: {
         width: 30,
@@ -70,16 +119,17 @@ const styles = StyleSheet.create({
     },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
-        fontSize: 20,
-        marginLeft: 60,
-        color: color.txt5,
+        fontSize: 18,
+        marginHorizontal: 20,
+        color: 'black',
+        textAlign: 'center'
     },
     txtResult: {
-        fontSize: 22,
+        fontSize: 27,
         fontFamily: fontStyle.fontfamily_2,
-        fontWeight: 400,
-        color: 'black',
-        marginTop: 80,
+        fontWeight: 'bold',
+        color: '#54b0fe',
+        marginTop: 30,
     },
     wrapItem: {
         width: 136,
@@ -88,20 +138,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 40,
         marginHorizontal: 20,
-        borderRadius: 15,
+        borderRadius: 13,
         marginBottom: 10,
-        elevation: 2,
+        elevation: 10,
     },
     img: {
         width: 60,
         height: 60,
+        marginTop: 5
     },
     txtItem: {
         fontSize: 22,
-        fontWeight: 300,
         fontFamily: fontStyle.fontfamily_2,
         color: 'black',
-        marginTop: 10,
+        marginTop: 5,
     },
     wrapEvaluate: {
         width: 330,
@@ -121,19 +171,32 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     btnRetest: {
-        width: 346,
-        height: 46,
+        width: width,
+        height: 50,
         marginTop: 33,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 25,
         backgroundColor: color.btn_color4,
     },
     txtbtnRetest: {
-        fontSize: 18,
-        fontWeight: 500,
+        fontSize: 19,
+        fontWeight: 'bold',
         fontFamily: fontStyle.fontfamily_2,
         color: color.txtbtn_color1,
     },
+    txtitemInc: {
+        fontSize: 17,
+        fontFamily: fontStyle.fontfamily_2,
+        color: 'black',
+        fontWeight: 'bold'
+    },
+    itemInc: {
+        width: width,
+        backgroundColor: '#cde7fe',
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderBottomColor: color.btn_color4,
+        borderBottomWidth: 2
+    }
 });
 export default TestResult;
