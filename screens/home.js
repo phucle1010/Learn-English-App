@@ -6,9 +6,11 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native';
 
 import Header from '../components/Header';
+import { useSelector } from 'react-redux';
 
 const Home = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
+    const user = useSelector(state => state.user)
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -25,7 +27,7 @@ const Home = ({ navigation }) => {
                             <View style={styles.container}>
                                 <View style={styles.secsion1}>
                                     <View style={styles.headcontainer}>
-                                        <Text style={styles.txthead1}>Xin chào Phúc,</Text>
+                                        <Text style={styles.txthead1}>Xin chào {user.fullName},</Text>
                                         <Image
                                             style={styles.imgAccount}
                                             source={{
@@ -69,7 +71,7 @@ const Home = ({ navigation }) => {
                                             <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
                                             <Text style={styles.txtimgItem}>Tin tức</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems}>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Videos")}>
                                             <Image
                                                 style={styles.imgItem}
                                                 source={require('../sources/images/video-marketing.png')}

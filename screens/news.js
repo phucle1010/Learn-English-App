@@ -104,7 +104,7 @@ const News = ({ navigation }) => {
                     <View style={styles.headcontainer}>
                         <Text style={styles.txthead}>Tin tức</Text>
                     </View>
-                    <ScrollView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         {allArticles.length > 0 &&
                             allArticles.map((item, index) => (
                                 <Article article={item} key={index} navigation={navigation} />

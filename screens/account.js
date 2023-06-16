@@ -15,8 +15,11 @@ import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
 
 import Header from '../components/Header';
+import { useSelector } from 'react-redux';
 
 const Account = () => {
+    const user = useSelector(state => state.user)
+
     const handleSignOut = async () => {
         await signOut()
             .then(() => Alert.alert('Thông báo', 'Đăng xuất thành công'))
@@ -38,8 +41,8 @@ const Account = () => {
                                 }}
                             />
                             <View style={styles.detailAccount}>
-                                <Text style={styles.txtAccount}> Nguyễn Văn A</Text>
-                                <Text style={styles.txtEmail}>nvana@gmail.com</Text>
+                                <Text style={styles.txtAccount}>{user.fullName}</Text>
+                                <Text style={styles.txtEmail}>{user.email}</Text>
                             </View>
                             <TouchableOpacity>
                                 <Image style={styles.iconEdit} source={require('../sources/icons/edit.png')} />
