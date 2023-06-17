@@ -5,6 +5,9 @@ import DetailBook from '../screens/detailBook';
 import DetailVideo from '../screens/detailVideo';
 import DetailWordGroup from '../screens/detailWordGroup';
 import Exercise from '../screens/exercise';
+import MultipleChoiceExercise from '../screens/multipleChoiceExercise';
+import MultipleChoiceExerciseResult from '../screens/multipleChoiceExerciseResult';
+import DetailMultipleChoiceExercise from '../screens/detailMultipleChoiceExercise';
 import ListenExercise from '../screens/listenExercise';
 import DetailListenExercise from '../screens/detailListenExercise';
 import ListenExerciseTopic from '../screens/listenExerciseTopic';
@@ -216,6 +219,36 @@ const screens = [
     {
         name: 'Exercise',
         component: Exercise,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'MultipleChoiceExercise',
+        component: MultipleChoiceExercise,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'MultipleChoiceExerciseResult',
+        component: MultipleChoiceExerciseResult,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#faa0a0',
+        activeColor: '#ee4b2b',
+        isHideTab: true,
+        isHideNavigationTab: false,
+    },
+    {
+        name: 'DetailMultipleChoiceExercise',
+        component: DetailMultipleChoiceExercise,
         tabIconName: 'home-outline',
         tabIconSize: 30,
         tabIconColor: '#faa0a0',

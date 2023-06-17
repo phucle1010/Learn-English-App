@@ -18,7 +18,7 @@ const Exercise = ({ navigation }) => {
                     <Image style={styles.img} source={require('../sources/images/headphones.png')} />
                     <Text style={styles.txtItem}>Nghe</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.wrapItemExercise}>
+                <TouchableOpacity style={styles.wrapItemExercise} onPress={() => navigation.navigate("MultipleChoiceExercise")}>
                     <Image style={styles.img} source={require('../sources/images/problem.png')} />
                     <Text style={styles.txtItem}>Trắc nghiệm</Text>
                 </TouchableOpacity>
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     wrapItemExercise: {
-        width: 135,
-        height: 135,
+        width: '30%',
+        height: '30%',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 30,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
     txtItem: {
         marginTop: 10,
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 300,
         fontFamily: fontStyle.fontfamily_1,
         color: color.txt4,

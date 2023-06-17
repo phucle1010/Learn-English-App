@@ -141,8 +141,6 @@ const GrammarExercise = (props) => {
                     <View
                         style={{
                             borderRadius: 6,
-                            // marginHorizontal: 16,
-                            // paddingHorizontal: 10,
                             marginTop: 30,
                         }}
                     >

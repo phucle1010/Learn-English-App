@@ -32,7 +32,7 @@ const DetailReadBook = ({ navigation, route }) => {
                             <Text style={styles.txtbook} numberOfLines={3}>{itembook.title}</Text>
                             <Text style={styles.txtauthor} numberOfLines={3}>{itembook.subtitle}</Text>
                         </View>
-                        <TouchableOpacity style={styles.btnQuickView} onPress={() => { navigation.navigate('DetailBook', { idBook: itembook.book_id }) }}>
+                        <TouchableOpacity style={styles.btnQuickView} onPress={() => { navigation.navigate('DetailBook', { idBook: itembook.book_id, itembook }) }}>
                             <Text style={styles.txtbtnQuickView}>Tải sách</Text>
                         </TouchableOpacity>
                     </View>

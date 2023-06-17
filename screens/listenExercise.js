@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
         color: color.txt5,
     },
     levelItem: {
-        width: 140,
-        height: 140,
+        width: '35%',
+        height: '32%',
         marginHorizontal: 25,
         marginVertical: 18,
         backgroundColor: '#fff',

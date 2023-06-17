@@ -123,10 +123,10 @@ const DetailVideo = ({ navigation, route }) => {
                                 subtitles.length > 0 && subtitles.map((subtitle, index) => <View key={index} style={{ flexDirection: 'row', marginHorizontal: 15, marginTop: 10 }}>
                                     <Text style={{ fontWeight: 'bold', marginRight: 15, fontSize: 16 }}>{formatTime(subtitle.start)}</Text>
                                     <Text style={{
+                                        flex: 1,
                                         fontSize: 16,
                                         color: focusTextColor(subtitle, index === subtitles.length - 1 ? {} : subtitles[index + 1]) ? changeCurrentSub(index + 1, '#6495ED') : '#797979'
                                     }}>{subtitle.text.replace(subtitle.text[0], subtitle.text[0].toUpperCase())}</Text>
-                                    {/* {console.log('start: ', parseFloat(subtitle.start).toFixed(4), 'end: ', parseFloat(subtitle.start + subtitle.dur).toFixed(4))} */}
                                 </View>)
                             }
                         </ScrollView>

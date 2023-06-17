@@ -6,7 +6,7 @@ import fontstyle from '../contains/fontStyle';
 
 const DetailBook = (props) => {
     const { navigation, route } = props
-    const { idBook } = route.params
+    const { idBook, itembook } = route.params
     const source = { uri: `https://edtechbooks.org/pdfs.v2/${idBook}/_${idBook}.pdf`, cache: true };
     // console.log(`https://edtechbooks.org/pdfs.v2/${idBook}/_${idBook}.pdf`)
     //const source = require('./test.pdf');  // ios only
@@ -19,7 +19,9 @@ const DetailBook = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>
-                <TouchableOpacity onPress={() => navigation.navigate("ReadBook")}>
+                <TouchableOpacity onPress={() => navigation.navigate("DetailReadBook", {
+                    itembook
+                })}>
                     <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
                 </TouchableOpacity>
                 <Text style={styles.txthead}>Nội dung sách</Text>

@@ -303,9 +303,9 @@ const DetailListenExercise = ({ navigation, route }) => {
 
                                 <Text style={{
                                     flex: 1,
-                                    fontSize: 16,
-                                    textAlign: 'center'
-                                }}>{format(position)} / {format(duration)}</Text>
+                                    fontSize: 15,
+                                    textAlign: 'center',
+                                }}>{format(position)}/{format(duration)}</Text>
                             </View>
                             {
                                 detailQuestions.map((item, index) => <QuestionItem question={item} key={index} index={index + 1} setAnswerList={setAnswerList} answerList={answerList} clickedOKOnAlert={clickedOKOnAlert} clickedReset={clickedReset} />)
