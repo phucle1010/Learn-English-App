@@ -19,6 +19,8 @@ import { doc, getDoc, getDocs, collection } from '../firebase/index';
 import fontstyle from '../contains/fontStyle';
 import { useDispatch } from 'react-redux';
 import { addUserIntoApp } from '../reducers/userSlice';
+import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Login = ({ navigation }) => {
@@ -35,11 +37,19 @@ const Login = ({ navigation }) => {
     };
     const [userInfo, setUserInfo] = useState(initUser);
     const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    const [deviceID, setDeviceID] = useState(null);
+    //const deviceID = DeviceInfo.getUniqueId();
     useEffect(() => {
+        DeviceInfo.getUniqueId().then((uniqueId) => {
+            setDeviceID(uniqueId);
+            // console.log(deviceID);
+        });
+
         if (successfulSignIn) {
             navigation.navigate('Home');
         }
     }, [successfulSignIn]);
+
 
 
 
@@ -50,14 +60,16 @@ const Login = ({ navigation }) => {
                 users.push(doc.data());
             });
             users.forEach((element) => {
-                console.log(element);
                 if (element.id === uid) {
                     userInfo.dateOfBirth = element.dateOfBirth;
                     userInfo.fullName = element.fullName;
                     userInfo.level_id = element.level_id;
                 }
             });
-            console.log(userInfo.fullName);
+            console.log(deviceID);
+            await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+            await AsyncStorage.setItem('device_id', deviceID);
+
         } catch (error) {
             console.log(error);
         }
@@ -71,10 +83,7 @@ const Login = ({ navigation }) => {
             signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    console.log(user);
                     const uid = user.uid;
-                    console.log(uid);
-
                     Alert.alert('Alert Title', 'Đăng nhập thành công: ' + userInfo.email, [
                         {
                             text: 'Cancel',
@@ -158,6 +167,7 @@ const Login = ({ navigation }) => {
                 </View>
             </View>
         </SafeAreaView>
+
     );
 };
 
