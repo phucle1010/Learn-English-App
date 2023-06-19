@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
@@ -6,9 +6,28 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import Header from '../components/Header';
 import db, { collection, query, where, getDocs } from '../firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({ navigation }) => {
+
+
+    const [search, setSearch] = useState('');
+    const [searchedWordData, setSearchedWordData] = useState({});
+    const [showedWordModal, setShownWordModal] = useState(false);
+    const [userState, setUserState] = useState(null);
+    //const [user, setUser] = useState({});
     const user = useSelector((state) => state.user);
+
+    const [deviceId, setDeviceId] = useState(null);
+
+
+
+    useEffect(() => {
+
+        getUserState();
+
+    }, []);
+
     // const [searchTerm, setSearchTerm] = useState('');
     // const [searchResults, setSearchResults] = useState([]);
     // const searchVocabulary = async () => {
@@ -28,109 +47,153 @@ const Home = ({ navigation }) => {
     //         console.error('Error searching vocabulary:', error);
     //         throw error;
     //     }
-};
-return (
-    <SafeAreaView style={styles.main}>
-        <Header />
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-            <View style={styles.container}>
-                <View style={styles.secsion1}>
-                    <View style={styles.headcontainer}>
-                        <Text style={styles.txthead1}>{user.fullName}</Text>
-                        <Image
-                            style={styles.imgAccount}
-                            source={{
-                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
-                            }}
-                        />
+
+    async function getDevice_Id() {
+        try {
+            AsyncStorage.getItem('device_id').then((uniqueId) => {
+                setDeviceId(uniqueId);
+            });
+
+
+        } catch (error) {
+        }
+    }
+    const getUserState = async () => {
+        try {
+            // Kiểm tra xem người dùng đã đăng nhập hay chưa
+            const user = await AsyncStorage.getItem('user');
+            console.log(user);
+            console.log(deviceId);
+            getDevice_Id();
+            console.log(user);
+            if (!(user && deviceId)) {
+                // Người dùng đã đăng nhập
+                const parsedUser = JSON.parse(user);
+                setUserState(parsedUser);
+            } else {
+                // Người dùng chưa đăng nhập
+                navigation.navigate('Login');
+                setUserState(null);
+            }
+        } catch (error) {
+            console.log('Lỗi lấy thông tin trạng thái người dùng:', error);
+        }
+    };
+    const handleSearchWord = async () => {
+        const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
+
+        querySnapshot.forEach((doc) => {
+            if (doc.data().word === search.toLowerCase()) {
+                setSearchedWordData(doc.data());
+                console.log(setSearchedWordData);
+                setShownWordModal(true);
+            }
+        });
+    };
+
+
+    return (
+        <SafeAreaView style={styles.main}>
+            <Header />
+            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                <View style={styles.container}>
+                    <View style={styles.secsion1}>
+                        <View style={styles.headcontainer}>
+                            <Text style={styles.txthead1}>{user.fullName}</Text>
+                            <Image
+                                style={styles.imgAccount}
+                                source={{
+                                    uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
+                                }}
+                            />
+                        </View>
+                        <View style={{
+                            width: '100%',
+                            paddingHorizontal: 10,
+                        }}>
+                            <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
+                        </View>
                     </View>
-                    <View style={{
-                        width: '100%',
-                        paddingHorizontal: 10,
-                    }}>
-                        <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
+                    <Text style={styles.txtContent}>Từ điển</Text>
+                    <View style={styles.secsion2}>
+                        <View>
+                            <Text style={styles.txtvocabulary}>Từ vựng</Text>
+                        </View>
+                        <View>
+                            <View style={styles.searchcontainer}>
+                                <TextInput style={styles.search} placeholder="Nhập từ vựng"
+                                    onChangeText={(input) => setSearch(input)} value={search} />
+                                <TouchableOpacity onPress={handleSearchWord}>
+                                    <Icon name='search-outline' size={28} style={{
+                                        paddingRight: 10
+                                    }} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View>
+                            <Text style={styles.txtVocabularySearched}>Từ vựng tìm kiếm gần đây</Text>
+                            <View style={styles.wrapwords}>
+                                <Text style={styles.txtwords}>Hello</Text>
+                            </View>
+                        </View>
                     </View>
-                </View>
-                <Text style={styles.txtContent}>Từ điển</Text>
-                <View style={styles.secsion2}>
-                    <View>
-                        <Text style={styles.txtvocabulary}>Từ vựng</Text>
-                    </View>
-                    <View>
-                        <View style={styles.searchcontainer}>
-                            <TextInput style={styles.search} placeholder="Nhập từ vựng"
-                                onChangeText={text => setSearchTerm(text)} />
-                            <TouchableOpacity onPress={searchVocabulary}>
-                                <Icon name='search-outline' size={28} style={{
-                                    paddingRight: 10
-                                }} />
+                    <Text style={styles.txtContent}>Khám phá</Text>
+                    <View style={styles.secsion3}>
+                        <View style={styles.listItem}>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
+                                <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
+                                <Text style={styles.txtimgItem}>Tin tức</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems}>
+                                <Image
+                                    style={styles.imgItem}
+                                    source={require('../sources/images/video-marketing.png')}
+                                />
+                                <Text style={styles.txtimgItem}>Video</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
+                                <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
+                                <Text style={styles.txtimgItem}>Đọc sách</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
+                                <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
+                                <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.listItem}>
+                            <TouchableOpacity style={styles.wrapItems}>
+                                <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
+                                <Text style={styles.txtimgItem}>Ngữ pháp</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems}>
+                                <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
+                                <Text style={styles.txtimgItem}>Bài tập</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems}>
+                                <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
+                                <Text style={styles.txtimgItem}>Game</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.wrapItems}>
+                                <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
+                                <Text style={styles.txtimgItem}>Kiểm tra</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View>
-                        <Text style={styles.txtVocabularySearched}>Từ vựng tìm kiếm gần đây</Text>
-                        <View style={styles.wrapwords}>
-                            <Text style={styles.txtwords}>Hello</Text>
-                        </View>
+                        <Text style={styles.txtContent}>Thống kê sử dụng</Text>
+                    </View>
+                    <View style={{
+                        width: 370,
+                    }}>
+                        <Image
+                            style={styles.chart}
+                            source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
+                        />
                     </View>
                 </View>
-                <Text style={styles.txtContent}>Khám phá</Text>
-                <View style={styles.secsion3}>
-                    <View style={styles.listItem}>
-                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
-                            <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
-                            <Text style={styles.txtimgItem}>Tin tức</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems}>
-                            <Image
-                                style={styles.imgItem}
-                                source={require('../sources/images/video-marketing.png')}
-                            />
-                            <Text style={styles.txtimgItem}>Video</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
-                            <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
-                            <Text style={styles.txtimgItem}>Đọc sách</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
-                            <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
-                            <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.listItem}>
-                        <TouchableOpacity style={styles.wrapItems}>
-                            <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
-                            <Text style={styles.txtimgItem}>Ngữ pháp</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems}>
-                            <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
-                            <Text style={styles.txtimgItem}>Bài tập</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems}>
-                            <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
-                            <Text style={styles.txtimgItem}>Game</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.wrapItems}>
-                            <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
-                            <Text style={styles.txtimgItem}>Kiểm tra</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View>
-                    <Text style={styles.txtContent}>Thống kê sử dụng</Text>
-                </View>
-                <View style={{
-                    width: 370,
-                }}>
-                    <Image
-                        style={styles.chart}
-                        source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
-                    />
-                </View>
-            </View>
-        </ScrollView>
-    </SafeAreaView>
-);
+            </ScrollView>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({

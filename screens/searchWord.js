@@ -21,9 +21,14 @@ const SearchWord = () => {
                     <Text style={styles.txtspell}>/həˈloʊ/</Text>
                     <View style={styles.soundcontainer}>
                         <Text style={styles.txticon}>UK</Text>
-                        <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        <TouchableOpacity>
+                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        </TouchableOpacity>
+
                         <Text style={styles.txticon}>US</Text>
-                        <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        <TouchableOpacity>
+                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.typewordcontainer}>
