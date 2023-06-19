@@ -1,5 +1,4 @@
 import Account from '../screens/account';
-import DetailNews from '../screens/detailNews';
 import DetailReadBook from '../screens/detailReadBook';
 import DetailBook from '../screens/detailBook';
 import DetailVideo from '../screens/detailVideo';
@@ -95,16 +94,6 @@ const screens = [
         activeColor: '#0047AB',
         isHideTab: true,
         isHideNavigationTab: true,
-    },
-    {
-        name: 'DetailNews',
-        component: DetailNews,
-        tabIconName: 'home-outline',
-        tabIconSize: 30,
-        tabIconColor: '#ddf7ff',
-        activeColor: '#0047AB',
-        isHideTab: true,
-        isHideNavigationTab: false,
     },
     {
         name: 'Videos',
