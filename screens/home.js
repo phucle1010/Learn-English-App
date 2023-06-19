@@ -263,13 +263,14 @@ const styles = StyleSheet.create({
     },
     listItem: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         marginBottom: 10,
+        paddingHorizontal: 15
     },
     wrapItems: {
         backgroundColor: color.btn_color3,
         width: 70,
         height: 70,
-        marginLeft: 15,
         marginTop: 15,
         justifyContent: 'center',
         alignItems: 'center',
