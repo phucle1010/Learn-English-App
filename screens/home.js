@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
@@ -7,7 +7,13 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUserIntoApp } from '../reducers/userSlice';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { getDocs, collection } from 'firebase/firestore';
+import db from '../firebase';
+
 import Loading from '../components/Loading';
+import WordModal from '../components/WordModal';
 
 import Header from '../components/Header';
 
@@ -21,6 +27,8 @@ const Home = ({ navigation }) => {
     const [deviceId, setDeviceId] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
+    const snapPoints = useMemo(() => ['70%'], []);
+
     async function getDevice_Id() {
         AsyncStorage.getItem('device_id').then((uniqueId) => {
             setDeviceId(uniqueId);
@@ -29,7 +37,6 @@ const Home = ({ navigation }) => {
 
     const getUserState = async () => {
         try {
-            // Kiểm tra xem người dùng đã đăng nhập hay chưa
             const user = await AsyncStorage.getItem('user');
             if (user === null || deviceId === '') {
                 AsyncStorage.setItem('user', JSON.stringify({})).then(() => {
@@ -73,7 +80,7 @@ const Home = ({ navigation }) => {
     }, [isFocusedScreen])
 
     return (
-        <React.Fragment>
+        <GestureHandlerRootView>
             {
                 loaded ? (
                     <SafeAreaView style={styles.main}>
@@ -178,10 +185,28 @@ const Home = ({ navigation }) => {
                                 </View>
                             </View>
                         </ScrollView>
+                        {
+                            showedWordModal && <BottomSheet
+                                snapPoints={snapPoints}
+                                enablePanDownToClose={true}
+                                onClose={() => {
+                                    setShownWordModal(false)
+                                    setSearchedWordData({})
+                                }}
+                                style={{
+                                    elevation: 8
+                                }}
+                            >
+                                <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+                                    <WordModal searchedword={searchedWordData} />
+                                </BottomSheetScrollView>
+                            </BottomSheet>
+                        }
                     </SafeAreaView>
                 ) : <Loading />
             }
-        </React.Fragment>
+
+        </GestureHandlerRootView>
 
     );
 };

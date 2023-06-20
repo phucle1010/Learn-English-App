@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Text,
     StyleSheet,
@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     TextInput,
     Dimensions,
-    Alert
 } from 'react-native';
 import { getDocs, collection } from 'firebase/firestore';
 import db from '../firebase';
@@ -39,7 +38,7 @@ const ReadNews = ({ navigation, route }) => {
         });
     };
 
-    const snapPoints = useMemo(() => ['45%', '70%'], []);
+    const snapPoints = useMemo(() => ['50%', '70%'], []);
 
     const formatDate = (date) => {
         const convertedDate = new Date(Date.parse(date));
