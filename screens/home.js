@@ -4,18 +4,74 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUserIntoApp } from '../reducers/userSlice';
+import Loading from '../components/Loading';
 
 import Header from '../components/Header';
-import { useSelector } from 'react-redux';
 
 const Home = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
     const user = useSelector(state => state.user)
+    const dispatch = useDispatch();
+    const [search, setSearch] = useState('');
+    const [searchedWordData, setSearchedWordData] = useState({});
+    const [showedWordModal, setShownWordModal] = useState(false);
+    const [deviceId, setDeviceId] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
+    async function getDevice_Id() {
+        AsyncStorage.getItem('device_id').then((uniqueId) => {
+            setDeviceId(uniqueId);
+        });
+    }
+    console.log(user)
+
+    const getUserState = async () => {
+        try {
+            // Kiểm tra xem người dùng đã đăng nhập hay chưa
+            const user = await AsyncStorage.getItem('user');
+            if (user === null || deviceId === '') {
+                AsyncStorage.setItem('user', JSON.stringify({})).then(() => {
+                    navigation.navigate('Login');
+                })
+            } else {
+                AsyncStorage.getItem('user').then((user) => {
+                    const parsedUser = JSON.parse(user);
+                    if (Object.keys(parsedUser).length === 0) {
+                        navigation.navigate('Login');
+                    } else {
+                        dispatch(addUserIntoApp(parsedUser));
+                        setLoaded(true);
+                    }
+                })
+            }
+        } catch (error) {
+            console.log('Lỗi lấy thông tin trạng thái người dùng:', error);
+        }
+    };
+
+    const handleSearchWord = async () => {
+        const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
+
+        querySnapshot.forEach((doc) => {
+            if (doc.data().word === search.toLowerCase()) {
+                setSearchedWordData(doc.data());
+                setShownWordModal(true);
+            }
+        });
+    };
+
     useEffect(() => {
-        setLoaded(true);
-    }, [isFocusedScreen]);
+        getDevice_Id();
+    }, [])
+
+    useEffect(() => {
+        if (isFocusedScreen) {
+            getUserState();
+        }
+    }, [isFocusedScreen])
 
     return (
         <React.Fragment>
@@ -49,8 +105,12 @@ const Home = ({ navigation }) => {
                                     </View>
                                     <View>
                                         <View style={styles.searchcontainer}>
-                                            <TextInput style={styles.search} placeholder="Nhập từ vựng" />
-                                            <TouchableOpacity>
+                                            <TextInput
+                                                style={styles.search}
+                                                placeholder="Nhập từ vựng"
+                                                onChangeText={(input) => setSearch(input)} value={search}
+                                            />
+                                            <TouchableOpacity onPress={handleSearchWord}>
                                                 <Icon name='search-outline' size={28} style={{
                                                     paddingRight: 10
                                                 }} />
@@ -120,16 +180,7 @@ const Home = ({ navigation }) => {
                             </View>
                         </ScrollView>
                     </SafeAreaView>
-                ) : <View
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text style={{ fontSize: 20, color: '#767676' }}>Loading...</Text>
-                </View>
+                ) : <Loading />
             }
         </React.Fragment>
 

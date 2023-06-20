@@ -77,22 +77,18 @@ const Account = () => {
             }}>
                 <View style={{
                     marginTop: 80,
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'center'
                 }}>
-                    <View style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                    }}>
-                        <View style={styles.imgContainer}>
-                            <Image
-                                style={styles.imgItem}
-                                source={{
-                                    uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
-                                }}
-                            />
-                        </View>
+                    <View style={styles.imgContainer}>
+                        <Image
+                            style={styles.imgItem}
+                            source={{
+                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
+                            }}
+                        />
                     </View>
-                    <View style={{ flex: 1 }} />
                 </View>
                 <View style={styles.detailAccount}>
                     <Text style={styles.txtAccount}>Lê Thế Phúc</Text>
@@ -115,12 +111,6 @@ const Account = () => {
                 style={styles.scrollContainer}
                 snapPoints={snapPoints}
                 enablePanDownToClose={false}
-
-            // enablePanDownToClose={true}
-            // onClose={() => {
-            //     setShownWordModal(false)
-            //     setSearchedWordData({})
-            // }}
             >
                 <BottomSheetScrollView showsVerticalScrollIndicator={false}>
                     <View style={styles.levelNowContainer}>
@@ -235,7 +225,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ffffff',
         borderRadius: 10,
-        elevation: 4,
+        elevation: 10,
     },
     txtLogout: {
         fontSize: 16,
@@ -258,8 +248,6 @@ const styles = StyleSheet.create({
         color: color.txt1,
         marginTop: 10,
     },
-
-
     wrapbtn: {
         width: 114,
         height: 31,
@@ -285,11 +273,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     imgItem: {
-        width: '94%',
-        height: '94%',
+        width: '95%',
+        height: '95%',
         borderRadius: 50,
-        borderColor: '#4d53e3',
-        borderWidth: 2,
     },
     linearGradient: {
         width: 100,

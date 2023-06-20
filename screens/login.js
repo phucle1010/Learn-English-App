@@ -16,7 +16,8 @@ import db, { auth, doc, getDoc, getDocs, collection } from '../firebase';
 import fontstyle from '../contains/fontStyle';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUserIntoApp } from '../reducers/userSlice';
-
+import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
     const user = useSelector(state => state.user)
@@ -33,13 +34,14 @@ const Login = ({ navigation }) => {
 
     const [userInfo, setUserInfo] = useState(initUser);
     const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    const [deviceID, setDeviceID] = useState(null);
 
-    // useEffect(() => {
-    //     if (successfulSignIn) {
 
-    //     }
-    // }, [successfulSignIn]);
-
+    useEffect(() => {
+        DeviceInfo.getUniqueId().then((uniqueId) => {
+            setDeviceID(uniqueId);
+        });
+    }, [])
 
     const getUserData = async (uid) => {
         try {
@@ -49,31 +51,37 @@ const Login = ({ navigation }) => {
             });
             users.forEach((element) => {
                 if (element.id === uid) {
-                    userInfo.dateOfBirth = element.dateOfBirth;
-                    userInfo.fullName = element.fullName;
-                    userInfo.level_id = element.level_id;
+                    setUserInfo({
+                        dateOfBirth: element.dateOfBirth,
+                        fullName: element.fullName,
+                        level_id: element.level_id,
+                    })
                 }
             });
+
         } catch (error) {
             console.log(error);
         }
     };
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                getUserData(user.uid);
-                dispatch(addUserIntoApp(userInfo));
-            }
-        });
+    // useEffect(() => {
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         if (user) {
+    //             getUserData(user.uid);
+    //             dispatch(addUserIntoApp(userInfo));
+    //         }
+    //     });
 
-        return unsubscribe;
-    }, []);
+    //     return unsubscribe;
+    // }, []);
 
     useEffect(() => {
         if (Object.keys(user).length > 0) {
-            navigation.navigate('Home');
+            AsyncStorage.setItem('user', JSON.stringify(userInfo));
+            AsyncStorage.setItem('device_id', deviceID);
+            setTimeout(() => navigation.navigate('Home'), 1000)
         }
+        return () => clearTimeout();
     }, [user]);
 
     const handleSignIn = () => {
