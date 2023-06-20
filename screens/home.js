@@ -26,7 +26,6 @@ const Home = ({ navigation }) => {
             setDeviceId(uniqueId);
         });
     }
-    console.log(user)
 
     const getUserState = async () => {
         try {

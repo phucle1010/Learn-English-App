@@ -24,18 +24,11 @@ const Login = ({ navigation }) => {
     const userRef = collection(db, 'USER');
     const users = [];
     const dispatch = useDispatch();
-    const initUser = {
+    const [userLogin, setUserLogin] = useState({
         email: '',
-        fullName: '',
-        dateOfBirth: '',
-        level_id: '',
         password: '',
-    };
-
-    const [userInfo, setUserInfo] = useState(initUser);
-    const [successfulSignIn, setSuccessfulSignIn] = useState(false);
+    });
     const [deviceID, setDeviceID] = useState(null);
-
 
     useEffect(() => {
         DeviceInfo.getUniqueId().then((uniqueId) => {
@@ -51,11 +44,13 @@ const Login = ({ navigation }) => {
             });
             users.forEach((element) => {
                 if (element.id === uid) {
-                    setUserInfo({
+                    dispatch(addUserIntoApp({
                         dateOfBirth: element.dateOfBirth,
                         fullName: element.fullName,
                         level_id: element.level_id,
-                    })
+                        email: element.email,
+                        id: element.id,
+                    }));
                 }
             });
 
@@ -64,31 +59,21 @@ const Login = ({ navigation }) => {
         }
     };
 
-    // useEffect(() => {
-    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             getUserData(user.uid);
-    //             dispatch(addUserIntoApp(userInfo));
-    //         }
-    //     });
-
-    //     return unsubscribe;
-    // }, []);
-
     useEffect(() => {
         if (Object.keys(user).length > 0) {
-            AsyncStorage.setItem('user', JSON.stringify(userInfo));
+            AsyncStorage.setItem('user', JSON.stringify(user));
             AsyncStorage.setItem('device_id', deviceID);
             setTimeout(() => navigation.navigate('Home'), 1000)
         }
         return () => clearTimeout();
     }, [user]);
 
+
     const handleSignIn = () => {
-        if (userInfo.email === '' || userInfo.password === '') {
+        if (userLogin.email === '' || userLogin.password === '') {
             Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin đăng ký');
         } else {
-            signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
+            signInWithEmailAndPassword(auth, userLogin.email, userLogin.password)
                 .then((userCredential) => {
                     const user = userCredential.user;
                     const uid = user.uid;
@@ -103,7 +88,6 @@ const Login = ({ navigation }) => {
                             text: 'OK',
                             onPress: () => {
                                 getUserData(uid);
-                                dispatch(addUserIntoApp(userInfo));
                             },
 
                         },
@@ -133,7 +117,7 @@ const Login = ({ navigation }) => {
             <View style={styles.container}>
                 <View>
                     <TextInput style={styles.email} placeholder="Email" onChangeText={(email) =>
-                        setUserInfo((prevUser) => {
+                        setUserLogin((prevUser) => {
                             return {
                                 ...prevUser,
                                 email,
@@ -143,7 +127,7 @@ const Login = ({ navigation }) => {
                 <View style={styles.passcontainer}>
                     <TextInput style={styles.password} placeholder="Mật khẩu" secureTextEntry={true}
                         onChangeText={(password) =>
-                            setUserInfo((prevUser) => {
+                            setUserLogin((prevUser) => {
                                 return {
                                     ...prevUser,
                                     password,

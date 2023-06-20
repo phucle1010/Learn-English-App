@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     Text,
     StyleSheet,
@@ -18,19 +18,36 @@ import fontStyle from '../contains/fontStyle';
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUserIntoApp } from '../reducers/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../firebase';
+import { useIsFocused } from '@react-navigation/native';
 
-import { useSelector } from 'react-redux';
-
-const Account = () => {
+const Account = ({ navigation }) => {
     const user = useSelector(state => state.user)
+    const dispatch = useDispatch();
+    const isFocusedScreen = useIsFocused();
     const [clickedOption, setClickedOption] = useState(false);
 
     const snapPoints = useMemo(() => ['60%'], []);
 
+    useEffect(() => {
+        if (!isFocusedScreen) {
+            setClickedOption(false)
+        }
+    }, [isFocusedScreen])
+
     const handleSignOut = async () => {
-        await signOut()
-            .then(() => Alert.alert('Thông báo', 'Đăng xuất thành công'))
-            .catch((err) => Alert.alert('Lỗi', err));
+        await signOut(auth)
+            .then(() => {
+                dispatch(addUserIntoApp({}))
+                AsyncStorage.setItem('user', JSON.stringify({}))
+                AsyncStorage.setItem('device_id', JSON.stringify(''))
+                Alert.alert('Thông báo', 'Đăng xuất thành công')
+                setTimeout(() => { navigation.navigate("Login") }, 1000);
+            })
+            .catch((err) => console.log('Lỗi: ', err));
     };
 
     return (
@@ -58,7 +75,10 @@ const Account = () => {
                 </TouchableOpacity>
                 {
                     clickedOption && (
-                        <TouchableOpacity style={styles.btnLogout}>
+                        <TouchableOpacity
+                            style={styles.btnLogout}
+                            onPress={handleSignOut}
+                        >
                             <Icon name='logout' style={{
                                 ...styles.txtLogout,
                                 marginHorizontal: 10,
@@ -91,8 +111,8 @@ const Account = () => {
                     </View>
                 </View>
                 <View style={styles.detailAccount}>
-                    <Text style={styles.txtAccount}>Lê Thế Phúc</Text>
-                    <Text style={styles.txtEmail}>lethephuc2002@gmail.com</Text>
+                    <Text style={styles.txtAccount}>{user.fullName}</Text>
+                    <Text style={styles.txtEmail}>{user.email}</Text>
                     <View style={{ marginVertical: 10, width: '100%', flexDirection: 'row', justifyContent: 'center' }}>
                         <View style={{
                             width: '30%'
@@ -182,13 +202,9 @@ const Account = () => {
 const styles = StyleSheet.create({
     main: {
         height: '100%',
-        // paddingBottom: 60,
     },
     scrollContainer: {
-        // borderTopRightRadius: 15,
-        // borderTopLeftRadius: 15,
-        // elevation: 4,
-        // backgroundColor: '#ffffff',
+
     },
     linearContainer: {
         position: 'absolute',
