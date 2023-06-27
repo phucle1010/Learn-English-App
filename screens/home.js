@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addUserIntoApp } from '../reducers/userSlice';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, updateDoc, doc, increment } from 'firebase/firestore';
 import db from '../firebase';
+import Statistic from './statistic'
 
 import Loading from '../components/Loading';
 import WordModal from '../components/WordModal';
@@ -59,15 +60,24 @@ const Home = ({ navigation }) => {
     };
 
     const handleSearchWord = async () => {
+        console.log("handleSearchWord")
         const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
 
         querySnapshot.forEach((doc) => {
             if (doc.data().word === search.toLowerCase()) {
                 setSearchedWordData(doc.data());
                 setShownWordModal(true);
+                updatenumsearch(doc.id)
             }
         });
     };
+
+    const updatenumsearch = async (id) => {
+        const DocRef = doc(db, "VOCABULARY", id);
+        const updatedocRef = await updateDoc(DocRef, {
+            numsearch: increment(1)
+        });
+    }
 
     useEffect(() => {
         getDevice_Id();
@@ -116,7 +126,7 @@ const Home = ({ navigation }) => {
                                                 placeholder="Nhập từ vựng"
                                                 onChangeText={(input) => setSearch(input)} value={search}
                                             />
-                                            <TouchableOpacity onPress={handleSearchWord}>
+                                            <TouchableOpacity onPress={() => { handleSearchWord() }}>
                                                 <Icon name='search-outline' size={28} style={{
                                                     paddingRight: 10
                                                 }} />
@@ -176,12 +186,8 @@ const Home = ({ navigation }) => {
                                     <Text style={styles.txtContent}>Thống kê sử dụng</Text>
                                 </View>
                                 <View style={{
-                                    width: 370,
                                 }}>
-                                    <Image
-                                        style={styles.chart}
-                                        source={require('../sources/images/Statistical-Graph-Flat-Icon-Graphics-13805472-1-580x387.png')}
-                                    />
+                                    <Statistic></Statistic>
                                 </View>
                             </View>
                         </ScrollView>
