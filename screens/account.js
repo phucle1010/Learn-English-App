@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     StyleSheet,
@@ -9,20 +9,77 @@ import {
     TextInput,
     SafeAreaView,
     Alert,
+    Modal,
 } from 'react-native';
 import { signOut } from 'firebase/auth';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
-
 import Header from '../components/Header';
-
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { auth, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from '../firebase';
+import { useSelector } from 'react-redux';
 const Account = () => {
+    const [modalVisible, setModalVisible] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showRePassword, setShowRePassword] = useState(false);
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [reNewPassword, setReNewPassword] = useState('');
+    const user = useSelector(state => state.user)
     const handleSignOut = async () => {
         await signOut()
             .then(() => Alert.alert('Thông báo', 'Đăng xuất thành công'))
             .catch((err) => Alert.alert('Lỗi', err));
     };
-
+    const handleShowNewPassword = (type) => {
+        switch (type) {
+            case 1:
+                setShowPassword(!showPassword);
+                break;
+            case 2:
+                setShowNewPassword(!showNewPassword);
+                break;
+            case 3:
+                setShowRePassword(!showRePassword);
+                break;
+            default:
+                break;
+        }
+    };
+    const handleSubmit = async () => {
+        if (newPassword === reNewPassword) {
+            const credential = EmailAuthProvider.credential(
+                user.email,
+                password
+            );
+            try {
+                await reauthenticateWithCredential(
+                    auth.currentUser,
+                    credential
+                );
+                await updatePassword(
+                    auth.currentUser,
+                    newPassword
+                );
+                setPassword('')
+                setNewPassword('')
+                setReNewPassword('')
+                Alert.alert("Thông báo", 'Mật khẩu cập nhật thành công, xin vui lòng đăng nhập lại!!', [
+                    {
+                        text: 'OK',
+                        onPress: handleSignOut,
+                        style: 'OK',
+                    },
+                ],)
+            } catch (error) {
+                Alert.alert("Thông báo", error.code)
+            }
+        }
+        else {
+            Alert.alert("Thông báo", 'Mật khẩu mới không tương thích, vui lòng kiểm tra lại!!')
+        }
+    }
     return (
         <SafeAreaView style={styles.main}>
             <Header />
@@ -61,7 +118,9 @@ const Account = () => {
                     </View>
                     <View style={styles.wrapResetpass}>
                         <Text style={styles.txtContent}>Cài đặt mật khẩu</Text>
-                        <TouchableOpacity style={styles.wrapbtn1}>
+                        <TouchableOpacity
+                            onPress={() => setModalVisible(true)}
+                            style={styles.wrapbtn1}>
                             <Text style={styles.txtbtn1}>Đặt lại</Text>
                         </TouchableOpacity>
                     </View>
@@ -93,7 +152,87 @@ const Account = () => {
                     </View>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+            <Modal
+                visible={modalVisible}
+                transparent
+                animationType="slide"
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={{ color: '#333', fontSize: 20, marginBottom: 10 }}>Đặt lại mật khẩu</Text>
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showPassword}
+                                placeholder="Nhập mật khẩu cũ"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={password}
+                                onChangeText={setPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(1)}>
+                                {showPassword ? (
+                                    <Icon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <Icon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showNewPassword}
+                                placeholder="Nhập mật khẩu mới"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(2)}>
+                                {showNewPassword ? (
+                                    <Icon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <Icon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showRePassword}
+                                placeholder="Xác nhận mật khẩu mới"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={reNewPassword}
+                                onChangeText={setReNewPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(3)}>
+                                {showRePassword ? (
+                                    <Icon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <Icon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: color.btn_color4 }]}
+                            onPress={handleSubmit}
+                        >
+                            <Text style={styles.modalText}>Xác nhận</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={() => {
+                                setModalVisible(false);
+                                setPassword('')
+                                setNewPassword('');
+                                setReNewPassword('');
+                            }}
+                        >
+                            <Text style={styles.modalText}>Hủy</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+        </SafeAreaView >
     );
 };
 
@@ -327,6 +466,53 @@ const styles = StyleSheet.create({
         height: 117,
         backgroundColor: color.btn_color3,
         borderRadius: 15,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        width: '90%',
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    textModal: {
+        fontSize: 16,
+        color: '#333'
+    },
+    modalInput: {
+        color: '#333',
+        borderWidth: 0.5,
+        borderRadius: 5,
+        paddingLeft: 10,
+    },
+    modalButton: {
+        backgroundColor: color.btn_color1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderRadius: 100,
+        marginTop: 20
+    },
+    modalText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    iconButton: {
+        zIndex: 10,
+        position: 'absolute',
+        right: 10,
+        top: 8,
+        padding: 5
+    },
+    iconEye: {
+        fontSize: 22,
+        color: '#797979',
     },
 });
 
