@@ -44,7 +44,7 @@
         "react-native-vector-icons": "^9.2.0",
         "react-native-webview": "^13.2.2",
         "react-native-youtube-iframe": "^2.2.2",
-        "react-redux": "^8.0.5",
+        "react-redux": "^8.0.7",
         "youtube-captions-scraper": "^2.0.0"
     },
     "devDependencies": {
