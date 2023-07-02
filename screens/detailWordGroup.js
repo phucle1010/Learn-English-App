@@ -67,6 +67,11 @@ const DetailWordGroup = (props) => {
     }
     const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
 
+    const handlePressWord = (item) => {
+        console.log(item);
+        navigation.navigate('Words', { item })
+    }
+
     return (
         <React.Fragment>
             {
@@ -94,7 +99,8 @@ const DetailWordGroup = (props) => {
                                 onPressUS={() => PlayTrack(item.word.trim(), 'us')}
                                 disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
                                 disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
-                                word={item.word} />}
+                                word={item.word}
+                                onPress={() => handlePressWord(item)} />}
                             keyExtractor={item => item.id}
                         />
                     </View>

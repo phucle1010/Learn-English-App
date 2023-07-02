@@ -5,9 +5,9 @@ import fontstyle from '../contains/fontStyle';
 const { width } = Dimensions.get('window')
 
 const DetailWordGroupItem = (props) => {
-    const { word, phonetic, onPressUS, onPressUK, disUK, disUS } = props
+    const { word, phonetic, onPressUS, onPressUK, disUK, disUS, onPress } = props
     return (
-        <TouchableOpacity style={styles.wrapWord}>
+        <TouchableOpacity style={styles.wrapWord} onPress={onPress}>
             <Text style={styles.word}>{word}</Text>
             <View style={styles.wordcontainer}>
                 <Text style={styles.txtspell}>{phonetic}</Text>

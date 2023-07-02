@@ -356,6 +356,16 @@ const screens = [
         isHideTab: true,
         isHideNavigationTab: true,
     },
+    {
+        name: 'Words',
+        component: Words,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
+        tabIconColor: '#ddf7ff',
+        activeColor: '#0047AB',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
 ];
 
 export default screens;
