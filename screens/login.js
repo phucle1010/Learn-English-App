@@ -25,8 +25,8 @@ const Login = ({ navigation }) => {
     const users = [];
     const dispatch = useDispatch();
     const [userLogin, setUserLogin] = useState({
-        email: '',
-        password: '',
+        email: 'lethephuc2002@gmail.com',
+        password: '123456',
     });
     const [deviceID, setDeviceID] = useState(null);
 

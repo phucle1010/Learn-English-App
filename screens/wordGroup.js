@@ -5,6 +5,7 @@ import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 import WordGroupItem from '../components/WordGroupItem';
 import db, { getDocs, collection } from '../firebase/index';
+import { updateDoc, doc, increment } from 'firebase/firestore';
 import { useIsFocused } from '@react-navigation/native';
 
 import Loading from '../components/Loading';
@@ -36,7 +37,17 @@ const WordGroup = (props) => {
         }
     }, [isFocusedScreen])
 
+    const updatenumsearch = async (id) => {
+        console.log("updatenumsearch")
+        console.log(id)
+        const DocRef = doc(db, "TOPIC", id);
+        const updatedocRef = await updateDoc(DocRef, {
+            numsearch: increment(1)
+        });
+    }
+
     const handlePressTopic = (item) => {
+        updatenumsearch(item.id)
         navigation.navigate('DetailWordGroup', { item })
     }
 
