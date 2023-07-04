@@ -14,7 +14,6 @@ const VideoItem = ({ video, navigation }) => {
             paddingBottom: 20,
             backgroundColor: '#fafafa'
         }}
-            onPre
             onPress={() => navigation.navigate("DetailVideo", {
                 video
             })}
@@ -49,7 +48,6 @@ const VideoItem = ({ video, navigation }) => {
                     <Text style={{ fontSize: 15, fontStyle: 'italic' }}>@{video.snippet.channelTitle}</Text>
                 </View>
             </View>
-            {/* <Text style={{ marginTop: 10, paddingHorizontal: 8, fontSize: 16 }}>{video.snippet.description}</Text> */}
         </TouchableOpacity>
     )
 }

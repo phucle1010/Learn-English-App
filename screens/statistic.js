@@ -28,18 +28,22 @@ const Statistic = (props) => {
     const [dataTimeUse, setDataTimeUse] = useState({ labels: [], datasets: [{ data: [] }] })
     const [isLoading, setIsLoading] = useState(true)
 
-
-
     const chartConfig = {
-        backgroundGradientFrom: "#182f85",
-        backgroundGradientFromOpacity: 0.9,
-        backgroundGradientTo: "#364d94",
-        backgroundGradientToOpacity: 0.8,
-        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        backgroundGradientFrom: "#fff",
+        backgroundGradientFromOpacity: 1,
+        backgroundGradientTo: "#fff",
+        backgroundGradientToOpacity: 1,
+        // color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        color: () => `#8A9A5B`,
         strokeWidth: 2,
         barPercentage: 0.5,
-        useShadowColorFromDataset: false
+        useShadowColorFromDataset: false,
     };
+
+    const formattedDate = date => {
+        const newDate = new Date(Date.parse(date));
+        return `${newDate.getDate()}-${newDate.getMonth() + 1}-${newDate.getFullYear()}`
+    }
 
     const handleGet = async () => {
         const q = query(collection(db, "VOCABULARY"),
@@ -53,8 +57,6 @@ const Statistic = (props) => {
             newData1.push(dataWithId);
         });
         setDataWord(newData1)
-        console.log(dataWord)
-
 
         const q2 = query(collection(db, "TOPIC"),
             orderBy("numsearch", 'desc'),
@@ -67,7 +69,6 @@ const Statistic = (props) => {
             newData2.push(dataWithId2);
         });
         setDataWG(newData2)
-        console.log(dataWG)
 
         const q3 = query(collection(db, "USER", "iytke9JaBuoJSCsonWrV", "usage"),
             limit(7));
@@ -76,11 +77,10 @@ const Statistic = (props) => {
         const listdt = []
         querySnapshot3.forEach((doc) => {
             const docData = doc.data();
-            listLabel.push(doc.id);
+            listLabel.push(formattedDate(doc.id));
             listdt.push(docData.usageTime / 60000)
         });
         setDataTimeUse({ labels: listLabel, datasets: [{ data: listdt }] })
-        console.log(listdt)
         setIsLoading(false)
     }
 
@@ -88,7 +88,7 @@ const Statistic = (props) => {
         if (isFocusedScreen) {
             handleGet();
         } else {
-            setDataTopic([]);
+            // setDataTopic([]);
             setIsLoading(true);
         }
     }, [isFocusedScreen])
@@ -110,24 +110,17 @@ const Statistic = (props) => {
                     />
                 </View> : (
                     <View style={styles.container}>
-                        {/* <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                            </TouchableOpacity>
-                            <Text style={styles.txthead}>Bộ từ vựng</Text>
-                            <View></View>
-                        </View> */}
                         <View style={styles.content}>
                             <Text style={styles.txtwordGroup}>Top từ vựng được tìm kiếm</Text>
                             <View style={styles.boxTK}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={styles.titleTk}>Từ vựng</Text>
-                                    <Text style={styles.titleTk}>Lượt tìm kiếm</Text>
+                                    <Text style={{ ...styles.titleTk, color: '#899499', fontWeight: 'bold' }}>Từ vựng</Text>
+                                    <Text style={{ ...styles.titleTk, color: '#899499', fontWeight: 'bold' }}>Lượt tìm kiếm</Text>
                                 </View>
-                                <View style={{ height: 1, width: '100%', backgroundColor: 'white', marginBottom: 5 }}></View>
+                                <View style={{ height: 1, width: '100%', backgroundColor: '#899499', marginTop: 3, marginBottom: 5 }}></View>
 
                                 {dataWord.map((item, index) =>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginRight: 10 }} key={index}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginRight: 10, marginVertical: 5 }} key={index}>
                                         <Text style={styles.titleTk}>{item.word}</Text>
                                         <Text style={styles.titleTk}>{item.numsearch}</Text>
                                     </View>
@@ -135,14 +128,13 @@ const Statistic = (props) => {
                             </View>
                             <Text style={styles.txtwordGroup}>Top chủ đề xem nhiều nhất</Text>
                             <View style={styles.boxTK}>
-
                                 {dataWG.map((item, index) =>
                                     <View style={{ flexDirection: 'row', marginRight: 10, alignItems: 'center', marginVertical: 5 }} key={index}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white', marginRight: 15 }}>Top {index + 1}</Text>
-                                        <View style={{ height: 50, width: 80, borderRadius: 10, backgroundColor: 'white' }}>
-                                            <Image source={{ uri: item.uri }} style={{ height: 50, width: 80, borderRadius: 10 }}></Image>
+                                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#899499', marginRight: 20 }}>Top {index + 1}</Text>
+                                        <View style={{ height: 70, width: 80, borderRadius: 10, backgroundColor: 'white', marginVertical: 10, alignItems: 'center' }}>
+                                            <Image source={{ uri: item.uri }} style={{ height: '90%', width: 80, borderRadius: 10 }} resizeMode='stretch'></Image>
                                         </View>
-                                        <Text style={[styles.titleTk, { width: 135, marginLeft: 5 }]} numberOfLines={2}>{item.name}</Text>
+                                        <Text style={[styles.titleTk, { width: 135, marginLeft: 20 }]} numberOfLines={2}>{item.name}</Text>
                                     </View>
                                 )}
                             </View>
@@ -151,12 +143,15 @@ const Statistic = (props) => {
                                 <LineChart
                                     data={dataTimeUse}
                                     width={screenWidth - 60}
-                                    verticalLabelRotation={30}
-                                    chartConfig={chartConfig}
+                                    height={300}
+                                    chartConfig={{
+                                        ...chartConfig,
+                                        formatXLabel: () => 'Ngày',
+                                        labelColor: () => '#36454F',
+                                    }}
                                     fromZero={true}
                                     withVerticalLabels={true}
                                     withHorizontalLines={true}
-                                    verticalLabelRotation={15}
                                     bezier
                                 />
                             </View>
@@ -210,15 +205,15 @@ const styles = StyleSheet.create({
     boxTK: {
         width: Dimensions.get('window').width - 60,
         marginHorizontal: 19,
-        backgroundColor: "#364d94",
+        backgroundColor: "#fff",
         borderRadius: 15,
-        padding: 15
+        padding: 15,
+        elevation: 3,
     },
     titleTk: {
-        color: 'white',
+        color: '#899499',
         fontSize: 16,
     }
-
 });
 
 export default Statistic;

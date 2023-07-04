@@ -19,19 +19,10 @@ const BottomTab = () => {
                     headerShown: false,
                     tabBarStyle: styles.container,
                     tabBarShowLabel: true,
-                    // tabBarLabelStyle: {
-                    //     // color: '#6495ed',
-                    //     //             tabIconColor: '#faa0a0',
-                    //     // activeColor: '#ee4b2b',
-
-                    // },
                     tabBarIconStyle: {
-                        marginTop: 10
                     },
-                    tabBarLabel: ({ focused }) => {
-                        return focused
-                            ? (<Text style={{ color: '#6495ed', fontSize: 13, marginBottom: 15, fontWeight: 'bold' }} >{route.name}</Text>)
-                            : (<Text style={{ color: '#add8e6', fontSize: 13, marginBottom: 15, fontWeight: '400' }} >{route.name}</Text>)
+                    tabBarLabelStyle: {
+                        display: 'none'
                     },
                 }
             )}
@@ -83,6 +74,7 @@ const BottomTab = () => {
                                 ),
                                 tabBarItemStyle: {
                                     display: screen.isHideTab === true ? 'none' : 'flex',
+                                    marginHorizontal: 35,
                                     borderTopWidth: 2,
                                     borderTopColor: index === selectedTabIndex ? screen.activeColor : 'transparent',
                                 },
@@ -104,11 +96,11 @@ const BottomTab = () => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        // paddingBottom: 10,
         height: 80,
         backgroundColor: '#fff',
         borderTopWidth: 1,
         borderTopColor: '#efefef',
+        // overflow: 'hidden',
     },
 });
 

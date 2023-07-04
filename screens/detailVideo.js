@@ -8,8 +8,10 @@ import { getSubtitles } from 'youtube-captions-scraper';
 
 import Loading from '../components/Loading'
 import { useIsFocused } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const DetailVideo = ({ navigation, route }) => {
+    const currentUser = useSelector(state => state.user)
     const video = route.params.video
     const url = video.snippet.thumbnails.default.url;
     const indexOfIdInVideoURL = 4
@@ -25,6 +27,8 @@ const DetailVideo = ({ navigation, route }) => {
     const scrollRef = useRef();
 
     var playInterval = null;
+
+    console.log(currentUser)
 
     useEffect(() => {
         if (isFocusedScreen) {
@@ -46,8 +50,8 @@ const DetailVideo = ({ navigation, route }) => {
     useEffect(() => {
         if (isPlaying) {
             playInterval = setInterval(() => {
-                playerRef.current?.getDuration().then((duration) => elapsed < duration * 1000 && setElapsed(prev => prev + 1000))
-            }, 1000)
+                playerRef.current?.getDuration().then((duration) => elapsed < duration * 950 && setElapsed(prev => prev + 950))
+            }, 950)
         } else {
             clearInterval(playInterval)
         }
@@ -69,19 +73,21 @@ const DetailVideo = ({ navigation, route }) => {
     }
 
     const focusTextColor = (current, next) => {
-        if (Object.keys(next).length === 0 && elapsed > current.start * 1000) {
+        if (Object.keys(next).length === 0 && elapsed > current.start * 950) {
             return true;
         }
-        if (elapsed > current.start * 1000 && elapsed < next.start * 1000) {
+        if (elapsed > current.start * 950 && elapsed < next.start * 950) {
             return true;
         }
         return false;
     }
 
     const changeCurrentSub = (index, color) => {
-        scrollRef.current.scrollTo({
-            y: index * 44,
-            animated: true
+        subTextRef?.current?.measure((x, y, width, height) => {
+            scrollRef?.current?.scrollTo({
+                y: index * height,
+                animated: true
+            })
         })
         return color
     }
@@ -107,9 +113,9 @@ const DetailVideo = ({ navigation, route }) => {
                             onChangeState={handleStateChangeInVideo}
                             ref={playerRef}
                         />
-                        {/* <TouchableOpacity style={styles.btnSaveVideo}>
+                        <TouchableOpacity style={styles.btnSaveVideo}>
                             <Text style={styles.txtbtnSave}>Lưu video</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                         <Text style={{
                             marginTop: 15,
                             marginBottom: 10,
@@ -118,7 +124,7 @@ const DetailVideo = ({ navigation, route }) => {
                             fontWeight: 'bold'
                         }}>Subtitle</Text>
                         <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%' }} ref={scrollRef}>
-                            <View style={{ height: 50 }}></View>
+                            {/* <View style={{ height: 50 }}></View> */}
                             {
                                 subtitles.length > 0 && subtitles.map((subtitle, index) => <View key={index} style={{ flexDirection: 'row', marginHorizontal: 15, marginTop: 10 }}>
                                     <Text style={{ fontWeight: 'bold', marginRight: 15, fontSize: 16 }}>{formatTime(subtitle.start)}</Text>
@@ -126,7 +132,7 @@ const DetailVideo = ({ navigation, route }) => {
                                         flex: 1,
                                         fontSize: 16,
                                         color: focusTextColor(subtitle, index === subtitles.length - 1 ? {} : subtitles[index + 1]) ? changeCurrentSub(index + 1, '#6495ED') : '#797979'
-                                    }}>{subtitle.text.replace(subtitle.text[0], subtitle.text[0].toUpperCase())}</Text>
+                                    }} ref={subTextRef}>{subtitle.text.replace(subtitle.text[0], subtitle.text[0].toUpperCase())}</Text>
                                 </View>)
                             }
                         </ScrollView>

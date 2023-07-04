@@ -187,7 +187,7 @@ const Home = ({ navigation }) => {
                                 </View>
                                 <View style={{
                                 }}>
-                                    <Statistic></Statistic>
+                                    <Statistic navigation={navigation} />
                                 </View>
                             </View>
                         </ScrollView>
