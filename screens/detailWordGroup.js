@@ -13,13 +13,13 @@ import Loading from '../components/Loading';
 
 const { width } = Dimensions.get('window')
 
-
 const DetailWordGroup = (props) => {
     const isFocusedScreen = useIsFocused();
     const { navigation, route } = props
     const [dataVocabulary, setDataVocabulary] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [search, setSearch] = useState('')
+    const topic = route.params.item
 
     const handleGetVocabulary = async () => {
         try {
@@ -54,7 +54,7 @@ const DetailWordGroup = (props) => {
             setIsLoading(true);
         }
 
-    }, [route.params.item.id, isFocusedScreen])
+    }, [route.params.item, isFocusedScreen])
 
     const PlayTrack = (word, type) => {
         const track = new Sound(`https://api.dictionaryapi.dev/media/pronunciations/en/${word}-${type}.mp3`, null, (e) => {
@@ -66,6 +66,10 @@ const DetailWordGroup = (props) => {
         })
     }
     const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
+
+    const handlePressWord = (item) => {
+        navigation.navigate('Words', { item, topic })
+    }
 
     return (
         <React.Fragment>
@@ -88,13 +92,16 @@ const DetailWordGroup = (props) => {
                         <FlatList
                             scrollEnabled={false}
                             data={searchData}
-                            renderItem={({ item }) => <DetailWordGroupItem
-                                phonetic={item.phonetic}
-                                onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
-                                onPressUS={() => PlayTrack(item.word.trim(), 'us')}
-                                disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
-                                disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
-                                word={item.word} />}
+                            renderItem={({ item }) => (
+                                <DetailWordGroupItem
+                                    phonetic={item.phonetic}
+                                    onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
+                                    onPressUS={() => PlayTrack(item.word.trim(), 'us')}
+                                    disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
+                                    disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
+                                    word={item.word}
+                                    onPress={() => handlePressWord(item)} />
+                            )}
                             keyExtractor={item => item.id}
                         />
                     </View>

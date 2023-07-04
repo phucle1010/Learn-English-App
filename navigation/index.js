@@ -306,6 +306,16 @@ const screens = [
         isHideNavigationTab: false,
     },
     {
+        name: 'Words',
+        component: Words,
+        tabIconName: 'home-outline',
+        tabIconSize: 34,
+        tabIconColor: '#ddf7ff',
+        activeColor: '#0047AB',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
+    {
         name: 'Login',
         component: Login,
         tabIconName: 'home-outline',
