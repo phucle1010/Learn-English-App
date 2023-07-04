@@ -105,6 +105,7 @@ const Home = ({ navigation }) => {
                                             source={{
                                                 uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
                                             }}
+                                            resizeMode='stretch'
                                         />
                                     </View>
                                     <View style={{

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
 import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -18,4 +18,4 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 export default db;
-export { auth, doc, getDoc, getDocs, collection, query, where, orderBy, addDoc };
+export { auth, doc, getDoc, getDocs, collection, query, where, orderBy, addDoc, signInWithEmailAndPassword, EmailAuthProvider, updatePassword, reauthenticateWithCredential };

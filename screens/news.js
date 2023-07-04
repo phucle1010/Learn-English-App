@@ -11,49 +11,78 @@ import {
 import { useIsFocused } from '@react-navigation/native'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
+import fontStyle from '../contains/fontStyle';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import Loading from '../components/Loading'
 
-const Article = ({ article, navigation }) => {
+const NewsItem = ({ article, navigation }) => {
     const formatDate = (date) => {
         const convertedDate = new Date(Date.parse(date));
         return `${convertedDate.getDate()}-${convertedDate.getMonth() + 1}-${convertedDate.getUTCFullYear()}`;
     };
 
+    const displayText = (text, type) => {
+        switch (type) {
+            case 'news':
+                return text.length < 35
+                    ? `${text}`
+                    : `${text.substring(0, 32)}...`
+            case 'video': return text.length < 20
+                ? `${text}`
+                : `${text.substring(0, 18)}...`
+            default:
+                break;
+        }
+
+    }
+
     return (
-        <View style={styles.articleContainer}>
-            <Text style={styles.title}>{article.title}</Text>
-            <View style={styles.extraInfo}>
-                {/* {article.creator.length > 0 &&
-                    article.creator.map((author, index) => (
-                        <Text key={index} style={styles.author}>
-                            {author}
-                        </Text>
-                    ))} */}
-                <Text style={styles.publishDate}>{formatDate(article.pubDate)}</Text>
+        <View style={{ ...styles.wrapItem, height: 180, marginBottom: 70 }}>
+            <View style={styles.detailContainer}>
+                {
+                    article?.category !== null && article.category.length > 0 && <Text style={{ marginBottom: 5, paddingVertical: 3, paddingHorizontal: 15, borderRadius: 20, backgroundColor: '#dcdcdc', alignSelf: 'flex-start' }}>{article.category[0].replace(article.category[0][0], article.category[0][0].toUpperCase())}</Text>
+                }
+                <Text style={styles.txtname}>{displayText(article.title, 'news')}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    {article?.creator !== null && article.creator.length > 0 &&
+                        article.creator.map((author, index) => (
+                            <Text key={index}>
+                                {author},
+                            </Text>
+                        ))}
+                    <Text> {formatDate(article.pubDate)}</Text>
+                </View>
+                <TouchableOpacity
+                    style={{
+                        ...styles.wrapbtn,
+                        backgroundColor: '#FAA0A0',
+                        alignSelf: 'flex-start',
+                        marginTop: 15,
+                        paddingVertical: 6,
+                        paddingHorizontal: 20,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                    onPress={() =>
+                        navigation.navigate('ReadNews', {
+                            article,
+                        })
+                    }
+                >
+                    <Text style={{ color: '#fff', fontSize: 15 }}>Đọc ngay</Text>
+                </TouchableOpacity>
             </View>
             <Image
-                style={styles.img}
+                style={{ ...styles.img }}
                 source={{
-                    uri:
-                        article.image_url ||
-                        'https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg',
+                    uri: article.image_url !== null ? article.image_url : 'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg'
                 }}
             />
-            <Text style={styles.description}>{article.description}</Text>
-            <TouchableOpacity
-                style={styles.btnView}
-                onPress={() =>
-                    navigation.navigate('ReadNews', {
-                        article,
-                    })
-                }
-            >
-                <Text style={styles.textView}>Đọc ngay</Text>
-            </TouchableOpacity>
         </View>
-    );
-};
+    )
+}
 
 const News = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
@@ -104,10 +133,10 @@ const News = ({ navigation }) => {
                     <View style={styles.headcontainer}>
                         <Text style={styles.txthead}>Tin tức</Text>
                     </View>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 20 }}>
                         {allArticles.length > 0 &&
                             allArticles.map((item, index) => (
-                                <Article article={item} key={index} navigation={navigation} />
+                                <NewsItem article={item} key={index} navigation={navigation} />
                             ))}
                         <TouchableOpacity
                             style={{
@@ -137,7 +166,6 @@ const News = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
         backgroundColor: '#ffff',
         paddingBottom: 80,
     },
@@ -191,12 +219,6 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         fontSize: 15,
     },
-    img: {
-        width: '100%',
-        height: 180,
-        padding: 20,
-        borderRadius: 10,
-    },
     descContainer: {
         width: 220,
         marginRight: 10,
@@ -227,6 +249,37 @@ const styles = StyleSheet.create({
     textView: {
         color: '#fff',
         fontSize: 15,
+    },
+    wrapItem: {
+        // backgroundColor: 'red',
+        paddingRight: 20,
+        marginBottom: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        // backgroundColor: color.btn_color3,
+        alignItems: 'center',
+        overflow: 'hidden',
+    },
+    img: {
+        width: 150,
+        height: '100%',
+        borderRadius: 20,
+    },
+    detailContainer: {
+        marginTop: 10,
+        marginLeft: 20,
+        flex: 1,
+        alignSelf: 'flex-start',
+        marginRight: 15,
+    },
+    txtname: {
+        fontSize: 18,
+        fontWeight: 600,
+        fontFamily: fontStyle.fontfamily_1,
+        color: color.txt1,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
 });
 

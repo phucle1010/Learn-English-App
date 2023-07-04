@@ -9,7 +9,8 @@ import {
     Alert,
     Dimensions,
     TouchableOpacity,
-    TextInput
+    TextInput,
+    Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { signOut } from 'firebase/auth';
@@ -21,14 +22,24 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUserIntoApp } from '../reducers/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth } from '../firebase';
+import AweIcon from 'react-native-vector-icons/FontAwesome5';
+import { auth, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from '../firebase';
 import { useIsFocused } from '@react-navigation/native';
+
 
 const Account = ({ navigation }) => {
     const user = useSelector(state => state.user)
     const dispatch = useDispatch();
     const isFocusedScreen = useIsFocused();
     const [clickedOption, setClickedOption] = useState(false);
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showRePassword, setShowRePassword] = useState(false);
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [reNewPassword, setReNewPassword] = useState('');
 
     const snapPoints = useMemo(() => ['60%'], []);
 
@@ -49,6 +60,55 @@ const Account = ({ navigation }) => {
             })
             .catch((err) => console.log('Lỗi: ', err));
     };
+
+    const handleShowNewPassword = (type) => {
+        switch (type) {
+            case 1:
+                setShowPassword(!showPassword);
+                break;
+            case 2:
+                setShowNewPassword(!showNewPassword);
+                break;
+            case 3:
+                setShowRePassword(!showRePassword);
+                break;
+            default:
+                break;
+        }
+    };
+    const handleSubmit = async () => {
+        if (newPassword === reNewPassword) {
+            const credential = EmailAuthProvider.credential(
+                user.email,
+                password
+            );
+            try {
+                await reauthenticateWithCredential(
+                    auth.currentUser,
+                    credential
+                );
+                await updatePassword(
+                    auth.currentUser,
+                    newPassword
+                );
+                setPassword('')
+                setNewPassword('')
+                setReNewPassword('')
+                Alert.alert("Thông báo", 'Mật khẩu cập nhật thành công, xin vui lòng đăng nhập lại!!', [
+                    {
+                        text: 'OK',
+                        onPress: handleSignOut,
+                        style: 'OK',
+                    },
+                ],)
+            } catch (error) {
+                Alert.alert("Thông báo", error.code)
+            }
+        }
+        else {
+            Alert.alert("Thông báo", 'Mật khẩu mới không tương thích, vui lòng kiểm tra lại!!')
+        }
+    }
 
     return (
         <GestureHandlerRootView style={styles.main}>
@@ -146,7 +206,7 @@ const Account = ({ navigation }) => {
 
                     <View style={styles.wrapResetpass}>
                         <Text style={styles.txtContent}>Mật khẩu</Text>
-                        <TouchableOpacity style={styles.wrapbtn1}>
+                        <TouchableOpacity style={styles.wrapbtn1} onPress={() => setModalVisible(true)}>
                             <Text style={styles.txtbtn1}>Đặt lại</Text>
                         </TouchableOpacity>
                     </View>
@@ -194,6 +254,86 @@ const Account = ({ navigation }) => {
                     }} />
                 </BottomSheetScrollView>
             </BottomSheet>
+            <Modal
+                visible={modalVisible}
+                transparent
+                animationType="slide"
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={{ color: '#333', fontSize: 20, marginBottom: 10 }}>Đặt lại mật khẩu</Text>
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showPassword}
+                                placeholder="Nhập mật khẩu cũ"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={password}
+                                onChangeText={setPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(1)}>
+                                {showPassword ? (
+                                    <AweIcon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <AweIcon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showNewPassword}
+                                placeholder="Nhập mật khẩu mới"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(2)}>
+                                {showNewPassword ? (
+                                    <AweIcon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <AweIcon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ marginBottom: 15 }}>
+                            <TextInput
+                                style={styles.modalInput}
+                                secureTextEntry={!showRePassword}
+                                placeholder="Xác nhận mật khẩu mới"
+                                placeholderTextColor={'#BEBEBE'}
+                                value={reNewPassword}
+                                onChangeText={setReNewPassword}
+                            />
+                            <TouchableOpacity style={styles.iconButton} onPress={() => handleShowNewPassword(3)}>
+                                {showRePassword ? (
+                                    <AweIcon style={styles.iconEye} name="eye" />
+                                ) : (
+                                    <AweIcon style={styles.iconEye} name="eye-slash" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: color.btn_color4 }]}
+                            onPress={handleSubmit}
+                        >
+                            <Text style={styles.modalText}>Xác nhận</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={() => {
+                                setModalVisible(false);
+                                setPassword('')
+                                setNewPassword('');
+                                setReNewPassword('');
+                            }}
+                        >
+                            <Text style={styles.modalText}>Hủy</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </GestureHandlerRootView>
 
     );
@@ -428,6 +568,51 @@ const styles = StyleSheet.create({
         fontWeight: 400,
         fontFamily: fontStyle.fontfamily_2,
         color: color.txtbtn_color1,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        width: '90%',
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    textModal: {
+        fontSize: 16,
+        color: '#333'
+    },
+    modalInput: {
+        color: '#333',
+        borderBottomWidth: 0.5,
+        paddingLeft: 10,
+    },
+    modalButton: {
+        backgroundColor: color.btn_color1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderRadius: 10,
+        marginTop: 20
+    },
+    modalText: {
+        color: '#fff',
+        fontSize: 17,
+    },
+    iconButton: {
+        zIndex: 10,
+        position: 'absolute',
+        right: 10,
+        top: 8,
+        padding: 5
+    },
+    iconEye: {
+        fontSize: 22,
+        color: '#797979',
     },
 });
 
