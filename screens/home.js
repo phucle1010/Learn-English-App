@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     },
     searchcontainer: {
         flexDirection: 'row',
-        width: 306,
+        // width: 306,
         height: 44,
         borderRadius: 30,
         marginHorizontal: 20,
