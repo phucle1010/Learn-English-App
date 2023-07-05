@@ -111,7 +111,7 @@ const Statistic = (props) => {
                 </View> : (
                     <View style={styles.container}>
                         <View style={styles.content}>
-                            <Text style={styles.txtwordGroup}>Top từ vựng được tìm kiếm</Text>
+                            <Text style={styles.txtwordGroup}>Thống kê từ vựng tìm kiếm</Text>
                             <View style={styles.boxTK}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{ ...styles.titleTk, color: '#899499', fontWeight: 'bold' }}>Từ vựng</Text>
@@ -126,7 +126,7 @@ const Statistic = (props) => {
                                     </View>
                                 )}
                             </View>
-                            <Text style={styles.txtwordGroup}>Top chủ đề xem nhiều nhất</Text>
+                            <Text style={styles.txtwordGroup}>Thống kê chủ đề được theo dõi</Text>
                             <View style={styles.boxTK}>
                                 {dataWG.map((item, index) =>
                                     <View style={{ flexDirection: 'row', marginRight: 10, alignItems: 'center', marginVertical: 5 }} key={index}>
@@ -139,7 +139,7 @@ const Statistic = (props) => {
                                 )}
                             </View>
                             <Text style={styles.txtwordGroup}>Thời gian sử dụng </Text>
-                            <View style={{ alignItems: 'center' }}>
+                            <View style={{ marginHorizontal: 30, alignItems: 'center', borderRadius: 20, overflow: 'hidden' }}>
                                 <LineChart
                                     data={dataTimeUse}
                                     width={screenWidth - 60}
@@ -169,7 +169,6 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         flex: 1,
-        backgroundColor: '#ffff',
     },
     headcontainer: {
         flexDirection: 'row',
@@ -190,25 +189,22 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        paddingHorizontal: 11,
         marginBottom: 145,
     },
     txtwordGroup: {
         fontSize: 20,
         fontFamily: fontStyle.fontfamily_2,
-        fontWeight: 'bold',
-        color: color.txt4,
-        marginTop: 20,
-        paddingLeft: 11,
-        marginBottom: 10
+        color: color.txt1,
+        marginTop: 30,
+        paddingLeft: 30,
+        marginBottom: 20
     },
     boxTK: {
         width: Dimensions.get('window').width - 60,
-        marginHorizontal: 19,
+        marginHorizontal: 30,
         backgroundColor: "#fff",
-        borderRadius: 15,
+        borderRadius: 20,
         padding: 15,
-        elevation: 3,
     },
     titleTk: {
         color: '#899499',

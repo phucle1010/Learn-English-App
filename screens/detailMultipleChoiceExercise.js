@@ -4,6 +4,8 @@ import fontstyle from '../contains/fontStyle';
 import db, { collection, query, where, getDocs, orderBy, doc } from '../firebase/index'
 import { useIsFocused } from '@react-navigation/native';
 import Loading from '../components/Loading'
+import color from '../contains/color';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width, height } = Dimensions.get('window')
 
@@ -109,13 +111,8 @@ const DetailMultipleChoiceExercise = (props) => {
                         renderItem={({ item, index }) => {
                             return (
                                 <View style={styles.screen}>
-                                    <View style={styles.headcontainer}>
-                                        <Text style={styles.txthead}>{index + 1}/{data.length}</Text>
-                                    </View>
-                                    <View style={styles.progress}>
-                                        <View style={[styles.done, { width: (width / 10) * (index + 1), }]}></View>
-                                        <View style={styles.donot}></View>
-                                    </View>
+                                    <Text style={styles.txthead}>Question {index + 1} out of {data.length}</Text>
+
                                     <View style={styles.body}>
                                         <View style={styles.boxQues}>
                                             <Text style={styles.txtQues}>{item.question.replace(item.question[0], item.question[0].toUpperCase())}</Text>
@@ -148,29 +145,30 @@ const DetailMultipleChoiceExercise = (props) => {
                                                             <Text style={styles.txtbtnAnswer}>{keyChoice}. {itemAns.answer.replace(itemAns.answer[0], itemAns.answer[0].toUpperCase())}</Text>
                                                         </TouchableOpacity>
                                                     )
-                                                }
-                                                )}
-                                        </View>
-                                        <View style={styles.footer}>
+                                                })
+                                            }
                                         </View>
                                     </View>
+
                                 </View>
                             )
                         }}
-                    >
-                    </Animated.FlatList>
+                    />
                     {currentIndex > 0 &&
                         <TouchableOpacity style={styles.btnPre} onPress={() => { handlePrevious() }}>
-                            <Text style={[styles.txthead, { fontSize: 17 }]}>Previous</Text>
+                            <Text style={[styles.txthead, { fontSize: 17, marginTop: 0, color: '#fff' }]}>Previos</Text>
                         </TouchableOpacity>}
                     {currentIndex < data.length - 1 &&
                         <TouchableOpacity style={styles.btnNex} onPress={() => { handleNext() }}>
-                            <Text style={[styles.txthead, { fontSize: 17 }]}>Next</Text>
+                            <Text style={[styles.txthead, { fontSize: 17, marginTop: 0, color: '#fff' }]}>Next</Text>
                         </TouchableOpacity>}
                     {currentIndex == data.length - 1 &&
                         <TouchableOpacity style={[styles.btnNex, { backgroundColor: '#FF7F50' }]} onPress={() => { handleComplete() }}>
-                            <Text style={[styles.txthead, { fontSize: 17 }]}>Complete</Text>
+                            <Text style={[styles.txthead, { fontSize: 17, marginTop: 0 }]}>Complete</Text>
                         </TouchableOpacity>}
+                    <TouchableOpacity style={styles.btnReturnHome} onPress={() => navigation.navigate("Home")}>
+                        <Text style={[styles.txthead, { fontSize: 17, marginTop: 0, color: '#1c1a5e' }]}>Back to Home</Text>
+                    </TouchableOpacity>
                 </View>
                 :
                 <Loading />}
@@ -183,84 +181,62 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    button: {
-        alignSelf: 'center',
-        marginTop: 10,
-        paddingVertical: 10,
-        width: 220,
-        borderRadius: 10,
-        backgroundColor: 'white',
-        alignItems: 'center'
-    },
-    txtBT: {
-        fontSize: 20,
-        color: '#6D7CA8',
-        fontWeight: 'bold'
-    },
-    screen: {
-        height: height,
-        width: width,
-        // backgroundColor: 'white'
+        backgroundColor: '#1c1a5e'
     },
     body: {
         flex: 1,
-        backgroundColor: '#ffffff',
-        width: width
-    },
-    footer: {
-        flex: 0.25,
         width: width
     },
     boxQues: {
-        flex: 0.25,
+        marginTop: 10,
+        marginBottom: 70,
         alignItems: 'center',
         justifyContent: 'center',
     },
     txtQues: {
+        textAlign: 'center',
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 22,
-        color: "black",
-        fontWeight: 'bold'
+        color: "#fff",
+        fontWeight: 'bold',
+        lineHeight: 32
     },
     boxAnswer: {
-        flex: 0.45,
         alignItems: 'center',
         justifyContent: 'center',
     },
     btnNex: {
-        width: 100,
+        marginHorizontal: 30,
+        marginBottom: 15,
         backgroundColor: "#4169E1",
-        paddingVertical: 7,
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: 100,
-        right: 25
+        paddingVertical: 10,
+        borderRadius: 10,
     },
     btnPre: {
-        width: 100,
+        marginHorizontal: 30,
+        marginBottom: 15,
         backgroundColor: "#40B5AD",
-        paddingVertical: 7,
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: 100,
-        left: 25
+        paddingVertical: 10,
+        borderRadius: 10,
     },
     btnAnswer: {
-        width: width - 50,
-        marginHorizontal: 25,
+        width: width - 60,
+        marginHorizontal: 30,
         backgroundColor: 'white',
-        marginVertical: 12,
+        marginVertical: 10,
         paddingVertical: 10,
         paddingLeft: 15,
         paddingRight: 10,
         borderRadius: 5,
         elevation: 3,
         borderLeftColor: "#54b0fe"
+    },
+    btnReturnHome: {
+        marginBottom: 50,
+        marginHorizontal: 30,
+        paddingVertical: 10,
+        borderRadius: 10,
+        backgroundColor: '#fff'
     },
     txtbtnAnswer: {
         fontFamily: fontstyle.fontfamily_2,
@@ -276,25 +252,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 38
     },
     txthead: {
+        marginTop: 50,
+        alignSelf: 'center',
         fontFamily: fontstyle.fontfamily_2,
-        fontSize: 20,
-        color: "white",
+        fontSize: 16,
+        color: "#aeadc6",
         fontWeight: 'bold'
-    },
-    progress: {
-        width: width,
-        height: 5,
-        flexDirection: 'row',
-        backgroundColor: "silver"
-    },
-    done: {
-        width: width / 2,
-        height: 5,
-        backgroundColor: "#0BDA51"
-    },
-    donot: {
-        flex: 1,
-        backgroundColor: "#dedede"
-    },
+    }
 });
+
 export default DetailMultipleChoiceExercise;

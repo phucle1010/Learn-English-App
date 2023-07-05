@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import Icon from 'react-native-vector-icons/Ionicons'
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +18,9 @@ import Loading from '../components/Loading';
 import WordModal from '../components/WordModal';
 
 import Header from '../components/Header';
+
+const fullWidth = Dimensions.get('window').width
+const wrapItemWidth = (fullWidth / 2) - 45;
 
 const Home = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
@@ -94,45 +98,46 @@ const Home = ({ navigation }) => {
             {
                 loaded ? (
                     <SafeAreaView style={styles.main}>
-                        <Header />
+                        {/* <Header /> */}
                         <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                             <View style={styles.container}>
                                 <View style={styles.secsion1}>
-                                    <View style={styles.headcontainer}>
-                                        <Text style={styles.txthead1}>Xin chào {user.fullName},</Text>
-                                        <Image
-                                            style={styles.imgAccount}
-                                            source={{
-                                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
-                                            }}
-                                            resizeMode='stretch'
-                                        />
+                                    <View style={styles.headerBasic}>
+                                        <View style={styles.lightMode}>
+                                            <Text style={{ fontSize: 15, color: color.txt5, marginRight: 10, }}>Light Mode</Text>
+                                            <SimpleIcon name='arrow-down' style={{ fontSize: 12, color: color.txt5 }} />
+                                        </View>
+                                        <View style={{ width: 45, height: 45, borderRadius: 10, backgroundColor: '#e0e6f3', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Image
+                                                style={styles.imgAccount}
+                                                source={{
+                                                    uri: 'https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-3d-boy-head-portrait-png-image_6514617.png',
+                                                }}
+                                                resizeMode='stretch'
+                                            />
+                                        </View>
                                     </View>
-                                    <View style={{
-                                        width: '100%',
-                                        paddingHorizontal: 10,
-                                    }}>
+                                    <View style={styles.headcontainer}>
+                                        <Text style={styles.txthead1}>Hello {user.fullName},</Text>
                                         <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
                                     </View>
                                 </View>
                                 <Text style={styles.txtContent}>Từ điển</Text>
                                 <View style={styles.secsion2}>
-                                    <View>
+                                    {/* <View>
                                         <Text style={styles.txtvocabulary}>Từ vựng</Text>
-                                    </View>
-                                    <View>
-                                        <View style={styles.searchcontainer}>
-                                            <TextInput
-                                                style={styles.search}
-                                                placeholder="Nhập từ vựng"
-                                                onChangeText={(input) => setSearch(input)} value={search}
-                                            />
-                                            <TouchableOpacity onPress={() => { handleSearchWord() }}>
-                                                <Icon name='search-outline' size={28} style={{
-                                                    paddingRight: 10
-                                                }} />
-                                            </TouchableOpacity>
-                                        </View>
+                                    </View> */}
+                                    <View style={styles.searchcontainer}>
+                                        <TextInput
+                                            style={styles.search}
+                                            placeholder="Nhập từ vựng"
+                                            onChangeText={(input) => setSearch(input)} value={search}
+                                        />
+                                        <TouchableOpacity onPress={() => { handleSearchWord() }}>
+                                            <Icon name='search-outline' size={28} style={{
+                                                paddingRight: 10
+                                            }} />
+                                        </TouchableOpacity>
                                     </View>
                                     <View>
                                         <Text style={styles.txtVocabularySearched}>Từ vựng tìm kiếm gần đây</Text>
@@ -142,50 +147,58 @@ const Home = ({ navigation }) => {
                                     </View>
                                 </View>
                                 <Text style={styles.txtContent}>Khám phá</Text>
-                                <View style={styles.secsion3}>
-                                    <View style={styles.listItem}>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
-                                            <Text style={styles.txtimgItem}>Tin tức</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Videos")}>
-                                            <Image
-                                                style={styles.imgItem}
-                                                source={require('../sources/images/video-marketing.png')}
-                                            />
-                                            <Text style={styles.txtimgItem}>Video</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
-                                            <Text style={styles.txtimgItem}>Đọc sách</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
-                                            <Text style={styles.txtimgItem}>Bộ từ vựng</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.listItem}>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Grammar")}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
-                                            <Text style={styles.txtimgItem}>Ngữ pháp</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Exercise")}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
-                                            <Text style={styles.txtimgItem}>Bài tập</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
-                                            <Text style={styles.txtimgItem}>Game</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems}>
-                                            <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
-                                            <Text style={styles.txtimgItem}>Kiểm tra</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                <View style={styles.listItem}>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate('News')}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/news.png')} />
+                                        <Text style={styles.txtImgItem}>Tin tức</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Đọc tin tức hằng ngày</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Videos")}>
+                                        <Image
+                                            style={styles.imgItem}
+                                            source={require('../sources/images/video-marketing.png')}
+                                        />
+                                        <Text style={styles.txtImgItem}>Video</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Video sống động và thú vị</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => { navigation.navigate("ReadBook") }}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/book-stack.png')} />
+                                        <Text style={styles.txtImgItem}>Đọc sách</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Đọc sách ngoại tuyến</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("WordGroup")}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/dictionary.png')} />
+                                        <Text style={styles.txtImgItem}>Bộ từ vựng</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Chủ đề phong phú</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Grammar")}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/grammar.png')} />
+                                        <Text style={styles.txtImgItem}>Ngữ pháp</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Ngữ pháp trực quan</Text>
+
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Exercise")}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/homework.png')} />
+                                        <Text style={styles.txtImgItem}>Bài tập</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Bài tập bổ trợ các kỹ năng</Text>
+
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
+                                        <Text style={styles.txtImgItem}>Game</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Chơi game giải trí</Text>
+
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Test")}>
+                                        <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
+                                        <Text style={styles.txtImgItem}>Kiểm tra</Text>
+                                        <Text style={styles.subTxtImgItemxtImgItem}>Đánh giá trình độ hiện tại</Text>
+
+                                    </TouchableOpacity>
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.txtContent}>Thống kê sử dụng</Text>
-                                </View>
+                                </View> */}
                                 <View style={{
                                 }}>
                                     <Statistic navigation={navigation} />
@@ -220,36 +233,48 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     main: {
-        backgroundColor: '#f6f6f6',
+        backgroundColor: '#f2f5fc',
         height: '100%',
-        paddingBottom: 80,
     },
     scrollContainer: {
         marginTop: 1,
     },
     container: {
-        flexDirection: 'column',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
+
     },
     secsion1: {
-        marginTop: 20,
-        width: 370,
-        height: 132,
+        paddingTop: 20,
+        width: '100%',
         backgroundColor: color.btn_color3,
-        borderRadius: 10,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    headcontainer: {
-        marginTop: 20,
+    headerBasic: {
         width: '100%',
-        paddingHorizontal: 10,
+        paddingHorizontal: 30,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    lightMode: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 0.5,
+        borderColor: color.txt5,
+        borderRadius: 10,
+        paddingVertical: 0,
+        paddingHorizontal: 10
+    },
+    headcontainer: {
+        marginTop: 30,
+        marginBottom: 40,
+        width: '100%',
+        paddingHorizontal: 30,
     },
     txthead1: {
+        marginBottom: 6,
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
         color: '#3B3B3B',
@@ -261,28 +286,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     imgAccount: {
-        width: 53,
-        height: 53,
-        marginLeft: 100,
-        marginBottom: 10,
+        width: 35,
+        height: 35,
     },
     txtContent: {
         alignSelf: 'flex-start',
-        width: 346,
         fontSize: 20,
         fontFamily: fontstyle.fontfamily_2,
         color: color.txt1,
-        fontWeight: '300',
-        marginTop: 20,
-        marginHorizontal: 20,
+        marginTop: 30,
+        marginHorizontal: 30,
         marginBottom: 10,
     },
     secsion2: {
+        marginHorizontal: 30,
         marginTop: 10,
-        width: 370,
-        height: 180,
+        paddingVertical: 20,
         backgroundColor: color.btn_color3,
-        borderRadius: 10,
+        borderRadius: 20,
     },
     txtvocabulary: {
         marginTop: 10,
@@ -299,7 +320,6 @@ const styles = StyleSheet.create({
     },
     searchcontainer: {
         flexDirection: 'row',
-        // width: 306,
         height: 44,
         borderRadius: 30,
         marginHorizontal: 20,
@@ -313,7 +333,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         fontSize: 15,
         fontStyle: 'italic',
-        // backgroundColor: 'red'
     },
     icon: {
         width: 22,
@@ -338,38 +357,43 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     secsion3: {
-        width: 370,
-        height: 200,
+        paddingHorizontal: 30,
         backgroundColor: color.btn_color3,
         borderRadius: 10,
     },
     listItem: {
+        marginTop: -20,
+        marginHorizontal: 30,
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-        paddingHorizontal: 15
+        flexWrap: 'wrap',
     },
     wrapItems: {
+        padding: 20,
         backgroundColor: color.btn_color3,
-        width: 70,
-        height: 70,
-        marginTop: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        elevation: 2,
+        width: wrapItemWidth,
+        height: wrapItemWidth,
+        marginTop: 30,
+        borderRadius: 20,
+        justifyContent: 'center'
     },
-
     imgItem: {
-        width: 30,
-        height: 30,
+        width: 35,
+        height: 35,
+        marginBottom: 10,
     },
-    txtimgItem: {
+    txtImgItem: {
+        fontFamily: fontstyle.fontfamily_1,
+        color: color.txt1,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    subTxtImgItem: {
         fontFamily: fontstyle.fontfamily_1,
         color: color.txt5,
-        fontSize: 13,
-        paddingTop: 5,
-        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 300
     },
     chart: {
         width: '100%',

@@ -69,6 +69,7 @@ const MultipleChoiceExerciseResult = (props) => {
                     <Text style={styles.txtResult}>Kết quả kiểm tra</Text>
                     <Text style={styles.txthead}>Chúc mừng bạn đã hoàn thành bài kiểm tra!</Text>
                 </View>
+                {/* Số câu đúng */}
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/check.png')} resizeMode='stretch' />

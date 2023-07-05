@@ -87,7 +87,6 @@ const Words = (props) => {
                     }
                 });
                 setIdioms(idioms);
-                setLoaded(true)
             } else {
                 setIdioms([]);
             }
@@ -100,9 +99,11 @@ const Words = (props) => {
         if (isFocusedScreen) {
             loadLevel();
             loadIdioms();
+            setLoaded(true)
         } else {
             setIdioms([])
             setLevel(null)
+            setLoaded(false)
         }
     }, [word, isFocusedScreen]);
 
@@ -143,7 +144,7 @@ const Words = (props) => {
                             </View>
                             <View style={{ marginHorizontal: 20, marginBottom: 10 }}>
                                 <Text style={{ ...styles.txtcontent, marginTop: 0 }}>Nghĩa của từ</Text>
-                                {loaded && word.meaning?.map((mea, index) =>
+                                {word.meaning?.map((mea, index) =>
                                     <View key={index}>
                                         <View style={styles.wraptype}>
                                             <Text style={styles.txttype}>{mea.partOfSpeech}</Text>
@@ -157,19 +158,19 @@ const Words = (props) => {
                                             {mea.synonyms?.map((syn, index2) => <Text style={{ ...styles.txtmean, ...styles.wordItem }} key={index2}>{syn}</Text>)}
                                         </View>
                                         <Text style={styles.txtsynonyms}>Từ trái nghĩa</Text>
-                                        <View>
+                                        <View style={styles.containersynomyms}>
                                             {mea.antonyms?.map((syn, index2) => <Text style={{ ...styles.txtmean, ...styles.wordItem }} key={index2}>{syn}</Text>)}
                                         </View>
 
                                     </View>
                                 )}
                                 <Text style={styles.txtcontent}>Từ ghép</Text>
-                                <View>
+                                <View style={styles.containersynomyms}>
                                     {word.collocations?.map((col, index) => <Text style={{ ...styles.txtmean, ...styles.wordItem }} key={index}>{col}</Text>)}
                                 </View>
                                 <Text style={styles.txtcontent}>Cụm động từ</Text>
                                 <View>
-                                    {word.phrase_verb?.map((phv, index) =>
+                                    {word.phrase_verb.length > 0 && word.phrase_verb[0] !== "" && word.phrase_verb?.map((phv, index) =>
                                         <View key={index}>
                                             <Text style={{ ...styles.txtmean, ...styles.wordItem }} >{phv.phrase}</Text>
                                             <Text style={{ ...styles.txtmean }} >Ex: {phv.example}</Text>
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     },
     wordcontainer: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
+        // flexWrap: 'wrap',
         width: 346,
         height: 110,
         marginHorizontal: 20,
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     wraptype: {
-        width: 68,
+        paddingHorizontal: 10,
         height: 24,
         borderWidth: 1,
         borderRadius: 20,
@@ -276,6 +277,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         marginTop: 10,
+        alignSelf: 'flex-start'
     },
     txtsynonyms: {
         marginTop: 10,

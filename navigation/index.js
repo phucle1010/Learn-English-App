@@ -33,6 +33,7 @@ import Videos from '../screens/videos';
 import Welcome from '../screens/welcome';
 import WordGroup from '../screens/wordGroup';
 import Words from '../screens/words';
+import TestDetail from '../screens/testDetail';
 
 const screens = [
     {
@@ -300,6 +301,16 @@ const screens = [
         component: Test,
         tabIconName: 'home-outline',
         tabIconSize: 34,
+        tabIconColor: '#ddf7ff',
+        activeColor: '#0047AB',
+        isHideTab: true,
+        isHideNavigationTab: true,
+    },
+    {
+        name: 'TestDetail',
+        component: TestDetail,
+        tabIconName: 'home-outline',
+        tabIconSize: 30,
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,

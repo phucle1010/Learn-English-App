@@ -46,14 +46,15 @@ const DetailWordGroup = (props) => {
     }
 
     useEffect(() => {
-        if (isFocusedScreen) {
-            handleGetVocabulary();
-        } else {
-            setDataVocabulary([]);
-            setSearch('')
-            setIsLoading(true);
-        }
+        handleGetVocabulary();
+    }, [])
 
+    useEffect(() => {
+        if (!isFocusedScreen) {
+            setSearch('')
+        } else {
+            handleGetVocabulary();
+        }
     }, [route.params.item, isFocusedScreen])
 
     const PlayTrack = (word, type) => {

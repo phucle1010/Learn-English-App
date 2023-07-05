@@ -4,12 +4,13 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 const { width } = Dimensions.get("window")
+
 const WordGroupItem = (props) => {
     const { name, onPress, uri } = props
     return (
         <View style={styles.wordGroupContainer}>
             <TouchableOpacity onPress={onPress} style={styles.wrapWordGroup}>
-                <Image style={styles.img} source={{ uri: uri }} />
+                <Image style={styles.img} source={{ uri: uri }} resizeMode='stretch' />
                 <Text style={styles.txtimg}>{name}</Text>
             </TouchableOpacity>
         </View>

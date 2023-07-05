@@ -114,7 +114,7 @@ const Account = ({ navigation }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['#ff357a', '#5235ff']}
                 style={styles.linearContainer} />
-            <Text style={styles.headcontainer}>Account</Text>
+            <Text style={styles.headcontainer}>Tài khoản</Text>
             <View style={{
                 position: 'absolute',
                 top: 20,
@@ -162,7 +162,7 @@ const Account = ({ navigation }) => {
                         <Image
                             style={styles.imgItem}
                             source={{
-                                uri: 'https://static8.depositphotos.com/1000792/1065/v/600/depositphotos_10659058-stock-illustration-cute-dog.jpg',
+                                uri: 'https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-3d-boy-head-portrait-png-image_6514617.png',
                             }}
                         />
                     </View>

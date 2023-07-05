@@ -29,13 +29,8 @@ const WordGroup = (props) => {
     }
 
     useEffect(() => {
-        if (isFocusedScreen) {
-            handleGetTopic();
-        } else {
-            setDataTopic([]);
-            setIsLoading(true);
-        }
-    }, [isFocusedScreen])
+        handleGetTopic();
+    }, [])
 
     const updatenumsearch = async (id) => {
         console.log("updatenumsearch")
@@ -115,6 +110,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 11,
+        paddingBottom: 60,
     },
     txtwordGroup: {
         fontSize: 20,
