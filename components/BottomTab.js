@@ -28,7 +28,9 @@ const BottomTab = () => {
                         display: 'none'
                     },
                     tabBarInactiveTintColor: '#F3CFC6',
-                    tabBarActiveTintColor: '#E37383',
+                    tabBarInactiveBackgroundColor: '#FFFFFF',
+                    tabBarActiveTintColor: '#FFFFFF',
+                    tabBarActiveBackgroundColor: '#E37383',
 
                 }
             )}
@@ -54,8 +56,8 @@ const BottomTab = () => {
                                 tabBarItemStyle: {
                                     display: screen.isHideTab === true ? 'none' : 'flex',
                                     marginHorizontal: 35,
-                                    borderTopWidth: 2,
-                                    borderTopColor: focused ? screen.activeColor : 'transparent',
+                                    borderTopRightRadius: 25,
+                                    borderTopLeftRadius: 25,
                                 },
                             }
                         )}
@@ -70,9 +72,9 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         height: 60,
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#efefef',
+        backgroundColor: 'red',
+        // borderTopWidth: 1,
+        // borderTopColor: '#efefef',
     },
 });
 
