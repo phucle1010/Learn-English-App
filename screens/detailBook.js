@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, View, TouchableOpacity, Image, Text } from 'rea
 import Pdf from 'react-native-pdf';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 const DetailBook = (props) => {
     const { navigation, route } = props
@@ -19,17 +20,16 @@ const DetailBook = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>
-                <TouchableOpacity onPress={() => navigation.navigate("DetailReadBook", {
+                <TouchableOpacity style={{ position: 'absolute', left: 20 }} onPress={() => navigation.navigate("DetailReadBook", {
                     itembook
                 })}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                    <Icon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                 </TouchableOpacity>
                 <Text style={styles.txthead}>Nội dung sách</Text>
             </View>
             <Pdf
                 trustAllCerts={false}
                 source={source}
-                // enablePaging={true}
                 onLoadComplete={(numberOfPages, filePath) => {
                     console.log(`Number of pages: ${numberOfPages}`);
                 }}
@@ -48,17 +48,16 @@ const DetailBook = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        height: '100%',
     },
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: color.btn_color3,
+        justifyContent: 'center',
+        backgroundColor: '#fff',
         height: 80,
         width: 390,
-        elevation: 4,
+        elevation: 3,
     },
     imgreturn: {
         width: 30,
@@ -66,11 +65,8 @@ const styles = StyleSheet.create({
         marginLeft: 38,
     },
     txthead: {
-        position: 'absolute',
-        left: '35%',
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        textAlign: 'center',
         color: color.txt5,
     },
     pdf: {

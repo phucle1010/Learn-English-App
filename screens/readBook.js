@@ -6,12 +6,40 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native';
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
+import LinearGradient from 'react-native-linear-gradient';
 
 const width = Dimensions.get('window').width;
 import Loading from '../components/Loading'
 
 let listData = []
 
+const itemBookWidth = 200;
+const imageBookWidth = 160;
+const positionOfBookImage = (itemBookWidth - imageBookWidth) / 2;
+
+const BookItem = ({ book, displayText, type, navigation }) => {
+    return <View style={styles.itemcontainer} >
+        <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            colors={['#ffffff', type === 'main' ? '#cbffd1' : '#fae8ea']}
+            style={styles.linearContainer} />
+        <Image style={styles.imgbook} source={{ uri: "https://edtechbooks.org/book_cover_images/" + book.cover_image_lg }} resizeMode='stretch' />
+        <TouchableOpacity style={styles.viewBtn} onPress={() => { navigation.navigate('DetailReadBook', { itembook: book }) }}>
+            <Icon name='play' style={{
+                fontSize: 30,
+                color: type === 'main' ? '#80eb8c' : '#ff7c90',
+                fontWeight: 'bold'
+            }} />
+        </TouchableOpacity>
+        <View style={{ marginHorizontal: positionOfBookImage }}>
+            <Text style={styles.txtbook} >{displayText(book.title, 'main')}</Text>
+            <Text style={styles.txtauthor} >{displayText(book.subtitle || 'No Subscription', 'sub')}</Text>
+        </View>
+    </View>
+
+}
 
 const ReadBook = ({ navigation, route }) => {
     const isFoucesedScreen = useIsFocused();
@@ -20,11 +48,12 @@ const ReadBook = ({ navigation, route }) => {
     const [dataDis, setDataDis] = useState([])
 
     useEffect(() => {
-        if (isFoucesedScreen) {
-            getdata();
-        } else {
-            setDataDis([])
-            setLoading(true)
+        getdata();
+    }, [])
+
+    useEffect(() => {
+        if (!isFoucesedScreen) {
+            setSearch('')
         }
     }, [isFoucesedScreen])
 
@@ -54,53 +83,70 @@ const ReadBook = ({ navigation, route }) => {
         }
     }
 
+
+    const displayText = (text, type) => {
+        switch (type) {
+            case 'main': return text.length < 25
+                ? `${text}`
+                : `${text.substring(0, 23)}...`
+            case 'sub': return text.length < 30
+                ? `${text}`
+                : `${text.substring(0, 28)}...`
+            default:
+                break;
+        }
+
+    }
+
     return (
         <React.Fragment>
             {
                 loading === false ? (
-                    <ScrollView>
-                        <View style={styles.container}>
-                            <View style={styles.headcontainer}>
-                                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                                </TouchableOpacity>
-                                <Text style={styles.txthead}>Đọc sách</Text>
-                            </View>
-                            <View style={styles.searchcontainer}>
-                                <TextInput value={search}
-                                    onChangeText={(text) => { searched(text) }} style={styles.search} placeholder="Tìm kiếm sách" placeholderTextColor={'#AAAAAA'} />
-                                <TouchableOpacity onPress={() => { }}>
-                                    <Icon name='search-outline' size={26} style={{ paddingRight: 10 }} />
-                                </TouchableOpacity>
-                            </View>
-                            <View
+                    <View style={styles.container}>
+                        <View style={styles.headcontainer}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("Home")}
                                 style={{
-                                    width: 350,
-                                    alignItems: 'flex-start',
+                                    width: '100%',
+                                    height: 30,
+                                    position: 'absolute',
+                                    top: 20,
+                                    left: 20,
+                                    zIndex: 100,
                                 }}
                             >
-                                <Text style={styles.txtlistbooks}>Danh sách quyển sách</Text>
-                            </View>
-                            <ScrollView showsVerticalScrollIndicator={false}>
-                                {
-                                    dataDis.map((item, index) => (
-                                        <View style={styles.itemcontainer} key={index}>
-                                            <Image style={styles.imgbook} source={{ uri: "https://edtechbooks.org/book_cover_images/" + item.cover_image_lg }} />
-                                            <View style={styles.infBookContainer}>
-                                                <View style={{ width: 210, marginTop: 5 }}>
-                                                    <Text style={styles.txtbook} numberOfLines={3}>{item.title}</Text>
-                                                    <Text style={styles.txtauthor} numberOfLines={2}>{item.subtitle}</Text>
-                                                </View>
-                                                <TouchableOpacity style={styles.btnQuickView} onPress={() => { navigation.navigate('DetailReadBook', { itembook: item }) }}>
-                                                    <Text style={styles.txtbtnQuickView}>Xem nhanh</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    ))
-                                }
-                            </ScrollView>
+                                <SimpleIcon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
+                            </TouchableOpacity>
+                            <Text style={styles.txthead}>Đọc sách</Text>
                         </View>
-                    </ScrollView>) : (
+                        <View style={styles.searchcontainer}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Icon name='search-outline' size={26} style={{ paddingHorizontal: 10 }} />
+                            </TouchableOpacity>
+                            <TextInput value={search}
+                                onChangeText={(text) => { searched(text) }} style={styles.search} placeholder="Tìm kiếm" placeholderTextColor={color.txt2} />
+                        </View>
+                        <ScrollView>
+                            {/* Sách dành cho bạn */}
+                            <View>
+                                <Text style={styles.txtlistbooks}>Dành cho bạn</Text>
+                            </View>
+                            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginBottom: 30 }}>
+                                {
+                                    dataDis.map((item, index) => <BookItem key={index} book={item} displayText={displayText} type={'main'} navigation={navigation} />)
+                                }
+
+                            </ScrollView>
+                            {/* Sách gợi ý */}
+                            <View>
+                                <Text style={styles.txtlistbooks}>Gợi ý sách</Text>
+                            </View>
+                            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginBottom: 30 }}>
+                                <BookItem book={dataDis[0]} displayText={displayText} navigation={navigation} />
+                            </ScrollView>
+                        </ScrollView>
+                    </View>
+                ) : (
                     <Loading />
                 )
             }
@@ -110,125 +156,95 @@ const ReadBook = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
+        height: '100%',
         backgroundColor: '#ffff'
     },
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 60,
         width: 390,
     },
-    imgreturn: {
-        width: 30,
-        height: 30,
-        marginLeft: 38,
-    },
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
     },
     searchcontainer: {
+        width: '100%',
         marginTop: 10,
         marginBottom: 10,
-        marginHorizontal: 22,
-        height: 42,
+        marginHorizontal: 20,
+        height: 48,
+        width: width - 40,
+        borderRadius: 100,
         flexDirection: 'row',
-        width: width - 44,
-        borderRadius: 30,
-        borderWidth: 1,
-        borderColor: color.bodercolor3,
         alignItems: 'center',
-        // backgroundColor: 'red'
+        backgroundColor: '#f6f6f6'
     },
     search: {
         flex: 1,
-        paddingHorizontal: 20,
+        paddingLeft: 0,
+        paddingRight: 20,
         fontSize: 16,
-        fontStyle: 'italic',
         color: '#333',
-    },
-    icon: {
-        width: 22,
-        height: 22,
-        marginRight: 15,
     },
     txtlistbooks: {
         marginTop: 10,
-        marginLeft: 10,
+        marginLeft: 20,
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: 700,
         fontFamily: fontstyle.fontfamily_2,
         color: color.txt4,
     },
     itemcontainer: {
-        width: 346,
-        height: 210,
-        padding: 10,
-        backgroundColor: color.btn_color3,
-        //justifyContent: 'space-between',
-        borderRadius: 10,
-        marginTop: 18,
+        marginTop: 50,
         marginBottom: 10,
-        elevation: 4,
-        flexDirection: 'row'
+        marginHorizontal: 20,
+        width: itemBookWidth,
+        height: 340,
+        borderRadius: 10,
+    },
+    linearContainer: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#4d53e3',
+        borderRadius: 10,
     },
     imgbook: {
-        width: '40%',
-        height: '100%',
+        position: 'absolute',
+        top: '-10%',
+        left: positionOfBookImage,
+        width: imageBookWidth,
+        height: 220,
         borderRadius: 10,
-        marginRight: 5
-    },
-    infBookContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-        paddingHorizontal: 10
+        zIndex: 100,
     },
     txtbook: {
+        marginTop: 200,
         fontSize: 18,
         fontFamily: fontstyle.fontfamily_1,
         color: color.txt1,
-        fontWeight: 400,
+        fontWeight: 700,
     },
     txtauthor: {
         marginTop: 10,
         fontSize: 14,
         fontFamily: fontstyle.fontfamily_2,
     },
-    // btnReadNow: {
-    //     // width: 114,
-    //     height: 31,
-    //     marginLeft: 20,
-    //     backgroundColor: color.btn_color4,
-    //     borderRadius: 10,
-    //     marginTop: 13,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    // },
-    txtbtnReadNow: {
-        fontSize: 14,
-        fontFamily: fontstyle.fontfamily_2,
-        color: color.txtbtn_color1,
-    },
-    btnQuickView: {
-        // width: 200,
-        height: 31,
-        // marginRight: 20,
-        backgroundColor: color.btn_color1,
-        borderRadius: 10,
-        marginTop: 13,
-        marginBottom: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    txtbtnQuickView: {
-        fontSize: 14,
-        fontFamily: fontstyle.fontfamily_2,
-        color: color.txtbtn_color1,
-    },
+    viewBtn: {
+        position: 'absolute',
+        bottom: 10,
+        right: 20,
+        alignSelf: 'flex-start',
+        padding: 6,
+        paddingVertical: 4,
+        borderRadius: 30,
+        backgroundColor: '#FFFFFF',
+        zIndex: 1000
+    }
 });
 
 export default ReadBook;

@@ -123,7 +123,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailReadBook',
@@ -133,7 +133,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailBook',
@@ -143,7 +143,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'WordGroup',

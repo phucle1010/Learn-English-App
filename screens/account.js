@@ -3,9 +3,7 @@ import {
     Text,
     StyleSheet,
     View,
-    ScrollView,
     Image,
-    SafeAreaView,
     Alert,
     Dimensions,
     TouchableOpacity,
@@ -25,7 +23,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AweIcon from 'react-native-vector-icons/FontAwesome5';
 import { auth, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from '../firebase';
 import { useIsFocused } from '@react-navigation/native';
-
 
 const Account = ({ navigation }) => {
     const user = useSelector(state => state.user)
