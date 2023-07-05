@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, ScrollView, Image, TextInput, TouchableOpacity,
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { useIsFocused } from '@react-navigation/native';
 
 import Loading from '../components/Loading'
@@ -81,15 +82,11 @@ const Videos = ({ navigation }) => {
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
                             <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                                <Icon name='arrow-left' style={{ marginLeft: 38, color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Video</Text>
                         </View>
-                        {/* <View style={styles.searchcontainer}>
-                <TextInput style={styles.search} placeholder="Tìm kiếm sách" />
-                <Image style={styles.icon} source={require('../sources/icons/search.png')} />
-            </View> */}
-                        <Text style={styles.txtlistvideos}>Danh sách video</Text>
+
                         <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
                             {
                                 videos.length > 0 && videos.map((video, index) => {
@@ -110,8 +107,6 @@ const Videos = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        paddingBottom: 190,
-
     },
     headcontainer: {
         flexDirection: 'row',

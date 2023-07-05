@@ -64,7 +64,7 @@ const WordGroup = (props) => {
                             <View></View>
                         </View>
                         <View style={styles.content}>
-                            <Text style={styles.txtwordGroup}>Bộ từ vựng</Text>
+                            <Text style={styles.txtwordGroup}>Danh sách chủ đề</Text>
                             <View>
                                 {isLoading
                                     ? <Loading />
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 11,
-        marginBottom: 145,
     },
     txtwordGroup: {
         fontSize: 20,

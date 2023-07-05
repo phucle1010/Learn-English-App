@@ -73,7 +73,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'News',
@@ -103,7 +103,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailVideo',
@@ -113,7 +113,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'ReadBook',
@@ -153,7 +153,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailWordGroup',
@@ -163,7 +163,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'Grammar',
@@ -173,7 +173,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'GrammarDetail',
@@ -183,7 +183,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'GrammarTheory',
@@ -193,7 +193,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'GrammarExercise',
@@ -203,7 +203,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'Exercise',
@@ -213,7 +213,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'MultipleChoiceExercise',
@@ -223,7 +223,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'MultipleChoiceExerciseResult',
@@ -233,7 +233,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailMultipleChoiceExercise',
@@ -243,7 +243,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'ListenExercise',
@@ -253,7 +253,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'ListenExerciseTopic',
@@ -263,7 +263,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'DetailListenExercise',
@@ -273,7 +273,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'ReviewResult',
@@ -283,7 +283,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'TestResult',
@@ -293,7 +293,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'Test',
@@ -303,7 +303,7 @@ const screens = [
         tabIconColor: '#ddf7ff',
         activeColor: '#0047AB',
         isHideTab: true,
-        isHideNavigationTab: false,
+        isHideNavigationTab: true,
     },
     {
         name: 'Words',

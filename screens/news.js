@@ -138,7 +138,7 @@ const News = ({ navigation }) => {
                             allArticles.map((item, index) => (
                                 <NewsItem article={item} key={index} navigation={navigation} />
                             ))}
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={{
                                 marginTop: 20,
                                 marginBottom: 20,
@@ -153,7 +153,7 @@ const News = ({ navigation }) => {
                             }}
                         >
                             <Text style={{ color: '#fff', fontSize: 18 }}>Xem thêm</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </ScrollView>
                 </View>
             ) : (

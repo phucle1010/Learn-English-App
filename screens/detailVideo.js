@@ -5,10 +5,10 @@ import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 import { getSubtitles } from 'youtube-captions-scraper';
-
-import Loading from '../components/Loading'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import Loading from '../components/Loading'
 
 const DetailVideo = ({ navigation, route }) => {
     const currentUser = useSelector(state => state.user)
@@ -27,8 +27,6 @@ const DetailVideo = ({ navigation, route }) => {
     const scrollRef = useRef();
 
     var playInterval = null;
-
-    console.log(currentUser)
 
     useEffect(() => {
         if (isFocusedScreen) {
@@ -99,8 +97,7 @@ const DetailVideo = ({ navigation, route }) => {
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
                             <TouchableOpacity onPress={() => navigation.navigate("Videos")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-
+                                <Icon name='arrow-left' style={{ marginLeft: 38, color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Video</Text>
                         </View>
@@ -147,8 +144,6 @@ const DetailVideo = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
-        paddingBottom: 80,
         backgroundColor: color.btn_color3,
     },
     headcontainer: {
