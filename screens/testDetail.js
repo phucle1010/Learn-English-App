@@ -1,45 +1,51 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, Animated, Dimensions, Alert } from 'react-native';
-import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
-import fontStyle from '../contains/fontStyle';
-import { db, collection, query, where, getDocs, orderBy, doc } from '../firebase/index'
+import db, { collection, query, where, getDocs, orderBy, doc } from '../firebase/index'
+import { useIsFocused } from '@react-navigation/native';
+import Loading from '../components/Loading'
+
 const { width, height } = Dimensions.get('window')
 
 const TestDetail = (props) => {
     const { navigation, route } = props
     const { idItem } = route.params
+    const isFocusedScreen = useIsFocused();
     const [data, setData] = useState([])
     const [listAns, setListAns] = useState([])
     const [lisAns, setLisAns] = useState(["", "", "", "", "", "", "", "", "", ""])
     const [currentIndex, setCurrentIndex] = useState(0)
     const scrollX = useRef(new Animated.Value(0)).current;
     const flatListRef = useRef(null);
+
     useEffect(() => {
-        setLisAns(["", "", "", "", "", "", "", "", "", ""]);
-        getData()
-    }, [idItem])
+        if (isFocusedScreen) {
+            setLisAns(["", "", "", "", "", "", "", "", "", ""]);
+            getData()
+        } else {
+            setData([]);
+            setListAns([]);
+            setCurrentIndex(0);
+        }
+
+    }, [isFocusedScreen, idItem])
+
     const getData = async () => {
         setLisAns
         try {
-            console.log("getdata")
             const docRf = doc(db, "TEST", idItem)
             const colRf = collection(docRf, "QUESTION");
             const querySnapshot = await getDocs(colRf);
             const listData = []
             const listAnswer = []
             querySnapshot.forEach(async (doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 listData.push({ id: doc.id, ...doc.data() })
-                console.log(doc.data())
 
                 const traloiRef = collection(doc.ref, 'ANSWER');
                 const q2 = query(traloiRef);
                 const querySnapshot2 = await getDocs(q2);
                 querySnapshot2.forEach(async (doc2) => {
-                    console.log(doc2.data())
-                    await listAnswer.push({ id: doc.id, idA: doc2.id, ...doc2.data() })
-
+                    listAnswer.push({ id: doc.id, idA: doc2.id, ...doc2.data() })
                 });
             })
             setTimeout(() => {
@@ -50,55 +56,24 @@ const TestDetail = (props) => {
             console.log(error)
         }
     }
-    const DATA = [
-        {
-            question_number: 1,
-            question: "What is the opposite of 'hot?",
-            answerlist: [
-                { answer: "fire", },
-                { answer: "cool", },
-                { answer: "cold", },
-                { answer: "wet", },
-            ],
-            correct: 3
-        },
-        {
-            question_number: 2,
-            question: "where is she?",
-            answerlist: [
-                { answer: "her house", },
-                { answer: "no", },
-                { answer: "welcome", },
-                { answer: "yeh", },
-            ],
-            correct: 1
-        }, {
-            question_number: 3,
-            question: "where is she?",
-            answerlist: [
-                { answer: "her house", },
-                { answer: "no", },
-                { answer: "welcome", },
-                { answer: "yeh", },
-            ],
-            correct: 1
-        },
-    ]
-    console.log(currentIndex)
+
     const handleButtonClick = (page, value) => {
         const newLisAns = [...lisAns];
         newLisAns[page] = value;
         setLisAns(newLisAns);
     };
+
     const handleNext = () => {
         flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
         setCurrentIndex(currentIndex + 1)
     };
+
     const handlePrevious = () => {
         flatListRef.current.scrollToIndex({ index: currentIndex - 1 });
         setCurrentIndex(currentIndex - 1)
 
     };
+
     const handleScroll = Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
         {
@@ -108,8 +83,8 @@ const TestDetail = (props) => {
             }
         }
     );
+
     const handleComplete = () => {
-        console.log(lisAns)
         if (lisAns.includes("")) {
             Alert.alert("Thông báo!", "Hãy trả lời đầy đủ các câu hỏi trước khi hoàn thành")
         } else {

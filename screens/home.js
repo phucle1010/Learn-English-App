@@ -100,7 +100,7 @@ const Home = ({ navigation }) => {
                                             <Image style={styles.imgItem} source={require('../sources/images/joystick.png')} />
                                             <Text style={styles.txtimgItem}>Game</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.wrapItems}>
+                                        <TouchableOpacity style={styles.wrapItems} onPress={() => navigation.navigate("Test")}>
                                             <Image style={styles.imgItem} source={require('../sources/images/test.png')} />
                                             <Text style={styles.txtimgItem}>Kiểm tra</Text>
                                         </TouchableOpacity>

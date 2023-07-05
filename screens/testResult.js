@@ -1,10 +1,76 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
+import moment from 'moment';
+import db, { collection, query, where, getDocs, orderBy, doc, addDoc } from '../firebase/index'
+import { useIsFocused } from '@react-navigation/native';
+const { width, height } = Dimensions.get('window')
 
-const TestResult = () => {
+const TestResult = (props) => {
+    const { navigation, route } = props
+    const { listQuestion, listAnswer, listChosse, idTest } = route.params
+    const isFocusedScreen = useIsFocused();
+    const [listInco, setListInco] = useState([])
+    const [numInSuc, setNumInSuc] = useState(0)
+    const [level, setLevel] = useState('C2');
+    const [advice, setAdvice] = useState('');
+
+    useEffect(() => {
+        if (isFocusedScreen) {
+            getResult()
+        } else {
+            setNumInSuc(0)
+            setListInco([])
+        }
+    }, [isFocusedScreen])
+
+    const getResult = () => {
+        setListInco([])
+        let numInSucces = 0;
+        const listResultInco = []
+        listQuestion.forEach((question, i) => {
+            const itemAn = listAnswer.find((ans) => { return ans.id == question.id && ans.isTrue == true })
+            if (listChosse[i] != itemAn.idA) {
+                numInSucces += 1
+                const valueincorrect = listAnswer.find((ans) => { return ans.idA == listChosse[i] })
+                listResultInco.push({ incorrectId: listChosse[i], answer: itemAn.answer, index: i, incorrect: valueincorrect.answer, ...question })
+            }
+        });
+        setNumInSuc(numInSucces)
+        setListInco(listResultInco)
+
+        switch (10 - numInSucces) {
+            case 10:
+            case 9:
+                setLevel('A1');
+                setAdvice(`bạn đạt được ${10 - numInSucces}, chúc mừng bạn đã có trình độ A1. Tiếp tục học tập và luyện tập để nâng cao trình độ của mình.`);
+                break;
+            case 8:
+                setLevel('A2');
+                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ A2. Đây là một kết quả tốt, tuy nhiên, bạn cần tiếp tục học tập và luyện tập để có thể đạt được trình độ cao hơn.`);
+                break;
+            case 7:
+                setLevel('B1');
+                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ B1. Đây là một trình độ khá tốt, tuy nhiên, bạn cần tiếp tục phát triển kỹ năng ngôn ngữ của mình.`);
+                break;
+            case 6:
+            case 5:
+                setLevel('B2');
+                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ B2. Đây là một kết quả trung bình, bạn cần phải tập trung hơn vào các kỹ năng ngôn ngữ còn yếu để nâng cao trình độ của mình.`);
+                break;
+            case 4:
+            case 3:
+                setLevel('C1');
+                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ C1. Đây là một kết quả thấp, bạn cần phải tập trung hơn vào việc học tập và luyện tập các kỹ năng ngôn ngữ cơ bản.`);
+                break;
+            default:
+                setLevel('C2');
+                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ C2. Đây là một kết quả rất thấp, bạn cần phải bắt đầu học tập từ những kiến thức cơ bản nhất và luyện tập thường xuyên để cải thiện trình độ của mình.`);
+                break;
+        }
+    }
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -16,17 +82,17 @@ const TestResult = () => {
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/check.png')} />
-                        <Text style={styles.txtItem}> 15/20</Text>
+                        <Text style={styles.txtItem}> {10 - numInSuc}/10</Text>
                     </View>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/wrong.png')} />
-                        <Text style={styles.txtItem}> 5/20</Text>
+                        <Text style={styles.txtItem}>{numInSuc}/10</Text>
                     </View>
                 </View>
                 <View style={styles.wrapEvaluate}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={styles.txtEvaluateNow}>Trình độ hiện tại của bạn là </Text>
-                        <Text style={[styles.txtEvaluateNow, { fontWeight: 'bold' }]}> B1</Text>
+                        <Text style={[styles.txtEvaluateNow, { fontWeight: 'bold' }]}> {level}</Text>
                     </View>
                     <View
                         style={{
@@ -39,7 +105,7 @@ const TestResult = () => {
                         <Text style={[styles.txtEvaluateNow, { fontWeight: 'bold' }]}>Lời khuyên: </Text>
 
                         <Text style={styles.txtEvaluateNow}>
-                            Bạn nên cải thiện về từ vựng và ôn tập thường xuyên cấu trúc ngữ pháp
+                            {advice}
                         </Text>
                     </View>
                 </View>
@@ -105,7 +171,7 @@ const styles = StyleSheet.create({
     },
     wrapEvaluate: {
         width: 330,
-        height: 170,
+        height: 250,
         borderRadius: 15,
         marginTop: 30,
         marginBottom: 15,
