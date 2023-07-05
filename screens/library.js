@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     main: {
         backgroundColor: '#fff',
         height: '100%',
-        paddingBottom: 80,
+        // paddingBottom: 80,
     },
     scrollContainer: {
         marginTop: 1,

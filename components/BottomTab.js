@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import screens from '../navigation';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import color from '../contains/color';
 
 const Tab = createBottomTabNavigator();
+// const Tab = createMaterialBottomTabNavigator();
 
 const BottomTab = () => {
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
@@ -24,70 +27,40 @@ const BottomTab = () => {
                     tabBarLabelStyle: {
                         display: 'none'
                     },
+                    tabBarInactiveTintColor: '#F3CFC6',
+                    tabBarActiveTintColor: '#E37383',
+
                 }
             )}
         >
             {screens.map((screen, index) => {
-                let TabComp = null;
-                let MainScreen = screen.component;
-                if (screen.isHideNavigationTab) {
-                    TabComp = (
-                        <Tab.Screen
-                            key={index}
-                            name={screen.name}
-                            component={MainScreen}
-                            options={{
+                return (
+                    <Tab.Screen
+                        key={index}
+                        name={screen.name}
+                        component={screen.component}
+                        options={({ color, size, focused }) => (
+                            {
                                 tabBarStyle: {
-                                    display: 'none',
+                                    height: screen.isHideNavigationTab ? 0 : 60
                                 },
-                                tabBarIcon: () => (
+                                tabBarIcon: ({ color }) => (
                                     <MaterialCommunityIcons
                                         name={screen.tabIconName}
                                         size={screen.tabIconSize}
-                                        color={index === selectedTabIndex ? screen.activeColor : screen.tabIconColor}
-                                    />
-                                ),
-                                tabBarItemStyle: {
-                                    display: screen.isHideTab === true ? 'none' : 'flex',
-                                },
-                            }}
-                            listeners={{
-                                focus: () => {
-                                    setSelectedTabIndex(index);
-                                },
-                            }}
-                        />
-                    );
-                } else {
-                    TabComp = (
-                        <Tab.Screen
-                            key={index}
-                            name={screen.name}
-                            component={MainScreen}
-                            options={{
-                                tabBarIcon: () => (
-                                    <MaterialCommunityIcons
-                                        name={screen.tabIconName}
-                                        size={screen.tabIconSize}
-                                        color={index === selectedTabIndex ? screen.activeColor : screen.tabIconColor}
+                                        color={color}
                                     />
                                 ),
                                 tabBarItemStyle: {
                                     display: screen.isHideTab === true ? 'none' : 'flex',
                                     marginHorizontal: 35,
                                     borderTopWidth: 2,
-                                    borderTopColor: index === selectedTabIndex ? screen.activeColor : 'transparent',
+                                    borderTopColor: focused ? screen.activeColor : 'transparent',
                                 },
-                            }}
-                            listeners={{
-                                focus: () => {
-                                    setSelectedTabIndex(index);
-                                },
-                            }}
-                        />
-                    );
-                }
-                return TabComp;
+                            }
+                        )}
+                    />
+                )
             })}
         </Tab.Navigator>
     );
@@ -96,11 +69,10 @@ const BottomTab = () => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        height: 80,
+        height: 60,
         backgroundColor: '#fff',
         borderTopWidth: 1,
         borderTopColor: '#efefef',
-        // overflow: 'hidden',
     },
 });
 

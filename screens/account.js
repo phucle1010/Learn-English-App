@@ -38,7 +38,7 @@ const Account = ({ navigation }) => {
     const [newPassword, setNewPassword] = useState('');
     const [reNewPassword, setReNewPassword] = useState('');
 
-    const snapPoints = useMemo(() => ['60%'], []);
+    const snapPoints = useMemo(() => ['55%'], []);
 
     useEffect(() => {
         if (!isFocusedScreen) {
