@@ -26,7 +26,7 @@ const Test = ({ navigation, route }) => {
     const getData = async () => {
         try {
             const collectRf = collection(db, "TEST")
-            const q = query(collectRf, where("topic", "==", "multiple-choice"), orderBy("title"));
+            const q = query(collectRf, where("topic", "==", "TestLevel"), orderBy("title"));
             const querySnapshot = await getDocs(q);
             const listData = []
             querySnapshot.forEach((doc) => {

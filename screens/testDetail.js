@@ -13,14 +13,14 @@ const TestDetail = (props) => {
     const isFocusedScreen = useIsFocused();
     const [data, setData] = useState([])
     const [listAns, setListAns] = useState([])
-    const [lisAns, setLisAns] = useState(["", "", "", "", "", "", "", "", "", ""])
+    const [lisAns, setLisAns] = useState(["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""])
     const [currentIndex, setCurrentIndex] = useState(0)
     const scrollX = useRef(new Animated.Value(0)).current;
     const flatListRef = useRef(null);
 
     useEffect(() => {
         if (isFocusedScreen) {
-            setLisAns(["", "", "", "", "", "", "", "", "", ""]);
+            setLisAns(["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]);
             getData()
         } else {
             setData([]);

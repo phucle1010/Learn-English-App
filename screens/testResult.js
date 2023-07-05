@@ -41,35 +41,33 @@ const TestResult = (props) => {
         setNumInSuc(numInSucces)
         setListInco(listResultInco)
 
-        switch (10 - numInSucces) {
-            case 10:
-            case 9:
-                setLevel('A1');
-                setAdvice(`bạn đạt được ${10 - numInSucces}, chúc mừng bạn đã có trình độ A1. Tiếp tục học tập và luyện tập để nâng cao trình độ của mình.`);
+        switch (true) {
+            case numInSucces >= 0 && numInSucces <= 2:
+                setLevel('C2');
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2}, chúc mừng bạn đã có trình độ C2. Tiếp tục học tập và luyện tập để nâng cao trình độ của mình.`);
                 break;
-            case 8:
-                setLevel('A2');
-                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ A2. Đây là một kết quả tốt, tuy nhiên, bạn cần tiếp tục học tập và luyện tập để có thể đạt được trình độ cao hơn.`);
-                break;
-            case 7:
-                setLevel('B1');
-                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ B1. Đây là một trình độ khá tốt, tuy nhiên, bạn cần tiếp tục phát triển kỹ năng ngôn ngữ của mình.`);
-                break;
-            case 6:
-            case 5:
-                setLevel('B2');
-                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ B2. Đây là một kết quả trung bình, bạn cần phải tập trung hơn vào các kỹ năng ngôn ngữ còn yếu để nâng cao trình độ của mình.`);
-                break;
-            case 4:
-            case 3:
+            case numInSucces >= 3 && numInSucces <= 5:
                 setLevel('C1');
-                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ C1. Đây là một kết quả thấp, bạn cần phải tập trung hơn vào việc học tập và luyện tập các kỹ năng ngôn ngữ cơ bản.`);
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2} điểm, bạn có trình độ C1. Đây là một kết quả tốt, tuy nhiên, bạn cần tiếp tục học tập và luyện tập để có thể đạt được trình độ cao hơn.`);
+                break;
+            case numInSucces >= 6 && numInSucces <= 7:
+                setLevel('B2');
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2} điểm, bạn có trình độ B2. Đây là một trình độ khá tốt, tuy nhiên, bạn cần tiếp tục phát triển kỹ năng ngôn ngữ của mình.`);
+                break;
+            case numInSucces >= 8 && numInSucces <= 9:
+                setLevel('B1');
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2} điểm, bạn có trình độ B1. Đây là một kết quả trung bình, bạn cần phải tập trung hơn vào các kỹ năng ngôn ngữ còn yếu để nâng cao trình độ của mình.`);
+                break;
+            case numInSucces >= 10 && numInSucces <= 12:
+                setLevel('A2');
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2} điểm, bạn có trình độ A2. Đây là một kết quả thấp, bạn cần phải tập trung hơn vào việc học tập và luyện tập các kỹ năng ngôn ngữ cơ bản.`);
                 break;
             default:
-                setLevel('C2');
-                setAdvice(`bạn đạt được ${10 - numInSucces} điểm, bạn có trình độ C2. Đây là một kết quả rất thấp, bạn cần phải bắt đầu học tập từ những kiến thức cơ bản nhất và luyện tập thường xuyên để cải thiện trình độ của mình.`);
+                setLevel('A1');
+                setAdvice(`bạn đạt được ${(20 - numInSucces) / 2} điểm, bạn có trình độ A1. Đây là một kết quả rất thấp, bạn cần phải bắt đầu học tập từ những kiến thức cơ bản nhất và luyện tập thường xuyên để cải thiện trình độ của mình.`);
                 break;
         }
+
     }
     return (
         <ScrollView>
@@ -82,11 +80,11 @@ const TestResult = (props) => {
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/check.png')} />
-                        <Text style={styles.txtItem}> {10 - numInSuc}/10</Text>
+                        <Text style={styles.txtItem}> {20 - numInSuc}/20</Text>
                     </View>
                     <View style={styles.wrapItem}>
                         <Image style={styles.img} source={require('../sources/images/wrong.png')} />
-                        <Text style={styles.txtItem}>{numInSuc}/10</Text>
+                        <Text style={styles.txtItem}>{numInSuc}/20</Text>
                     </View>
                 </View>
                 <View style={styles.wrapEvaluate}>
