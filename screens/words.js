@@ -6,7 +6,7 @@ import fontStyle from '../contains/fontStyle';
 import db from '../firebase';
 import Sound from 'react-native-sound';
 import { collection, query, where, getDocs, getDoc, doc } from '../firebase';
-
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import Loading from '../components/Loading'
 import { useIsFocused } from '@react-navigation/native';
 
@@ -113,8 +113,8 @@ const Words = (props) => {
                 loaded ? (
                     <View style={styles.container}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40 }}>
-                            <TouchableOpacity style={{ position: 'absolute', top: 8, left: 10 }} onPress={() => navigation.navigate('DetailWordGroup', { item: topic })}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            <TouchableOpacity style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }} onPress={() => navigation.navigate('DetailWordGroup', { item: topic })}>
+                                <Icon name='arrow-left' size={20} color={color.txt5} />
                             </TouchableOpacity>
                             <Text style={{ fontSize: 20 }}>Chi tiết từ vựng</Text>
                         </View>
@@ -208,7 +208,6 @@ const styles = StyleSheet.create({
     },
     wordcontainer: {
         flexDirection: 'row',
-        // flexWrap: 'wrap',
         width: 346,
         height: 110,
         marginHorizontal: 20,

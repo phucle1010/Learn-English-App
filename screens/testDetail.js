@@ -162,7 +162,7 @@ const TestDetail = (props) => {
                             </TouchableOpacity>}
                         {currentIndex == data.length - 1 &&
                             <TouchableOpacity style={[styles.btnNex, { backgroundColor: '#FF7F50' }]} onPress={() => { handleComplete() }}>
-                                <Text style={[styles.txthead, { fontSize: 17, marginTop: 0 }]}>Complete</Text>
+                                <Text style={[styles.txthead, { fontSize: 17, marginTop: 0, color: '#fff' }]}>Complete</Text>
                             </TouchableOpacity>}
                         <TouchableOpacity style={styles.btnReturnHome} onPress={() => navigation.navigate("Home")}>
                             <Text style={[styles.txthead, { fontSize: 17, marginTop: 0, color: '#1c1a5e' }]}>Back to Home</Text>

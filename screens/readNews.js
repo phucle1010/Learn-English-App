@@ -12,6 +12,7 @@ import {
 import { getDocs, collection } from 'firebase/firestore';
 import db from '../firebase';
 import Icon from 'react-native-vector-icons/Ionicons'
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -48,25 +49,25 @@ const ReadNews = ({ navigation, route }) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <View >
-                <TouchableOpacity
-                    onPress={() => {
-                        setSearch('')
-                        setSearchedWordData({})
-                        setShownWordModal(false)
-                        navigation.navigate('News')
-                    }}
-                    style={{
-                        width: 30,
-                        height: 30,
-                        position: 'absolute',
-                        top: 25,
-                        left: 30,
-                        zIndex: 100,
-                    }}
-                >
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                </TouchableOpacity>
+
                 <View style={styles.headcontainer}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setSearch('')
+                            setSearchedWordData({})
+                            setShownWordModal(false)
+                            navigation.navigate('News')
+                        }}
+                        style={{
+                            height: '100%',
+                            position: 'absolute',
+                            left: 30,
+                            zIndex: 100,
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <SimpleIcon size={20} name='arrow-left' />
+                    </TouchableOpacity>
                     <Text style={styles.txthead}>Đọc tin tức</Text>
                 </View>
                 <View style={styles.searchcontainer}>

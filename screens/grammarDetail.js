@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Text, View, useWindowDimensions, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Image } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import GrammarExercise from './grammarExercise';
@@ -46,11 +47,18 @@ const GrammarDetail = (props) => {
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.headcontainer}>
-                <TouchableOpacity onPress={() => navigation.navigate("Grammar")}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        left: 20,
+                        height: '100%',
+                        justifyContent: 'center',
+                    }}
+                    onPress={() => navigation.navigate("Grammar")}
+                >
+                    <Icon name='arrow-left' size={20} color={color.txt5} />
                 </TouchableOpacity>
                 <Text style={styles.txthead}>{route.params.name}</Text>
-                <View></View>
             </View>
             <TabView
                 navigationState={{ index, routes }}
@@ -98,7 +106,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         paddingHorizontal: 16
     },
     imgreturn: {

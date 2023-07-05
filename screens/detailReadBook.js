@@ -13,9 +13,9 @@ const DetailReadBook = ({ navigation, route }) => {
     const { itembook } = route.params
 
     const displayText = (text) => {
-        return text.length < 350
+        return text.length < 240
             ? `${text}`
-            : `${text.substring(0, 348)}...`
+            : `${text.substring(0, 238)}...`
     }
 
     return (
@@ -42,12 +42,16 @@ const DetailReadBook = ({ navigation, route }) => {
             {/* New design */}
             <View style={styles.mainContent}>
                 <Image style={styles.imgbook} source={{ uri: "https://edtechbooks.org/book_cover_images/" + itembook.cover_image_lg }} resizeMode='stretch' />
-                <View style={{
-                    paddingHorizontal: 30,
-                }}>
+                <View
+                    style={{
+                        paddingHorizontal: 30,
+                    }}
+                >
                     <Text style={styles.txtbook} numberOfLines={3}>{itembook.title}</Text>
-                    <Text style={styles.txtauthor} numberOfLines={3}>{itembook.subtitle}</Text>
-                    <View style={{ marginTop: 10, flexDirection: 'row' }}>
+                    {
+                        itembook.subtitle && <Text style={styles.txtauthor} numberOfLines={3}>{itembook.subtitle}</Text>
+                    }
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                         <View style={{ ...styles.viewItem, backgroundColor: '#f66' }}>
                             <IonIcon name='download-outline' size={23} color={'#fff'} style={{ marginRight: 5 }} />
                             <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff' }}>{itembook.pdf_downloads}</Text>
@@ -61,7 +65,7 @@ const DetailReadBook = ({ navigation, route }) => {
                             <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff' }}>{itembook.minor_version}</Text>
                         </View>
                     </View>
-                    <Text style={[styles.txtauthor, { marginTop: 20, fontSize: 16, lineHeight: 22 }]}>{displayText(itembook.abstract.replace(/<\/?p>/gi, ''))}</Text>
+                    <Text style={[styles.txtauthor, { marginTop: 15, fontSize: 16, lineHeight: 22 }]}>{displayText(itembook.abstract.replace(/<\/?p>/gi))}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <TouchableOpacity
                             style={styles.btnQuickView}
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
     },
     txtbook: {
-        marginTop: '36%',
+        marginTop: '38%',
         fontSize: 18,
         color: color.txt1,
         fontWeight: 500,
@@ -125,6 +129,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     viewItem: {
+        marginTop: 10,
         marginRight: 10,
         flexDirection: 'row',
         alignItems: 'center',

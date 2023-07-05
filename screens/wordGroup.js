@@ -7,6 +7,7 @@ import WordGroupItem from '../components/WordGroupItem';
 import db, { getDocs, collection } from '../firebase/index';
 import { updateDoc, doc, increment } from 'firebase/firestore';
 import { useIsFocused } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
 import Loading from '../components/Loading';
 
@@ -52,8 +53,16 @@ const WordGroup = (props) => {
                 isLoading ? <Loading /> : (
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            <TouchableOpacity
+                                style={{
+                                    position: "absolute",
+                                    left: 20,
+                                    height: '100%',
+                                    justifyContent: "center",
+                                }}
+                                onPress={() => navigation.navigate("Home")}
+                            >
+                                <Icon name='arrow-left' size={20} color={color.txt5} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Bộ từ vựng</Text>
                             <View></View>
@@ -95,7 +104,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         paddingHorizontal: 38
     },
     imgreturn: {

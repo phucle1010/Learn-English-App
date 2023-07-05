@@ -49,7 +49,7 @@ const screens = [
     {
         name: 'Library',
         component: Library,
-        tabIconName: 'bookmark-multiple-outline',
+        tabIconName: 'tag-outline',
         tabIconSize: 34,
         tabIconColor: '#F3CFC6',
         activeColor: '#E37383',

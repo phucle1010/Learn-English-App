@@ -7,6 +7,7 @@ import { getDocs, collection } from 'firebase/firestore';
 import db from '../firebase';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/Ionicons'
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
 import { useIsFocused } from '@react-navigation/native';
 
 import Loading from '../components/Loading';
@@ -78,11 +79,18 @@ const DetailWordGroup = (props) => {
                 isLoading ? <Loading /> : (
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("WordGroup")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    left: 20,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={() => navigation.navigate("WordGroup")}
+                            >
+                                <SimpleIcon name='arrow-left' size={20} color={color.txt5} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Bộ từ vựng</Text>
-                            <View></View>
                         </View>
                         <View style={styles.searchcontainer}>
                             <TextInput onChangeText={(i) => setSearch(i)} value={search} style={styles.search} placeholder="Tìm kiếm từ vựng" placeholderTextColor={'#AAAAAA'} />
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
         backgroundColor: color.btn_color3,
         height: 80,
         width: width,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         paddingHorizontal: 38
     },
     imgreturn: {

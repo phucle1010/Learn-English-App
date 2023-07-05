@@ -20,7 +20,7 @@ const DetailBook = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>
-                <TouchableOpacity style={{ position: 'absolute', left: 20 }} onPress={() => navigation.navigate("DetailReadBook", {
+                <TouchableOpacity style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }} onPress={() => navigation.navigate("DetailReadBook", {
                     itembook
                 })}>
                     <Icon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import db, { collection, query, where, getDocs, orderBy } from '../firebase/index'
@@ -46,8 +47,19 @@ const Test = ({ navigation, route }) => {
             {
                 isLoading ? <Loading /> : (
                     <React.Fragment>
+
                         <View style={styles.headcontainer}>
-                            <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    left: 30,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={() => navigation.navigate("Home")}
+                            >
+                                <Icon name='arrow-left' size={20} color={color.txt5} />
+                            </TouchableOpacity>
                             <Text style={styles.txthead}>Kiểm tra trình độ</Text>
                         </View>
                         <ScrollView style={styles.bodycontainer}>
@@ -79,6 +91,7 @@ const styles = StyleSheet.create({
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
@@ -97,7 +110,6 @@ const styles = StyleSheet.create({
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 60,
         color: color.txt5,
     },
     btn: {

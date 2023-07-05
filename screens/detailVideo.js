@@ -96,8 +96,16 @@ const DetailVideo = ({ navigation, route }) => {
                 isLoaded ? (
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("Videos")}>
-                                <Icon name='arrow-left' style={{ marginLeft: 38, color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    left: 30,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={() => navigation.navigate("Videos")}
+                            >
+                                <Icon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Video</Text>
                         </View>
@@ -149,6 +157,7 @@ const styles = StyleSheet.create({
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
@@ -161,7 +170,6 @@ const styles = StyleSheet.create({
     txthead: {
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
-        marginLeft: 100,
         color: color.txt5,
     },
     detailcontainer: {

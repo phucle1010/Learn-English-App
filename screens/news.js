@@ -12,7 +12,7 @@ import { useIsFocused } from '@react-navigation/native'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 import Loading from '../components/Loading'
 
@@ -117,20 +117,20 @@ const News = ({ navigation }) => {
         <React.Fragment>
             {loaded ? (
                 <View style={styles.container}>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Home')}
-                        style={{
-                            width: 30,
-                            height: 30,
-                            position: 'absolute',
-                            top: 25,
-                            left: 30,
-                            zIndex: 100,
-                        }}
-                    >
-                        <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    </TouchableOpacity>
                     <View style={styles.headcontainer}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Home')}
+                            style={{
+                                height: '100%',
+                                position: 'absolute',
+                                left: 30,
+                                zIndex: 100,
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Icon name='arrow-left' size={20} color={color.txt5} />
+                            {/* <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} /> */}
+                        </TouchableOpacity>
                         <Text style={styles.txthead}>Tin tức</Text>
                     </View>
                     <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 20 }}>

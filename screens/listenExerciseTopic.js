@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import color from '../contains/color';
 import fontstyle from '../contains/fontStyle';
 import db, { getDocs, collection, getDoc } from '../firebase/index';
@@ -63,17 +64,25 @@ const ListenExerciseTopic = ({ navigation, route }) => {
                 loaded ? (
                     <View style={styles.container}>
                         <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("ListenExercise")}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    left: 30,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={() => navigation.navigate("ListenExercise")}
+                            >
+                                <Icon name='arrow-left' size={20} color={color.txt5} />
                             </TouchableOpacity>
-                            <Text style={styles.txthead}>Chủ đề</Text>
+                            <Text style={styles.txthead}>Bài tập</Text>
                         </View>
+
 
                         <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
                             {
                                 questions.map((question, index) => (
                                     <View key={index} style={{
-                                        // width: '100%',
                                         flexDirection: 'column',
                                         backgroundColor: '#fff',
                                         marginVertical: 10,
@@ -138,6 +147,7 @@ const styles = StyleSheet.create({
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
@@ -148,8 +158,6 @@ const styles = StyleSheet.create({
         marginLeft: 38,
     },
     txthead: {
-        position: 'absolute',
-        left: '40%',
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
         textAlign: 'center',

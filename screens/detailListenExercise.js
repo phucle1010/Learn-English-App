@@ -6,7 +6,7 @@ import fontstyle from '../contains/fontStyle';
 import db, { getDocs, collection } from '../firebase/index';
 import { useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
-import Sound from 'react-native-sound'
+import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
 import TrackPlayer, { useProgress, RepeatMode } from 'react-native-track-player';
 import Pdf from 'react-native-pdf';
 
@@ -246,7 +246,7 @@ const DetailListenExercise = ({ navigation, route }) => {
             {
                 loaded ? (
                     <View style={styles.container}>
-                        <View style={styles.headcontainer}>
+                        {/* <View style={styles.headcontainer}>
                             <TouchableOpacity onPress={() => navigation.navigate("ListenExerciseTopic", {
                                 level_id,
                                 level_name
@@ -254,6 +254,24 @@ const DetailListenExercise = ({ navigation, route }) => {
                                 <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Chi tiết câu hỏi</Text>
+                        </View> */}
+
+                        <View style={styles.headcontainer}>
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    left: 30,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={() => navigation.navigate("ListenExerciseTopic", {
+                                    level_id,
+                                    level_name
+                                })}
+                            >
+                                <SimpleIcon name='arrow-left' size={20} color={color.txt5} />
+                            </TouchableOpacity>
+                            <Text style={styles.txthead}>Bài tập nghe</Text>
                         </View>
                         <ScrollView
                             style={{
@@ -484,6 +502,7 @@ const styles = StyleSheet.create({
     headcontainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: color.btn_color3,
         height: 80,
         width: 390,
@@ -494,8 +513,6 @@ const styles = StyleSheet.create({
         marginLeft: 38,
     },
     txthead: {
-        position: 'absolute',
-        left: '35%',
         fontFamily: fontstyle.fontfamily_2,
         fontSize: 20,
         textAlign: 'center',

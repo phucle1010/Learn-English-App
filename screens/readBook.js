@@ -108,14 +108,14 @@ const ReadBook = ({ navigation, route }) => {
                                 onPress={() => navigation.navigate("Home")}
                                 style={{
                                     width: '100%',
-                                    height: 30,
+                                    height: '100%',
                                     position: 'absolute',
-                                    top: 20,
                                     left: 20,
+                                    justifyContent: 'center',
                                     zIndex: 100,
                                 }}
                             >
-                                <SimpleIcon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
+                                <SimpleIcon name='arrow-left' style={{ color: color.txt5, fontSize: 20, fontWeight: 'bold' }} />
                             </TouchableOpacity>
                             <Text style={styles.txthead}>Đọc sách</Text>
                         </View>

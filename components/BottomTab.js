@@ -19,6 +19,7 @@ const BottomTab = () => {
             initialRouteName="Home"
             screenOptions={({ route }) => (
                 {
+                    tabBarHideOnKeyboard: true,
                     headerShown: false,
                     tabBarStyle: styles.container,
                     tabBarShowLabel: true,
@@ -31,7 +32,6 @@ const BottomTab = () => {
                     tabBarInactiveBackgroundColor: '#FFFFFF',
                     tabBarActiveTintColor: '#FFFFFF',
                     tabBarActiveBackgroundColor: '#E37383',
-
                 }
             )}
         >
@@ -43,6 +43,7 @@ const BottomTab = () => {
                         component={screen.component}
                         options={({ color, size, focused }) => (
                             {
+                                tabBarHideOnKeyboard: true,
                                 tabBarStyle: {
                                     height: screen.isHideNavigationTab ? 0 : 60
                                 },
@@ -71,6 +72,7 @@ const BottomTab = () => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
+        bottom: 0,
         height: 60,
         backgroundColor: 'red',
         // borderTopWidth: 1,
