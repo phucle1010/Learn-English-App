@@ -1,30 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TouchableHighlightComponent } from 'react-native';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { useDispatch, useSelector } from 'react-redux';
 import Header from '../components/Header';
+import db, { collection, getDocs, doc, deleteDoc, where, query } from '../firebase';
+
 
 const Library = () => {
+    const [savedVocabularies, setSavedVocabularies] = useState([]);
+    const user = useSelector(state => state.user)
+    const [userID, setUserID] = useState('');
+    useEffect(() => {
+        //console.log(user.id);
+        getUserID();
+        getSavedVocabularies();
+    }, [savedVocabularies])
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === user.id) {
+                setUserID(doc.id);
+                // console.log(doc.id);
+            }
+        });
+        // console.log(userID);
+    };
+    const getSavedVocabularies = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVocabularyCollectionRef = collection(userDoc.ref, 'MY_VOCABULARY');
+                const vocabularyQuerySnapshot = await getDocs(myVocabularyCollectionRef);
+
+                const savedVocabularies = vocabularyQuerySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                setSavedVocabularies(savedVocabularies);
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách từ vựng:', error);
+        }
+    };
+    const deleteVocabulary = async (userId, vocabularyId) => {
+        console.log(vocabularyId);
+        try {
+            const userDocRef = doc(db, 'USER', userId);
+            const vocabularyDocRef = doc(userDocRef, 'MY_VOCABULARY', vocabularyId);
+
+            await deleteDoc(vocabularyDocRef);
+            console.log('Từ vựng đã được xóa thành công!');
+            // Xóa từ vựng khỏi mảng savedVocabularies
+            const updatedVocabularies = savedVocabularies.filter((vocabulary) => vocabulary.id !== vocabularyId);
+            console.log(updatedVocabularies);
+            setSavedVocabularies(updatedVocabularies);
+        } catch (error) {
+            console.error('Lỗi khi xóa từ vựng:', error);
+        }
+    };
     return (
         <SafeAreaView style={styles.main}>
             <Header />
             <ScrollView style={styles.scrollContainer}>
                 <View style={styles.container}>
-                    {/* <View style={styles.headcontainer}>
-                    <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                    <Text style={styles.txthead}>Thư viện</Text>
-                </View> */}
                     <View style={styles.containerWordGroup}>
                         <Text style={styles.txtwordGroup}>Từ vựng đã lưu</Text>
                     </View>
-                    <View style={styles.wrapwords}>
-                        <Text style={styles.txtWord}>Hello</Text>
-                        <TouchableOpacity style={styles.wrapbtn}>
-                            <Text style={styles.txtbtn}>Xóa từ vựng</Text>
-                        </TouchableOpacity>
+
+                    <View>
+                        {
+                            savedVocabularies.map((item, index) => (
+
+                                <View style={styles.wrapwords} key={index}>
+                                    <Text style={styles.txtWord}>{item.word}</Text>
+                                    <TouchableOpacity style={styles.wrapbtn}
+                                        onPress={() => deleteVocabulary(userID, item.id)}>
+                                        <Text style={styles.txtbtn}>Xóa từ vựng</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                            ))
+                        }
                     </View>
+
                     <View style={styles.containerWordGroup}>
                         <Text style={styles.txtwordGroup}>Tin tức đã lưu</Text>
                     </View>

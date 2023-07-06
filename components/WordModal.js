@@ -5,11 +5,81 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
-import Sound from 'react-native-sound'
+import Sound from 'react-native-sound';
+import React, { useState } from 'react';
+import db, { collection, addDoc, getDocs, doc, setDoc, where, query } from '../firebase';
 
+// useEffect(() => {
+//     WordModal();
+// }, [])
 
-const WordModal = ({ searchedword }) => {
+const WordModal = (props) => {
+    const [userID, setUserID] = useState('');
+    const [vocabularySaved, setVocabularySaved] = useState(false);
+    const searchedword = props.searchedword;
+    const userId = props.userID;
+    const wordID = props.wordId;
+    const word = props.searchedword.word;
     Sound.setCategory('Playback', true);
+
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === userId) {
+                setUserID(doc.id);
+                // console.log(doc.data().id);
+
+            }
+        });
+        // console.log(userID);
+    };
+
+    const saveUserVocabulary = async () => {
+        getUserID();
+        //checkUserVocabularyCollection();
+        checkVocabularySaved();
+        //console.log(vocabularySaved);
+        if (!vocabularySaved) {
+            try {
+                const userRef = doc(db, 'USER', userID);
+                const vocabularyCollectionRef = collection(userRef, 'MY_VOCABULARY');
+                const newVocabularyRef = await addDoc(vocabularyCollectionRef, { wordID, word });
+                Alert.alert('Thông báo', 'Từ vựng đã được lưu thành công')
+                console.log('Từ vựng đã được lưu thành công');
+                console.log('ID của từ vựng mới:', newVocabularyRef.id);
+            } catch (error) {
+                console.log('Lỗi khi lưu từ vựng:', error);
+            }
+        }
+        else {
+            Alert.alert('Thông báo', 'Từ vựng đã được lưu sẵn')
+        }
+
+    };
+
+    const checkVocabularySaved = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', userId));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVocabularyCollectionRef = collection(userDoc.ref, 'MY_VOCABULARY');
+                const vocabularyQuery = query(myVocabularyCollectionRef, where('wordID', '==', wordID));
+                const vocabularySnapshot = await getDocs(vocabularyQuery);
+
+                if (!vocabularySnapshot.empty) {
+                    setVocabularySaved(true);
+                    console.log('Từ vựng đã được lưu.');
+                }
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra từ vựng:', error);
+        }
+    };
 
     const playSound = (index) => {
         const sound = searchedword.phonetics[index]?.audio || searchedword.phonetics[0].audio;
@@ -47,7 +117,7 @@ const WordModal = ({ searchedword }) => {
                     borderRadius: 30,
                     alignItems: 'center',
                     justifyContent: 'center',
-                }}>
+                }} onPress={saveUserVocabulary}>
                     <Text style={{
                         color: '#fff',
                         fontSize: 16,

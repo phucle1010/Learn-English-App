@@ -20,13 +20,13 @@ import Header from '../components/Header';
 const Home = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
     const user = useSelector(state => state.user)
+    const [wordID, setWordID] = useState('');
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const [searchedWordData, setSearchedWordData] = useState({});
     const [showedWordModal, setShownWordModal] = useState(false);
     const [deviceId, setDeviceId] = useState(null);
     const [loaded, setLoaded] = useState(false);
-
     const snapPoints = useMemo(() => ['70%'], []);
 
     async function getDevice_Id() {
@@ -64,6 +64,7 @@ const Home = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             if (doc.data().word === search.toLowerCase()) {
                 setSearchedWordData(doc.data());
+                setWordID(doc.id);
                 setShownWordModal(true);
             }
         });
@@ -198,7 +199,7 @@ const Home = ({ navigation }) => {
                                 }}
                             >
                                 <BottomSheetScrollView showsVerticalScrollIndicator={false}>
-                                    <WordModal searchedword={searchedWordData} />
+                                    <WordModal searchedword={searchedWordData} userID={user.id} wordId={wordID} />
                                 </BottomSheetScrollView>
                             </BottomSheet>
                         }
