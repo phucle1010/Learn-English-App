@@ -6,12 +6,10 @@ import {
     Alert
 } from 'react-native';
 import Sound from 'react-native-sound';
-import React, { useState } from 'react';
-import db, { collection, addDoc, getDocs, doc, setDoc, where, query } from '../firebase';
+import React, { useState, useEffect } from 'react';
+import db, { collection, addDoc, getDocs, doc, where, query } from '../firebase';
 
-// useEffect(() => {
-//     WordModal();
-// }, [])
+
 
 const WordModal = (props) => {
     const [userID, setUserID] = useState('');
@@ -22,23 +20,23 @@ const WordModal = (props) => {
     const word = props.searchedword.word;
     Sound.setCategory('Playback', true);
 
+    useEffect(() => {
+        getUserID();
+        checkVocabularySaved();
+        //console.log(wordID)
+    }, [])
     const getUserID = async () => {
         const querySnapshot = await getDocs(collection(db, "USER"));
         querySnapshot.forEach((doc) => {
             if (doc.data().id === userId) {
                 setUserID(doc.id);
-                // console.log(doc.data().id);
-
             }
         });
-        // console.log(userID);
+        console.log(userID);
     };
 
     const saveUserVocabulary = async () => {
-        getUserID();
-        //checkUserVocabularyCollection();
-        checkVocabularySaved();
-        //console.log(vocabularySaved);
+        console.log(vocabularySaved);
         if (!vocabularySaved) {
             try {
                 const userRef = doc(db, 'USER', userID);
@@ -46,7 +44,7 @@ const WordModal = (props) => {
                 const newVocabularyRef = await addDoc(vocabularyCollectionRef, { wordID, word });
                 Alert.alert('Thông báo', 'Từ vựng đã được lưu thành công')
                 console.log('Từ vựng đã được lưu thành công');
-                console.log('ID của từ vựng mới:', newVocabularyRef.id);
+                //console.log('ID của từ vựng mới:', newVocabularyRef.id);
             } catch (error) {
                 console.log('Lỗi khi lưu từ vựng:', error);
             }
@@ -56,7 +54,6 @@ const WordModal = (props) => {
         }
 
     };
-
     const checkVocabularySaved = async () => {
         try {
             const usersCollectionRef = collection(db, 'USER');
@@ -71,7 +68,10 @@ const WordModal = (props) => {
 
                 if (!vocabularySnapshot.empty) {
                     setVocabularySaved(true);
-                    console.log('Từ vựng đã được lưu.');
+                    console.log('Từ vựng đã được lưu trước đó.');
+                } else {
+                    setVocabularySaved(false);
+                    console.log('Từ vựng chưa được lưu trước đó.');
                 }
             } else {
                 console.log('Không tìm thấy người dùng.');
@@ -80,6 +80,37 @@ const WordModal = (props) => {
             console.error('Lỗi khi kiểm tra từ vựng:', error);
         }
     };
+    // const checkVocabularySaved = async () => {
+    //     try {
+    //         // console.log('voo check');
+    //         // console.log(userId);
+    //         // console.log(wordID);
+
+    //         const usersCollectionRef = collection(db, 'USER');
+    //         const q = query(usersCollectionRef, where('id', '==', userId));
+    //         const querySnapshot = await getDocs(q);
+
+    //         if (!querySnapshot.empty) {
+    //             //console.log('chwct emty');
+    //             const userDoc = querySnapshot.docs[0];
+    //             const myVocabularyCollectionRef = collection(userDoc.ref, 'MY_VOCABULARY');
+    //             const vocabularyQuery = query(myVocabularyCollectionRef, where('wordID', '==', wordID));
+    //             const vocabularySnapshot = await getDocs(vocabularyQuery);
+    //             console.log(vocabularySnapshot.data());
+    //             if (!vocabularySnapshot.empty) {
+    //                 console.log('voo set true');
+    //                 setVocabularySaved(true);
+    //                 console.log('Từ vựng đã được lưu.');
+    //             }
+    //         }
+    //         else {
+    //             console.log('Không tìm thấy người dùng.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Lỗi khi kiểm tra từ vựng:', error);
+    //     }
+    // };
+
 
     const playSound = (index) => {
         const sound = searchedword.phonetics[index]?.audio || searchedword.phonetics[0].audio;
