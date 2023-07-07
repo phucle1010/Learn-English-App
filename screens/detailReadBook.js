@@ -1,16 +1,123 @@
-import React from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import color from '../contains/color';
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import LinearGradient from 'react-native-linear-gradient';
+import db, { collection, addDoc, getDocs, doc, where, query, deleteDoc } from '../firebase';
+import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const widthImage = 160;
 const positionHozitalOfImage = (width - widthImage) / 2;
 
 const DetailReadBook = ({ navigation, route }) => {
-    const { itembook } = route.params
+    const isFocusedScreen = useIsFocused();
+    const { itembook, prevScreen } = route.params
+    const user = useSelector(state => state.user)
+    const [userID, setUserID] = useState('');
+    const [likedBook, setLikedBook] = useState(false)
+    const [existedBookDocument, setExistedBookDocument] = useState(false)
+    const [toggleActionBook, setToggleActionBook] = useState(false)
+
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === user.id) {
+                setUserID(doc.id);
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (isFocusedScreen) {
+            getUserID();
+            checkSavedBook();
+        }
+    }, [isFocusedScreen, toggleActionBook])
+
+    // console.log(itembook)
+    // const detail
+
+    const saveBook = async () => {
+        if (!likedBook) {
+            try {
+                const userRef = doc(db, 'USER', userID);
+                const bookCollectionRef = collection(userRef, 'MY_BOOK');
+                await addDoc(bookCollectionRef, { ...itembook });
+                // Alert.alert('Thông báo', 'Sách đã được lưu thành công')
+                setToggleActionBook(prev => !prev)
+            } catch (error) {
+                console.log('Lỗi khi lưu sách:', error);
+            }
+        } else {
+            if (existedBookDocument) {
+                deleteBook(userID, itembook.book_id)
+            }
+        }
+    };
+
+    const deleteBook = async (userId, bookId) => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const mybookCollectionRef = collection(userDoc.ref, 'MY_BOOK');
+                const bookQuerySnapshot = await getDocs(mybookCollectionRef);
+
+                const savedBooks = bookQuerySnapshot.docs.map((doc) => ({
+                    book_document_id: doc.id,
+                    ...doc.data()
+                }));
+
+                const savedBookInfo = savedBooks.filter(book => book.book_id === bookId)[0];
+                const deletedBookId = savedBookInfo.book_document_id;
+
+                const userDocRef = doc(db, 'USER', userId);
+                const bookDocRef = doc(userDocRef, 'MY_BOOK', deletedBookId);
+                await deleteDoc(bookDocRef);
+                // Alert.alert('Thông báo', 'Sách đã được xóa thành công!');
+                setToggleActionBook(prev => !prev)
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách từ vựng:', error);
+        }
+    };
+
+    const checkSavedBook = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const mybookCollectionRef = collection(userDoc.ref, 'MY_BOOK');
+                const bookQuery = query(mybookCollectionRef, where('book_id', '==', itembook.book_id));
+                const bookSnapshot = await getDocs(bookQuery);
+
+                if (!bookSnapshot.empty) {
+                    setLikedBook(true);
+                    setExistedBookDocument(true)
+                    console.log('Sách đã được lưu trước đó.');
+                } else {
+                    setLikedBook(false);
+                    console.log('Sách chưa được lưu trước đó.');
+                }
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra sách:', error);
+        }
+    }
+
 
     const displayText = (text) => {
         return text.length < 240
@@ -26,7 +133,7 @@ const DetailReadBook = ({ navigation, route }) => {
                 colors={['#a1c2f7', '#f294f1']}
                 style={styles.linearContainer} />
             <TouchableOpacity
-                onPress={() => navigation.navigate('ReadBook')}
+                onPress={() => navigation.navigate(prevScreen)}
                 style={{
                     width: 30,
                     height: 30,
@@ -37,6 +144,22 @@ const DetailReadBook = ({ navigation, route }) => {
                 }}
             >
                 <Icon name='arrow-left' style={{ color: '#fff', fontSize: 23, fontWeight: 'bold' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={saveBook}
+                style={{
+                    width: 30,
+                    height: 30,
+                    position: 'absolute',
+                    top: 23,
+                    right: 20,
+                    zIndex: 100,
+                }}
+            >
+                {
+                    likedBook ? <IonIcon name='heart' style={{ color: '#fff', fontSize: 25, fontWeight: 'bold' }} /> : <IonIcon name='heart-outline' style={{ color: '#fff', fontSize: 25, fontWeight: 'bold' }} />
+                }
             </TouchableOpacity>
 
             {/* New design */}
@@ -73,10 +196,9 @@ const DetailReadBook = ({ navigation, route }) => {
                         >
                             <Text style={styles.txtbtnQuickView}>Tải sách</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.btnQuickView, backgroundColor: '#fff', borderColor: '#118b9e' }}>
+                        {/* <TouchableOpacity style={{ ...styles.btnQuickView, backgroundColor: '#fff', borderColor: '#118b9e' }}>
                             <Text style={{ ...styles.txtbtnQuickView, color: '#118b9e' }}>Lưu sách</Text>
-                        </TouchableOpacity>
-
+                        </TouchableOpacity> */}
                     </View>
                 </View>
 

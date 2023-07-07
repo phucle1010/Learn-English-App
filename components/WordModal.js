@@ -50,7 +50,7 @@ const WordModal = (props) => {
             try {
                 const userRef = doc(db, 'USER', userID);
                 const vocabularyCollectionRef = collection(userRef, 'MY_VOCABULARY');
-                const newVocabularyRef = await addDoc(vocabularyCollectionRef, { wordID, word });
+                await addDoc(vocabularyCollectionRef, { wordID, word });
                 Alert.alert('Thông báo', 'Từ vựng đã được lưu thành công')
             } catch (error) {
                 console.log('Lỗi khi lưu từ vựng:', error);
@@ -76,10 +76,8 @@ const WordModal = (props) => {
 
                 if (!vocabularySnapshot.empty) {
                     setVocabularySaved(true);
-                    console.log('Từ vựng đã được lưu trước đó.');
                 } else {
                     setVocabularySaved(false);
-                    console.log('Từ vựng chưa được lưu trước đó.');
                 }
             } else {
                 console.log('Không tìm thấy người dùng.');
@@ -105,7 +103,7 @@ const WordModal = (props) => {
                     fontWeight: 'bold',
                     fontSize: 28,
                 }}>
-                    {searchedword.word.replace(searchedword.word[0], searchedword.word[0].toUpperCase())}
+                    {searchedword?.word.replace(searchedword.word[0], searchedword.word[0].toUpperCase())}
                 </Text>
                 <TouchableOpacity
                     style={{

@@ -65,7 +65,6 @@ const Home = ({ navigation }) => {
     };
 
     const handleSearchWord = async () => {
-        console.log("handleSearchWord")
         const querySnapshot = await getDocs(collection(db, "VOCABULARY"));
 
         querySnapshot.forEach((doc) => {

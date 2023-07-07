@@ -26,7 +26,7 @@ const BookItem = ({ book, displayText, type, navigation }) => {
             colors={['#ffffff', type === 'main' ? '#cbffd1' : '#fae8ea']}
             style={styles.linearContainer} />
         <Image style={styles.imgbook} source={{ uri: "https://edtechbooks.org/book_cover_images/" + book.cover_image_lg }} resizeMode='stretch' />
-        <TouchableOpacity style={styles.viewBtn} onPress={() => { navigation.navigate('DetailReadBook', { itembook: book }) }}>
+        <TouchableOpacity style={styles.viewBtn} onPress={() => { navigation.navigate('DetailReadBook', { itembook: book, prevScreen: 'ReadBook' }) }}>
             <Icon name='play' style={{
                 fontSize: 30,
                 color: type === 'main' ? '#80eb8c' : '#ff7c90',

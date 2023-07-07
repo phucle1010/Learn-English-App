@@ -10,7 +10,7 @@ import db, { collection, getDocs, doc, deleteDoc, where, query } from '../fireba
 
 import Header from '../components/Header';
 
-const WordItem = ({ item, onPress, getSavedVocabularies }) => {
+const WordItem = ({ item, onPress }) => {
     return <View style={styles.wrapwords} >
         <Text style={styles.txtWord}>{item.word}</Text>
         <View style={{ flexDirection: 'row' }}>
@@ -19,10 +19,7 @@ const WordItem = ({ item, onPress, getSavedVocabularies }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.wrapbtn}
-                onPress={() => {
-                    onPress()
-                    getSavedVocabularies()
-                }}
+                onPress={onPress}
             >
                 <Icon name='trash' style={styles.removeIcon} />
             </TouchableOpacity>
@@ -48,6 +45,63 @@ const NewsItem = ({ displayText }) => {
     </View>
 }
 
+const BookItem = ({ item, onPress, displayText, onNavigate }) => {
+    function formattedDate() {
+        const newDate = new Date(Date.parse(item.last_updated))
+        const date = newDate?.getDate();
+        const month = newDate?.getMonth() + 1;
+        const year = newDate?.getUTCFullYear();
+        const fullDate = `${date}-${month}-${year}`;
+        return fullDate;
+    }
+
+
+    return <View style={{ ...styles.wrapItem, height: 200 }}>
+        <View style={styles.detailContainer}>
+            <Text style={{ marginBottom: 5, paddingVertical: 3, paddingHorizontal: 15, borderRadius: 20, backgroundColor: '#dcdcdc', alignSelf: 'flex-start' }}>{formattedDate()}</Text>
+            <Text style={styles.txtname}>{displayText(item?.title, 'book')}</Text>
+            <Text>{item.subtitle}</Text>
+            <View style={{ flex: 1, marginTop: 10, justifyContent: 'space-between' }}>
+                <TouchableOpacity
+                    style={{
+                        ...styles.wrapbtn,
+                        backgroundColor: '#FAA0A0',
+                        paddingVertical: 6,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                    onPress={onPress}
+                >
+                    <Icon name='trash' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15, marginRight: 5 }} />
+                    <Text style={{ color: '#fff', fontSize: 15 }}>Bỏ yêu thích</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={{
+                        ...styles.wrapbtn,
+                        borderWidth: 1,
+                        borderColor: '#FAA0A0',
+                        backgroundColor: '#ffffff',
+                        paddingVertical: 6,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                    onPress={onNavigate}
+                >
+                    {/* <Icon name='trash' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15, marginRight: 5 }} /> */}
+                    <Text style={{ color: '#FAA0A0', fontSize: 15 }}>Xem ngay</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+        <Image style={styles.img} source={{ uri: "https://edtechbooks.org/book_cover_images/" + item.cover_image_lg }} resizeMode='stretch' />
+
+    </View>
+}
+
 const VideoItem = ({ displayText }) => {
     return <View style={{ ...styles.wrapItem, flexDirection: 'column', width: 200 }}>
         <View>
@@ -65,9 +119,10 @@ const VideoItem = ({ displayText }) => {
     </View>
 }
 
-const Library = () => {
+const Library = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
     const [savedVocabularies, setSavedVocabularies] = useState([]);
+    const [savedBooks, setSavedBooks] = useState([]);
     const user = useSelector(state => state.user)
     const [userID, setUserID] = useState('');
 
@@ -75,8 +130,9 @@ const Library = () => {
         if (isFocusedScreen) {
             getUserID();
             getSavedVocabularies();
+            getSavedBooks();
         }
-    }, [isFocusedScreen, savedVocabularies])
+    }, [isFocusedScreen])
 
     const getUserID = async () => {
         const querySnapshot = await getDocs(collection(db, "USER"));
@@ -102,7 +158,6 @@ const Library = () => {
                     id: doc.id,
                     ...doc.data()
                 }));
-
                 setSavedVocabularies(savedVocabularies);
             } else {
                 console.log('Không tìm thấy người dùng.');
@@ -118,19 +173,66 @@ const Library = () => {
             const vocabularyDocRef = doc(userDocRef, 'MY_VOCABULARY', vocabularyId);
 
             await deleteDoc(vocabularyDocRef);
-            Alert.alert('Thông báo', 'Từ vựng đã được xóa thành công!');
-            // Xóa từ vựng khỏi mảng savedVocabularies
-            const updatedVocabularies = savedVocabularies.filter((vocabulary) => vocabulary.id !== vocabularyId);
-            setSavedVocabularies(updatedVocabularies);
+            Alert.alert('Thông báo', 'Từ vựng đã được xóa khỏi thư viện thành công!');
+            getSavedVocabularies();
         } catch (error) {
             console.error('Lỗi khi xóa từ vựng:', error);
         }
     };
 
+    const getSavedBooks = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myBookCollectionRef = collection(userDoc.ref, 'MY_BOOK');
+                const bookQuerySnapshot = await getDocs(myBookCollectionRef);
+                const savedBooks = bookQuerySnapshot.docs.map((doc) => ({
+                    book_document_id: doc.id,
+                    ...doc.data()
+                }));
+                setSavedBooks(savedBooks);
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách quyển sách:', error);
+        }
+    };
+
+    const deleteBook = async (userId, bookId) => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const savedBookInfo = savedBooks.filter(book => book.book_id === bookId)[0];
+                const deletedBookId = savedBookInfo.book_document_id;
+
+                const userDocRef = doc(db, 'USER', userId);
+                const bookDocRef = doc(userDocRef, 'MY_BOOK', deletedBookId);
+                await deleteDoc(bookDocRef);
+                Alert.alert('Thông báo', 'Sách đã được gỡ khỏi danh sách yêu thích!');
+                getSavedBooks();
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách từ vựng:', error);
+        }
+    };
 
     const displayText = (text, type) => {
         switch (type) {
             case 'news':
+                return text.length < 35
+                    ? `${text}`
+                    : `${text.substring(0, 32)}...`
+            case 'book':
                 return text.length < 35
                     ? `${text}`
                     : `${text.substring(0, 32)}...`
@@ -151,31 +253,37 @@ const Library = () => {
                     {/* Word */}
                     {
                         savedVocabularies.length > 0 && (
-                            <View style={styles.containerWordGroup}>
-                                <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
-                            </View>
+                            <React.Fragment>
+                                <View style={styles.containerWordGroup}>
+                                    <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
+                                </View>
+                                {
+                                    savedVocabularies.map((item, index) => (
+                                        <WordItem key={index} item={item} onPress={() => deleteVocabulary(userID, item.id)} />
+                                    ))
+                                }
+                            </React.Fragment>
+
                         )
                     }
 
+                    {/* Book */}
                     {
-                        savedVocabularies.map((item, index) => (
-                            <WordItem key={index} item={item} onPress={() => deleteVocabulary(userID, item.id)} getSavedVocabularies={getSavedVocabularies} />
-                        ))
+                        savedBooks.length > 0 && (
+                            <React.Fragment>
+                                <View style={styles.containerWordGroup}>
+                                    <Text style={styles.txtwordGroup} >Sách yêu thích</Text>
+                                </View>
+                                {
+                                    savedBooks.map((book, index) => (
+                                        <BookItem key={index} item={book} onPress={() => deleteBook(userID, book.id)} onNavigate={() => { navigation.navigate('DetailReadBook', { itembook: book, prevScreen: 'Library' }) }} displayText={displayText} />
+                                    ))
+                                }
+                            </React.Fragment>
+
+                        )
                     }
-                    {/* <View style={styles.wrapwords} key={index}>
-                                <Text style={styles.txtWord}>{item.word}</Text>
-                                <TouchableOpacity style={styles.wrapbtn}
-                                    onPress={() => deleteVocabulary(userID, item.id)}>
-                                    <Text style={styles.txtbtn}>Xóa từ vựng</Text>
-                                </TouchableOpacity>
-                            </View> */}
-                    {/* <WordItem /> */}
-                    {/* News */}
-                    <View style={styles.containerWordGroup} >
-                        <Text style={styles.txtwordGroup} >Tin tức đã lưu</Text>
-                    </View>
-                    <NewsItem displayText={displayText} />
-                    {/* Video */}
+
                     <View style={styles.containerWordGroup}>
                         <Text style={styles.txtwordGroup}>Video đã lưu</Text>
                     </View>
@@ -194,7 +302,6 @@ const styles = StyleSheet.create({
     main: {
         backgroundColor: '#fff',
         height: '100%',
-        // paddingBottom: 80,
     },
     scrollContainer: {
         marginTop: 1,
