@@ -1,21 +1,29 @@
-import React, { useRef } from 'react';
-import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TouchableHighlightComponent } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, TouchableHighlightComponent, Alert } from 'react-native';
 import color from '../contains/color';
 import fontStyle from '../contains/fontStyle';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import db, { collection, getDocs, doc, deleteDoc, where, query } from '../firebase';
 
 import Header from '../components/Header';
 
-const WordItem = () => {
-
+const WordItem = ({ item, onPress, getSavedVocabularies }) => {
     return <View style={styles.wrapwords} >
-        <Text style={styles.txtWord}>Hello</Text>
+        <Text style={styles.txtWord}>{item.word}</Text>
         <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity style={{ marginRight: 10 }} >
                 <Icon name='eye' style={{ ...styles.removeIcon, color: '#FAA0A0' }} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.wrapbtn}>
+            <TouchableOpacity
+                style={styles.wrapbtn}
+                onPress={() => {
+                    onPress()
+                    getSavedVocabularies()
+                }}
+            >
                 <Icon name='trash' style={styles.removeIcon} />
             </TouchableOpacity>
         </View>
@@ -58,6 +66,67 @@ const VideoItem = ({ displayText }) => {
 }
 
 const Library = () => {
+    const isFocusedScreen = useIsFocused();
+    const [savedVocabularies, setSavedVocabularies] = useState([]);
+    const user = useSelector(state => state.user)
+    const [userID, setUserID] = useState('');
+
+    useEffect(() => {
+        if (isFocusedScreen) {
+            getUserID();
+            getSavedVocabularies();
+        }
+    }, [isFocusedScreen, savedVocabularies])
+
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === user.id) {
+                setUserID(doc.id);
+            }
+        });
+    };
+
+    const getSavedVocabularies = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVocabularyCollectionRef = collection(userDoc.ref, 'MY_VOCABULARY');
+                const vocabularyQuerySnapshot = await getDocs(myVocabularyCollectionRef);
+
+                const savedVocabularies = vocabularyQuerySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                setSavedVocabularies(savedVocabularies);
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách từ vựng:', error);
+        }
+    };
+
+    const deleteVocabulary = async (userId, vocabularyId) => {
+        try {
+            const userDocRef = doc(db, 'USER', userId);
+            const vocabularyDocRef = doc(userDocRef, 'MY_VOCABULARY', vocabularyId);
+
+            await deleteDoc(vocabularyDocRef);
+            Alert.alert('Thông báo', 'Từ vựng đã được xóa thành công!');
+            // Xóa từ vựng khỏi mảng savedVocabularies
+            const updatedVocabularies = savedVocabularies.filter((vocabulary) => vocabulary.id !== vocabularyId);
+            setSavedVocabularies(updatedVocabularies);
+        } catch (error) {
+            console.error('Lỗi khi xóa từ vựng:', error);
+        }
+    };
+
 
     const displayText = (text, type) => {
         switch (type) {
@@ -74,27 +143,33 @@ const Library = () => {
 
     }
 
-    const wordRef = useRef();
-
-    const handleShowWord = () => {
-        wordRef?.current?.measure((x, y, width, height) => {
-            console.log(height);
-        })
-    }
-
-
     return (
         <SafeAreaView style={styles.main}>
             <Header />
             <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     {/* Word */}
-                    <View style={styles.containerWordGroup}>
-                        <TouchableOpacity onPress={() => handleShowWord()}>
-                            <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <WordItem />
+                    {
+                        savedVocabularies.length > 0 && (
+                            <View style={styles.containerWordGroup}>
+                                <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
+                            </View>
+                        )
+                    }
+
+                    {
+                        savedVocabularies.map((item, index) => (
+                            <WordItem key={index} item={item} onPress={() => deleteVocabulary(userID, item.id)} getSavedVocabularies={getSavedVocabularies} />
+                        ))
+                    }
+                    {/* <View style={styles.wrapwords} key={index}>
+                                <Text style={styles.txtWord}>{item.word}</Text>
+                                <TouchableOpacity style={styles.wrapbtn}
+                                    onPress={() => deleteVocabulary(userID, item.id)}>
+                                    <Text style={styles.txtbtn}>Xóa từ vựng</Text>
+                                </TouchableOpacity>
+                            </View> */}
+                    {/* <WordItem /> */}
                     {/* News */}
                     <View style={styles.containerWordGroup} >
                         <Text style={styles.txtwordGroup} >Tin tức đã lưu</Text>

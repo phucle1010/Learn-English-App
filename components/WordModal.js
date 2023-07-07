@@ -5,10 +5,18 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
-import Sound from 'react-native-sound'
+import Sound from 'react-native-sound';
+import React, { useState, useEffect } from 'react';
+import db, { collection, addDoc, getDocs, doc, where, query } from '../firebase';
 
+const WordModal = (props) => {
+    const [userID, setUserID] = useState('');
+    const [vocabularySaved, setVocabularySaved] = useState(false);
+    const searchedword = props.searchedword;
+    const userId = props.userID;
+    const wordID = props.wordId;
+    const word = props.searchedword.word;
 
-const WordModal = ({ searchedword }) => {
     Sound.setCategory('Playback', true);
 
     const playSound = (index) => {
@@ -20,6 +28,65 @@ const WordModal = ({ searchedword }) => {
             whoosh.setVolume(2);
             whoosh.play()
         })
+    }
+
+    useEffect(() => {
+        getUserID();
+        checkVocabularySaved();
+    }, [])
+
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === userId) {
+                setUserID(doc.id);
+            }
+        });
+        console.log(userID);
+    };
+
+    const saveUserVocabulary = async () => {
+        if (!vocabularySaved) {
+            try {
+                const userRef = doc(db, 'USER', userID);
+                const vocabularyCollectionRef = collection(userRef, 'MY_VOCABULARY');
+                const newVocabularyRef = await addDoc(vocabularyCollectionRef, { wordID, word });
+                Alert.alert('Thông báo', 'Từ vựng đã được lưu thành công')
+            } catch (error) {
+                console.log('Lỗi khi lưu từ vựng:', error);
+            }
+        }
+        else {
+            Alert.alert('Thông báo', 'Từ vựng đã được lưu sẵn')
+        }
+
+    };
+
+    const checkVocabularySaved = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', userId));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVocabularyCollectionRef = collection(userDoc.ref, 'MY_VOCABULARY');
+                const vocabularyQuery = query(myVocabularyCollectionRef, where('wordID', '==', wordID));
+                const vocabularySnapshot = await getDocs(vocabularyQuery);
+
+                if (!vocabularySnapshot.empty) {
+                    setVocabularySaved(true);
+                    console.log('Từ vựng đã được lưu trước đó.');
+                } else {
+                    setVocabularySaved(false);
+                    console.log('Từ vựng chưa được lưu trước đó.');
+                }
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra từ vựng:', error);
+        }
     }
 
     return (
@@ -40,14 +107,17 @@ const WordModal = ({ searchedword }) => {
                 }}>
                     {searchedword.word.replace(searchedword.word[0], searchedword.word[0].toUpperCase())}
                 </Text>
-                <TouchableOpacity style={{
-                    width: 135,
-                    height: 36,
-                    backgroundColor: '#FB6F43',
-                    borderRadius: 30,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
+                <TouchableOpacity
+                    style={{
+                        width: 135,
+                        height: 36,
+                        backgroundColor: '#FB6F43',
+                        borderRadius: 30,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                    onPress={saveUserVocabulary}
+                >
                     <Text style={{
                         color: '#fff',
                         fontSize: 16,

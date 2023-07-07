@@ -30,6 +30,7 @@ const Home = ({ navigation }) => {
     const [searchedWordData, setSearchedWordData] = useState({});
     const [showedWordModal, setShownWordModal] = useState(false);
     const [deviceId, setDeviceId] = useState(null);
+    const [wordID, setWordID] = useState('');
     const [loaded, setLoaded] = useState(false);
 
     const snapPoints = useMemo(() => ['70%'], []);
@@ -70,6 +71,7 @@ const Home = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             if (doc.data().word === search.toLowerCase()) {
                 setSearchedWordData(doc.data());
+                setWordID(doc.id);
                 setShownWordModal(true);
                 updatenumsearch(doc.id)
             }
@@ -90,6 +92,9 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         if (isFocusedScreen) {
             getUserState();
+        } else {
+            setSearch('');
+            setSearchedWordData({})
         }
     }, [isFocusedScreen])
 
@@ -218,7 +223,7 @@ const Home = ({ navigation }) => {
                                 }}
                             >
                                 <BottomSheetScrollView showsVerticalScrollIndicator={false}>
-                                    <WordModal searchedword={searchedWordData} />
+                                    <WordModal searchedword={searchedWordData} userID={user.id} wordId={wordID} />
                                 </BottomSheetScrollView>
                             </BottomSheet>
                         }
