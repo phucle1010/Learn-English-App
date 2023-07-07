@@ -141,7 +141,6 @@ const QuestionItem = ({ question, index, setAnswerList, answerList, clickedOKOnA
 }
 
 const DetailListenExercise = ({ navigation, route }) => {
-
     const isFocusedScreen = useIsFocused();
     const { level_id, level_name, testId, levelIdInFB, question } = route.params;
     const { audio, image, title } = question;
@@ -246,16 +245,6 @@ const DetailListenExercise = ({ navigation, route }) => {
             {
                 loaded ? (
                     <View style={styles.container}>
-                        {/* <View style={styles.headcontainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate("ListenExerciseTopic", {
-                                level_id,
-                                level_name
-                            })}>
-                                <Image style={styles.imgreturn} source={require('../sources/icons/arrowleft.png')} />
-                            </TouchableOpacity>
-                            <Text style={styles.txthead}>Chi tiết câu hỏi</Text>
-                        </View> */}
-
                         <View style={styles.headcontainer}>
                             <TouchableOpacity
                                 style={{
@@ -338,31 +327,35 @@ const DetailListenExercise = ({ navigation, route }) => {
                                         marginRight: 10,
                                         paddingVertical: 6,
                                         paddingHorizontal: 25,
-                                        backgroundColor: '#FB6F43',
+                                        backgroundColor: '#FFFFFF',
                                         alignSelf: 'flex-start',
                                         borderRadius: 50,
+                                        borderWidth: 1,
+                                        borderColor: '#FAA0A0',
                                     }}
                                     onPress={handleResetResult}
                                 >
                                     <Text style={{
-                                        color: '#ffff',
+                                        color: '#FAA0A0',
                                         fontSize: 16,
-                                    }}>Reset</Text>
+                                    }}>Làm lại</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{
                                         paddingVertical: 6,
                                         paddingHorizontal: 25,
-                                        backgroundColor: '#8718DE',
+                                        backgroundColor: '#FAA0A0',
                                         alignSelf: 'flex-start',
                                         borderRadius: 50,
+                                        borderWidth: 1,
+                                        borderColor: 'transparent',
                                     }}
                                     onPress={handleSubmitAnswer}
                                 >
                                     <Text style={{
                                         color: '#ffff',
                                         fontSize: 16,
-                                    }}>Submit</Text>
+                                    }}>Nộp bài</Text>
                                 </TouchableOpacity>
 
                             </View>
@@ -497,7 +490,6 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         backgroundColor: '#ffff',
-        paddingBottom: 80,
     },
     headcontainer: {
         flexDirection: 'row',

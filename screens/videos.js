@@ -16,7 +16,8 @@ const VideoItem = ({ video, navigation }) => {
             backgroundColor: '#fafafa'
         }}
             onPress={() => navigation.navigate("DetailVideo", {
-                video
+                video,
+                prevScreen: 'Videos'
             })}
         >
             <Image source={{ uri: video.snippet.thumbnails.medium.url }} style={{

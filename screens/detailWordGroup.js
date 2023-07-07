@@ -70,7 +70,7 @@ const DetailWordGroup = (props) => {
     const searchData = dataVocabulary.filter(item => item.word.toLowerCase().includes(search.toLowerCase()))
 
     const handlePressWord = (item) => {
-        navigation.navigate('Words', { item, topic })
+        navigation.navigate('Words', { item, topic, prevScreen: 'DetailWordGroup' })
     }
 
     return (

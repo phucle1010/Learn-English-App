@@ -37,16 +37,12 @@ const DetailReadBook = ({ navigation, route }) => {
         }
     }, [isFocusedScreen, toggleActionBook])
 
-    // console.log(itembook)
-    // const detail
-
     const saveBook = async () => {
         if (!likedBook) {
             try {
                 const userRef = doc(db, 'USER', userID);
                 const bookCollectionRef = collection(userRef, 'MY_BOOK');
                 await addDoc(bookCollectionRef, { ...itembook });
-                // Alert.alert('Thông báo', 'Sách đã được lưu thành công')
                 setToggleActionBook(prev => !prev)
             } catch (error) {
                 console.log('Lỗi khi lưu sách:', error);
@@ -158,7 +154,7 @@ const DetailReadBook = ({ navigation, route }) => {
                 }}
             >
                 {
-                    likedBook ? <IonIcon name='heart' style={{ color: '#fff', fontSize: 25, fontWeight: 'bold' }} /> : <IonIcon name='heart-outline' style={{ color: '#fff', fontSize: 25, fontWeight: 'bold' }} />
+                    <IonIcon name={likedBook ? 'heart' : 'heart-outline'} style={{ color: '#fff', fontSize: 25, fontWeight: 'bold' }} />
                 }
             </TouchableOpacity>
 

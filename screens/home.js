@@ -122,15 +122,12 @@ const Home = ({ navigation }) => {
                                         </View>
                                     </View>
                                     <View style={styles.headcontainer}>
-                                        <Text style={styles.txthead1}>Hello {user.fullName},</Text>
-                                        <Text style={styles.txthead2}>Chúc bạn có một ngày mới vui vẻ!</Text>
+                                        <Text style={styles.txthead1}>Hi {user.fullName},</Text>
+                                        <Text style={styles.txthead2}>Have a nice day!</Text>
                                     </View>
                                 </View>
                                 <Text style={styles.txtContent}>Từ điển</Text>
                                 <View style={styles.secsion2}>
-                                    {/* <View>
-                                        <Text style={styles.txtvocabulary}>Từ vựng</Text>
-                                    </View> */}
                                     <View style={styles.searchcontainer}>
                                         <TextInput
                                             style={styles.search}
@@ -200,9 +197,6 @@ const Home = ({ navigation }) => {
 
                                     </TouchableOpacity>
                                 </View>
-                                {/* <View>
-                                    <Text style={styles.txtContent}>Thống kê sử dụng</Text>
-                                </View> */}
                                 <View style={{
                                 }}>
                                     <Statistic navigation={navigation} />

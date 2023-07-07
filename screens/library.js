@@ -6,15 +6,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import db, { collection, getDocs, doc, deleteDoc, where, query } from '../firebase';
+import db, { collection, getDocs, doc, deleteDoc, where, query, getDoc } from '../firebase';
 
 import Header from '../components/Header';
+import Loading from '../components/Loading'
 
-const WordItem = ({ item, onPress }) => {
+const WordItem = ({ item, onPress, onNavigate }) => {
     return <View style={styles.wrapwords} >
         <Text style={styles.txtWord}>{item.word}</Text>
         <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity style={{ marginRight: 10 }} >
+            <TouchableOpacity style={{ marginRight: 10 }} onPress={onNavigate}>
                 <Icon name='eye' style={{ ...styles.removeIcon, color: '#FAA0A0' }} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -24,24 +25,6 @@ const WordItem = ({ item, onPress }) => {
                 <Icon name='trash' style={styles.removeIcon} />
             </TouchableOpacity>
         </View>
-    </View>
-}
-
-const NewsItem = ({ displayText }) => {
-    return <View style={{ ...styles.wrapItem, height: 170 }}>
-        <View style={styles.detailContainer}>
-            <Text style={{ marginBottom: 5, paddingVertical: 3, paddingHorizontal: 15, borderRadius: 20, backgroundColor: '#dcdcdc', alignSelf: 'flex-start' }}>History</Text>
-            <Text style={styles.txtname}>{displayText('Was the last battle of the American Revolution fought in India? A growing number of historians think so', 'news')}</Text>
-            <View style={{ flexDirection: 'row' }}>
-                <Text>Brad Lendon, </Text>
-                <Text>Tue July 4, 2023</Text>
-            </View>
-            <TouchableOpacity style={{ ...styles.wrapbtn, backgroundColor: '#FAA0A0', alignSelf: 'flex-start', marginTop: 15, paddingVertical: 6, paddingHorizontal: 20, borderRadius: 20, flexDirection: 'row', alignItems: 'center' }}>
-                <Icon name='trash' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15, marginRight: 5 }} />
-                <Text style={{ color: '#fff', fontSize: 15 }}>Xóa tin tức</Text>
-            </TouchableOpacity>
-        </View>
-        <Image style={styles.img} source={{ uri: 'https://media.cnn.com/api/v1/images/stellar/prod/230627162557-01-last-battle-american-revolutionary-war-india-intl-hnk-ml.jpg?c=16x9&q=h_720,w_1280,c_fill/f_webp' }} />
     </View>
 }
 
@@ -58,7 +41,18 @@ const BookItem = ({ item, onPress, displayText, onNavigate }) => {
 
     return <View style={{ ...styles.wrapItem, height: 200 }}>
         <View style={styles.detailContainer}>
-            <Text style={{ marginBottom: 5, paddingVertical: 3, paddingHorizontal: 15, borderRadius: 20, backgroundColor: '#dcdcdc', alignSelf: 'flex-start' }}>{formattedDate()}</Text>
+            <Text
+                style={{
+                    marginBottom: 5,
+                    paddingVertical: 3,
+                    paddingHorizontal: 15,
+                    borderRadius: 20,
+                    backgroundColor: '#efefef',
+                    alignSelf: 'flex-start'
+                }}
+            >
+                {formattedDate()}
+            </Text>
             <Text style={styles.txtname}>{displayText(item?.title, 'book')}</Text>
             <Text>{item.subtitle}</Text>
             <View style={{ flex: 1, marginTop: 10, justifyContent: 'space-between' }}>
@@ -92,7 +86,6 @@ const BookItem = ({ item, onPress, displayText, onNavigate }) => {
                     }}
                     onPress={onNavigate}
                 >
-                    {/* <Icon name='trash' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15, marginRight: 5 }} /> */}
                     <Text style={{ color: '#FAA0A0', fontSize: 15 }}>Xem ngay</Text>
                 </TouchableOpacity>
             </View>
@@ -102,35 +95,56 @@ const BookItem = ({ item, onPress, displayText, onNavigate }) => {
     </View>
 }
 
-const VideoItem = ({ displayText }) => {
-    return <View style={{ ...styles.wrapItem, flexDirection: 'column', width: 200 }}>
-        <View>
-            <Image style={{ ...styles.img, height: 200, width: 170 }} source={{ uri: 'https://media.cnn.com/api/v1/images/stellar/prod/230627162557-01-last-battle-american-revolutionary-war-india-intl-hnk-ml.jpg?c=16x9&q=h_720,w_1280,c_fill/f_webp' }} />
-            <TouchableOpacity style={{ ...styles.wrapbtn, backgroundColor: '#FAA0A0', alignSelf: 'flex-start', padding: 10, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: -10 }}>
-                <Icon name='play' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15 }} />
-            </TouchableOpacity>
-        </View>
-        <View style={styles.detailContainer}>
-            <Text style={styles.txtname}>{displayText('Was the last battle of the American Revolution fought in India? A growing number of historians think so', 'video')}</Text>
-            <View style={{ flexDirection: 'row' }}>
-                <Text>Ted-ed</Text>
+const VideoItem = ({ item, displayText, onNavigate }) => {
+    return (
+        <View style={{ ...styles.wrapItem, flexDirection: 'column', width: 250, marginHorizontal: 10 }}>
+            <View>
+                <Image style={{ ...styles.img, height: 200, width: 250 }} source={{ uri: item.snippet.thumbnails.medium.url }} resizeMode='stretch' />
+                <TouchableOpacity
+                    style={{
+                        ...styles.wrapbtn,
+                        backgroundColor: '#FAA0A0',
+                        alignSelf: 'flex-start',
+                        padding: 10,
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        bottom: 10,
+                        right: -10
+                    }}
+                    onPress={onNavigate}
+                >
+                    <Icon name='play' style={{ ...styles.removeIcon, color: '#fff', fontSize: 15 }} />
+                </TouchableOpacity>
+            </View>
+            <View style={styles.detailContainer}>
+                <Text style={styles.txtname}>{displayText(item?.snippet?.title, 'video')}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text>{item?.snippet?.channelTitle}</Text>
+                </View>
             </View>
         </View>
-    </View>
+    )
 }
 
 const Library = ({ navigation }) => {
     const isFocusedScreen = useIsFocused();
+    const user = useSelector(state => state.user)
     const [savedVocabularies, setSavedVocabularies] = useState([]);
     const [savedBooks, setSavedBooks] = useState([]);
-    const user = useSelector(state => state.user)
+    const [savedVideos, setSavedVideos] = useState([]);
     const [userID, setUserID] = useState('');
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         if (isFocusedScreen) {
             getUserID();
             getSavedVocabularies();
             getSavedBooks();
+            getSavedVideos();
+            setLoaded(true);
         }
     }, [isFocusedScreen])
 
@@ -180,6 +194,13 @@ const Library = ({ navigation }) => {
         }
     };
 
+    const handleNavigateWord = async (id) => {
+        const wordCollectionRef = collection(db, 'VOCABULARY');
+        const vocabularyQuerySnapshot = await getDocs(wordCollectionRef);
+        const word = vocabularyQuerySnapshot.docs.filter((word) => word.id === id)[0].data();
+        navigation.navigate('Words', { item: word, topic: '', prevScreen: 'Library' })
+    }
+
     const getSavedBooks = async () => {
         try {
             const usersCollectionRef = collection(db, 'USER');
@@ -226,19 +247,37 @@ const Library = ({ navigation }) => {
         }
     };
 
+    const getSavedVideos = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVideoCollectionRef = collection(userDoc.ref, 'MY_VIDEO');
+                const videoQuerySnapshot = await getDocs(myVideoCollectionRef);
+                const savedVideos = videoQuerySnapshot.docs.map((doc) => ({
+                    video_document_id: doc.id,
+                    ...doc.data()
+                }));
+                setSavedVideos(savedVideos);
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách quyển sách:', error);
+        }
+    };
+
     const displayText = (text, type) => {
         switch (type) {
             case 'news':
-                return text.length < 35
-                    ? `${text}`
-                    : `${text.substring(0, 32)}...`
+                return text?.length < 35 ? `${text}` : `${text.substring(0, 32)}...`
             case 'book':
-                return text.length < 35
-                    ? `${text}`
-                    : `${text.substring(0, 32)}...`
-            case 'video': return text.length < 20
-                ? `${text}`
-                : `${text.substring(0, 18)}...`
+                return text?.length < 35 ? `${text}` : `${text.substring(0, 32)}...`
+            case 'video':
+                return text?.length < 25 ? `${text}` : `${text.substring(0, 23)}...`
             default:
                 break;
         }
@@ -248,52 +287,64 @@ const Library = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.main}>
             <Header />
-            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-                <View style={styles.container}>
-                    {/* Word */}
-                    {
-                        savedVocabularies.length > 0 && (
-                            <React.Fragment>
-                                <View style={styles.containerWordGroup}>
-                                    <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
-                                </View>
-                                {
-                                    savedVocabularies.map((item, index) => (
-                                        <WordItem key={index} item={item} onPress={() => deleteVocabulary(userID, item.id)} />
-                                    ))
-                                }
-                            </React.Fragment>
+            {
+                loaded ? <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                    <View style={styles.container}>
+                        {/* Word */}
+                        {
+                            savedVocabularies.length > 0 && (
+                                <React.Fragment>
+                                    <View style={styles.containerWordGroup}>
+                                        <Text style={styles.txtwordGroup} >Từ vựng đã lưu</Text>
+                                    </View>
+                                    {
+                                        savedVocabularies.map((word, index) => (
+                                            <WordItem key={index} item={word} onPress={() => deleteVocabulary(userID, word.id)} onNavigate={() => handleNavigateWord(word.wordID)} />
+                                        ))
+                                    }
+                                </React.Fragment>
 
-                        )
-                    }
+                            )
+                        }
 
-                    {/* Book */}
-                    {
-                        savedBooks.length > 0 && (
-                            <React.Fragment>
-                                <View style={styles.containerWordGroup}>
-                                    <Text style={styles.txtwordGroup} >Sách yêu thích</Text>
-                                </View>
-                                {
-                                    savedBooks.map((book, index) => (
-                                        <BookItem key={index} item={book} onPress={() => deleteBook(userID, book.id)} onNavigate={() => { navigation.navigate('DetailReadBook', { itembook: book, prevScreen: 'Library' }) }} displayText={displayText} />
-                                    ))
-                                }
-                            </React.Fragment>
+                        {/* Book */}
+                        {
+                            savedBooks.length > 0 && (
+                                <React.Fragment>
+                                    <View style={styles.containerWordGroup}>
+                                        <Text style={styles.txtwordGroup} >Sách yêu thích</Text>
+                                    </View>
+                                    {
+                                        savedBooks.map((book, index) => (
+                                            <BookItem key={index} item={book} onPress={() => deleteBook(userID, book.id)} onNavigate={() => { navigation.navigate('DetailReadBook', { itembook: book, prevScreen: 'Library' }) }} displayText={displayText} />
+                                        ))
+                                    }
+                                </React.Fragment>
 
-                        )
-                    }
+                            )
+                        }
 
-                    <View style={styles.containerWordGroup}>
-                        <Text style={styles.txtwordGroup}>Video đã lưu</Text>
+                        {
+                            savedVideos.length > 0 && (
+                                <React.Fragment>
+                                    <View style={styles.containerWordGroup}>
+                                        <Text style={styles.txtwordGroup} >Video yêu thích</Text>
+                                    </View>
+                                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ alignSelf: 'flex-start', marginHorizontal: -10 }}>
+                                        {
+                                            savedVideos.map((video, index) => (
+                                                <VideoItem key={index} item={video} onNavigate={() => navigation.navigate("DetailVideo", { video, prevScreen: 'Library' })} displayText={displayText} />
+                                            ))
+                                        }
+                                    </ScrollView>
+                                </React.Fragment>
+
+                            )
+                        }
                     </View>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -10 }}>
-                        <VideoItem displayText={displayText} />
-                        <VideoItem displayText={displayText} />
-                        <VideoItem displayText={displayText} />
-                    </ScrollView>
-                </View>
-            </ScrollView>
+                </ScrollView> : <Loading />
+            }
+
         </SafeAreaView>
     );
 };
@@ -376,7 +427,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: color.btn_color3,
         alignItems: 'center',
-        overflow: 'hidden',
+        // overflow: 'hidden',
     },
     img: {
         width: 150,
@@ -385,7 +436,6 @@ const styles = StyleSheet.create({
     },
     detailContainer: {
         marginTop: 10,
-        marginLeft: 10,
         flex: 1,
         alignSelf: 'flex-start',
         marginRight: 15,

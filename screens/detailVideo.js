@@ -6,17 +6,25 @@ import fontstyle from '../contains/fontStyle';
 import fontStyle from '../contains/fontStyle';
 import { getSubtitles } from 'youtube-captions-scraper';
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import db, { collection, addDoc, getDocs, doc, where, query, deleteDoc } from '../firebase';
+
 import Loading from '../components/Loading'
 
 const DetailVideo = ({ navigation, route }) => {
-    const currentUser = useSelector(state => state.user)
+    const user = useSelector(state => state.user)
     const video = route.params.video
+    const prevScreen = route.params.prevScreen;
     const url = video.snippet.thumbnails.default.url;
     const indexOfIdInVideoURL = 4
     const video_id = url.split('/')[indexOfIdInVideoURL]
     const isFocusedScreen = useIsFocused();
+    const [userID, setUserID] = useState('');
+    const [likedVideo, setLikedVideo] = useState(false)
+    const [existedVideoDocument, setExistedVideoDocument] = useState(false)
+    const [toggleActionVideo, setToggleActionVideo] = useState(false)
     const [subtitles, setSubtitles] = useState([])
     const [elapsed, setElapsed] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -28,8 +36,19 @@ const DetailVideo = ({ navigation, route }) => {
 
     var playInterval = null;
 
+    const getUserID = async () => {
+        const querySnapshot = await getDocs(collection(db, "USER"));
+        querySnapshot.forEach((doc) => {
+            if (doc.data().id === user.id) {
+                setUserID(doc.id);
+            }
+        });
+    };
+
     useEffect(() => {
         if (isFocusedScreen) {
+            getUserID()
+            checkSavedVideo()
             getSubtitles({
                 videoID: video_id,
                 lang: 'en'
@@ -43,7 +62,7 @@ const DetailVideo = ({ navigation, route }) => {
             setElapsed(0)
         }
         return () => clearInterval(playInterval)
-    }, [isFocusedScreen])
+    }, [isFocusedScreen, toggleActionVideo])
 
     useEffect(() => {
         if (isPlaying) {
@@ -90,6 +109,82 @@ const DetailVideo = ({ navigation, route }) => {
         return color
     }
 
+    const saveVideo = async () => {
+        if (!likedVideo) {
+            try {
+                const userRef = doc(db, 'USER', userID);
+                const videoCollectionRef = collection(userRef, 'MY_VIDEO');
+                await addDoc(videoCollectionRef, { ...video });
+                setToggleActionVideo(prev => !prev)
+            } catch (error) {
+                console.log('Lỗi khi lưu sách:', error);
+            }
+        } else {
+            if (existedVideoDocument) {
+                deleteVideo(userID, video.id)
+            }
+        }
+    };
+
+    const deleteVideo = async (userId, videoId) => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVideoCollectionRef = collection(userDoc.ref, 'MY_VIDEO');
+                const videoQuerySnapshot = await getDocs(myVideoCollectionRef);
+
+                const savedVideos = videoQuerySnapshot.docs.map((doc) => ({
+                    video_document_id: doc.id,
+                    ...doc.data()
+                }));
+
+                const savedVideoInfo = savedVideos.filter(video => video.id === videoId)[0];
+                const deletedVideoId = savedVideoInfo.video_document_id;
+
+                const userDocRef = doc(db, 'USER', userId);
+                const videoDocRef = doc(userDocRef, 'MY_VIDEO', deletedVideoId);
+                await deleteDoc(videoDocRef);
+                setToggleActionVideo(prev => !prev)
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách từ vựng:', error);
+        }
+    };
+
+    const checkSavedVideo = async () => {
+        try {
+            const usersCollectionRef = collection(db, 'USER');
+            const q = query(usersCollectionRef, where('id', '==', user.id));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const myVideoCollectionRef = collection(userDoc.ref, 'MY_VIDEO');
+                const videoQuery = query(myVideoCollectionRef, where('id', '==', video.id));
+                const videoSnapshot = await getDocs(videoQuery);
+
+                if (!videoSnapshot.empty) {
+                    setLikedVideo(true);
+                    setExistedVideoDocument(true)
+                    console.log('Video đã được lưu trước đó.');
+                } else {
+                    setLikedVideo(false);
+                    console.log('Video chưa được lưu trước đó.');
+                }
+            } else {
+                console.log('Không tìm thấy người dùng.');
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra sách:', error);
+        }
+    }
+
     return (
         <React.Fragment>
             {
@@ -103,11 +198,25 @@ const DetailVideo = ({ navigation, route }) => {
                                     height: '100%',
                                     justifyContent: 'center',
                                 }}
-                                onPress={() => navigation.navigate("Videos")}
+                                onPress={() => navigation.navigate(prevScreen)}
                             >
                                 <Icon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                             </TouchableOpacity>
-                            <Text style={styles.txthead}>Video</Text>
+
+                            <TouchableOpacity
+                                style={{
+                                    position: 'absolute',
+                                    right: 30,
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                }}
+                                onPress={saveVideo}
+                            >
+                                {
+                                    <IonIcon name={likedVideo ? 'heart' : 'heart-outline'} style={{ color: '#FAA0A0', fontSize: 30, fontWeight: 'bold' }} />
+                                }
+                            </TouchableOpacity>
+                            {/* <Text style={styles.txthead}>Video</Text> */}
                         </View>
                         <Text style={styles.txtContentVideo}>{video.snippet.title}</Text>
 
@@ -118,9 +227,6 @@ const DetailVideo = ({ navigation, route }) => {
                             onChangeState={handleStateChangeInVideo}
                             ref={playerRef}
                         />
-                        <TouchableOpacity style={styles.btnSaveVideo}>
-                            <Text style={styles.txtbtnSave}>Lưu video</Text>
-                        </TouchableOpacity>
                         <Text style={{
                             marginTop: 15,
                             marginBottom: 10,
@@ -129,7 +235,6 @@ const DetailVideo = ({ navigation, route }) => {
                             fontWeight: 'bold'
                         }}>Subtitle</Text>
                         <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%' }} ref={scrollRef}>
-                            {/* <View style={{ height: 50 }}></View> */}
                             {
                                 subtitles.length > 0 && subtitles.map((subtitle, index) => <View key={index} style={{ flexDirection: 'row', marginHorizontal: 15, marginTop: 10 }}>
                                     <Text style={{ fontWeight: 'bold', marginRight: 15, fontSize: 16 }}>{formatTime(subtitle.start)}</Text>

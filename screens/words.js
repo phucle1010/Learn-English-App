@@ -15,6 +15,7 @@ const Words = (props) => {
     const { navigation, route } = props;
     const word = route.params.item;
     const topic = route.params.topic;
+    const prevScreen = route.params.prevScreen;
     const [idioms, setIdioms] = useState([]);
     const [level, setLevel] = useState(null);
     const [loaded, setLoaded] = useState(false)
@@ -107,13 +108,21 @@ const Words = (props) => {
         }
     }, [word, isFocusedScreen]);
 
+    const handleBack = () => {
+        if (prevScreen === 'DetailWordGroup') {
+            navigation.navigate('DetailWordGroup', { item: topic })
+        } else {
+            navigation.navigate('Library')
+        }
+    }
+
     return (
         <React.Fragment>
             {
                 loaded ? (
                     <View style={styles.container}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40 }}>
-                            <TouchableOpacity style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }} onPress={() => navigation.navigate('DetailWordGroup', { item: topic })}>
+                            <TouchableOpacity style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }} onPress={handleBack}>
                                 <Icon name='arrow-left' size={20} color={color.txt5} />
                             </TouchableOpacity>
                             <Text style={{ fontSize: 20 }}>Chi tiết từ vựng</Text>
