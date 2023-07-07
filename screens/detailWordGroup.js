@@ -106,8 +106,8 @@ const DetailWordGroup = (props) => {
                                     phonetic={item.phonetic}
                                     onPressUK={() => PlayTrack(item.word.trim(), 'uk')}
                                     onPressUS={() => PlayTrack(item.word.trim(), 'us')}
-                                    disUK={item.phonetics.some(obj => obj.audio.includes("uk.mp3"))}
-                                    disUS={item.phonetics.some(obj => obj.audio.includes("us.mp3"))}
+                                    disUK={item.phonetics?.some(obj => obj.audio.includes("uk.mp3"))}
+                                    disUS={item.phonetics?.some(obj => obj.audio.includes("us.mp3"))}
                                     word={item.word}
                                     onPress={() => handlePressWord(item)} />
                             )}

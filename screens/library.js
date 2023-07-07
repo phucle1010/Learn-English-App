@@ -54,7 +54,7 @@ const BookItem = ({ item, onPress, displayText, onNavigate }) => {
                 {formattedDate()}
             </Text>
             <Text style={styles.txtname}>{displayText(item?.title, 'book')}</Text>
-            <Text>{item.subtitle}</Text>
+            <Text>{displayText(item?.subtitle, 'bookSubTitle')}</Text>
             <View style={{ flex: 1, marginTop: 10, justifyContent: 'space-between' }}>
                 <TouchableOpacity
                     style={{
@@ -276,6 +276,8 @@ const Library = ({ navigation }) => {
                 return text?.length < 35 ? `${text}` : `${text.substring(0, 32)}...`
             case 'book':
                 return text?.length < 35 ? `${text}` : `${text.substring(0, 32)}...`
+            case 'bookSubTitle':
+                return text?.length < 20 ? `${text}` : `${text.substring(0, 18)}...`
             case 'video':
                 return text?.length < 25 ? `${text}` : `${text.substring(0, 23)}...`
             default:
