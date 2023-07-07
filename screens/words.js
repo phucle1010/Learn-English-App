@@ -132,24 +132,23 @@ const Words = (props) => {
                                 <View>
                                     <Text style={styles.word}>{word.word}</Text>
                                     <Text style={styles.txtspell}>{word.phonetic}</Text>
-                                </View>
-
-                                <View style={{ alignItems: 'flex-end' }}>
-                                    <TouchableOpacity style={styles.btnsave}>
-                                        <Text style={styles.txtbtnsave}>Lưu từ vựng</Text>
-                                    </TouchableOpacity>
-
                                     <View style={styles.soundcontainer}>
-                                        <Text style={styles.txticon}>UK</Text>
-                                        <TouchableOpacity onPress={() => handleIcon1Click()}>
-                                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
-                                        </TouchableOpacity>
-                                        <Text style={styles.txticon}>US</Text>
-                                        <TouchableOpacity onPress={() => handleIcon2Click()}>
-                                            <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
-                                        </TouchableOpacity>
+                                        <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                                            <Text style={styles.txticon}>UK</Text>
+                                            <TouchableOpacity onPress={() => handleIcon1Click()}>
+                                                <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                                            <Text style={styles.txticon}>US</Text>
+                                            <TouchableOpacity onPress={() => handleIcon2Click()}>
+                                                <Image style={styles.iconsound} source={require('../sources/icons/volumehigh.png')} />
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
+
+
                             </View>
                             <View style={{ marginHorizontal: 20, marginBottom: 10 }}>
                                 <Text style={{ ...styles.txtcontent, marginTop: 0 }}>Nghĩa của từ</Text>
@@ -228,7 +227,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontFamily: fontstyle.fontfamily_1,
         color: color.txt1,
-        paddingTop: 10,
         fontWeight: 'bold',
     },
     btnsave: {
@@ -265,7 +263,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: fontstyle.fontfamily_1,
         color: color.txt1,
-        marginHorizontal: 10,
+        marginRight: 5,
         paddingTop: 10,
         fontWeight: 500,
     },
