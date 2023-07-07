@@ -25,8 +25,8 @@ const Login = ({ navigation }) => {
     const users = [];
     const dispatch = useDispatch();
     const [userLogin, setUserLogin] = useState({
-        email: 'lethephuc2002@gmail.com',
-        password: '123456',
+        email: '',
+        password: '',
     });
     const [deviceID, setDeviceID] = useState(null);
 
@@ -46,6 +46,7 @@ const Login = ({ navigation }) => {
                 if (element.id === uid) {
                     dispatch(addUserIntoApp({
                         dateOfBirth: element.dateOfBirth,
+                        avatar: element.avatar,
                         fullName: element.fullName,
                         level_id: element.level_id,
                         email: element.email,
@@ -92,8 +93,6 @@ const Login = ({ navigation }) => {
 
                         },
                     ]);
-
-
                 })
                 .catch((error) => {
                     Alert.alert('Alert Title', 'Đăng nhập thất bại', [

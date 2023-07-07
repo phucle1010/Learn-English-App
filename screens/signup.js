@@ -52,13 +52,11 @@ const Signup = ({ navigation }) => {
                     const user = res.user;
                     const userData = {
                         dateOfBirth: '',
+                        level_id: '',
+                        avatar: 'https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-3d-boy-head-portrait-png-image_6514617.png',
                         email: userInfo.email,
-                        field: '',
                         fullName: userInfo.full_name,
                         id: user.uid,
-                        level_id: '',
-                        password: '',
-                        username: '',
                     };
                     addUserCollection(userData);
                 });
