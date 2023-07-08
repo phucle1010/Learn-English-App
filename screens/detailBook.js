@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 const DetailBook = (props) => {
     const { navigation, route } = props
-    const { idBook, itembook } = route.params
+    const { idBook, itembook, prevScreen } = route.params
     const source = { uri: `https://edtechbooks.org/pdfs.v2/${idBook}/_${idBook}.pdf`, cache: true };
     // console.log(`https://edtechbooks.org/pdfs.v2/${idBook}/_${idBook}.pdf`)
     //const source = require('./test.pdf');  // ios only
@@ -16,13 +16,17 @@ const DetailBook = (props) => {
     //const source = {uri:"data:application/pdf;base64,JVBERi0xLjcKJc..."};
     //const source = {uri:"content://com.example.blobs/xxxxxxxx-...?offset=0&size=xxx"};
     //const source = {uri:"blob:xxxxxxxx-...?offset=0&size=xxx"};
-
+    // console.log(itembook)
     return (
         <View style={styles.container}>
             <View style={styles.headcontainer}>
-                <TouchableOpacity style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }} onPress={() => navigation.navigate("DetailReadBook", {
-                    itembook
-                })}>
+                <TouchableOpacity
+                    style={{ position: 'absolute', left: 20, height: '100%', justifyContent: 'center' }}
+                    onPress={() => navigation.navigate("DetailReadBook", {
+                        itembook: itembook,
+                        prevScreen: prevScreen,
+                    })}
+                >
                     <Icon name='arrow-left' style={{ color: color.txt5, fontSize: 23, fontWeight: 'bold' }} />
                 </TouchableOpacity>
                 <Text style={styles.txthead}>Nội dung sách</Text>

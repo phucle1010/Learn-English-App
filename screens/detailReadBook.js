@@ -188,13 +188,10 @@ const DetailReadBook = ({ navigation, route }) => {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <TouchableOpacity
                             style={styles.btnQuickView}
-                            onPress={() => navigation.navigate('DetailBook', { idBook: itembook.book_id, itembook })}
+                            onPress={() => navigation.navigate('DetailBook', { idBook: itembook.book_id, itembook, prevScreen })}
                         >
                             <Text style={styles.txtbtnQuickView}>Tải sách</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={{ ...styles.btnQuickView, backgroundColor: '#fff', borderColor: '#118b9e' }}>
-                            <Text style={{ ...styles.txtbtnQuickView, color: '#118b9e' }}>Lưu sách</Text>
-                        </TouchableOpacity> */}
                     </View>
                 </View>
 
