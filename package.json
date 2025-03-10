@@ -47,7 +47,7 @@
         "react-native-webview": "^13.2.2",
         "react-native-youtube-iframe": "^2.2.2",
         "react-redux": "^8.0.5",
-        "youtube-captions-scraper": "^2.0.0"
+        "youtube-captions-scraper": "^2.0.3"
     },
     "devDependencies": {
         "@babel/core": "^7.20.0",
